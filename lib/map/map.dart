@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-class MapWidget extends StatefulWidget {
-  const MapWidget({Key? key}) : super(key: key);
+class MapWidget extends StatelessWidget {
+  final double lat;
+  final double lng;
+  final MapController mapController = MapController();
 
-  @override
-  State<StatefulWidget> createState() => _MapState();
-}
+  MapWidget({Key? key, required this.lat, required this.lng}) : super(key: key);
 
-class _MapState extends State<MapWidget> {
+  MapCamera get camera => mapController.camera;
+
+  void move(double lat, double lng, double zoom) {
+    mapController.move(LatLng(lat, lng), zoom);
+  }
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
+      mapController: this.mapController,
       options: MapOptions(
-        initialCenter: LatLng(38.66098, -9.20443),
+        initialCenter: LatLng(lat, lng),
         initialZoom: 16.0,
       ),
       children: [
@@ -25,9 +30,7 @@ class _MapState extends State<MapWidget> {
         ),
         RichAttributionWidget(
           attributions: [
-            TextSourceAttribution(
-                'OpenStreetMap contributors'
-            ),
+            TextSourceAttribution('OpenStreetMap contributors'),
           ],
         ),
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexaguide_ipm/map/map.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'appBar.dart';
 
@@ -65,6 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  static double initLat = 38.66098;
+  static double initLng = -9.20443;
+  MapWidget map = MapWidget(lat: initLat, lng: initLng);
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -79,8 +84,16 @@ class _MyHomePageState extends State<MyHomePage> {
           children:[
             NexaGuideAppBar(),
             Expanded(
-                child: MapWidget()
-            )
+                child: map
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    LatLng pos = map.camera.center;
+                    map.move(pos.latitude+0.002, pos.longitude, map.camera.zoom);
+                  });
+                },
+                child: Text('Just testing'))
           ]
       ),
     );
