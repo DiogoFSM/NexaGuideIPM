@@ -9,12 +9,6 @@ class MapWidget extends StatelessWidget {
 
   MapWidget({Key? key, required this.lat, required this.lng}) : super(key: key);
 
-  MapCamera get camera => mapController.camera;
-
-  void move(double lat, double lng, double zoom) {
-    mapController.move(LatLng(lat, lng), zoom);
-  }
-
   @override
   Widget build(BuildContext context) {
     return FlutterMap(

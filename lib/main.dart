@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:nexaguide_ipm/map/map.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -89,8 +90,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    LatLng pos = map.camera.center;
-                    map.move(pos.latitude+0.002, pos.longitude, map.camera.zoom);
+                    MapController mapController = map.mapController;
+                    MapCamera mapCamera = mapController.camera;
+                    LatLng pos = mapCamera.center;
+                    mapController.move(LatLng(pos.latitude+0.002, pos.longitude), mapCamera.zoom);
                   });
                 },
                 child: Text('Just testing'))
