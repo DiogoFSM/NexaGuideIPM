@@ -18,6 +18,13 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
     var size = renderBox.size;
     var offset = renderBox.localToGlobal(Offset.zero);
 
+    var suggestions = TapRegion(
+        onTapOutside: (e) {
+          hideOverlay();
+        },
+        child: _delegate.buildSuggestions(context),
+    );
+
     return OverlayEntry(
       builder: (context) => Positioned(
           left: offset.dx,
@@ -26,7 +33,12 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
           child: Container(
             height: 150,
             color: Colors.white,
-            child: _delegate.buildSuggestions(context),
+            child: TapRegion(
+              onTapOutside: (e) {
+                hideOverlay();
+              },
+              child: suggestions,
+            ),
           ),
       ),
     );
@@ -93,11 +105,8 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                 onTap: () {
                   showOverlay();
                 },
-                onTapOutside: (e) {
-                  hideOverlay();
-                },
                 onSubmitted: (search) {
-                  _controller.clear();
+                  //_controller.clear();
                   hideOverlay();
                 },
               ),
@@ -169,7 +178,10 @@ class LocationSearchDelegate extends SearchDelegate {
         var result = matchQuery[index];
         return Material(
             child: ListTile(
-              title: Text(result)
+              title: Text(result),
+              onTap: () {
+                print(result);
+              },
         ));
       },
     );
