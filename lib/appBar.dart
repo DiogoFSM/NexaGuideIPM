@@ -1,11 +1,56 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class NexaGuideAppBar extends StatelessWidget {
+class NexaGuideAppBar extends StatefulWidget {
   const NexaGuideAppBar({super.key});
 
   @override
+  State<StatefulWidget> createState() => _NexaGuideAppBarState();
+}
+
+class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
+  OverlayEntry? _overlayEntry;
+  final TextEditingController _controller = TextEditingController();
+  final LocationSearchDelegate _delegate = LocationSearchDelegate();
+
+  OverlayEntry _createOverlayEntry(context) {
+    RenderBox renderBox = context.findRenderObject();
+    var size = renderBox.size;
+    var offset = renderBox.localToGlobal(Offset.zero);
+
+    return OverlayEntry(
+      builder: (context) => Positioned(
+          left: offset.dx,
+          top: offset.dy + size.height,
+          width: size.width,
+          child: Container(
+            height: 150,
+            color: Colors.white,
+            child: _delegate.buildSuggestions(context),
+          ),
+      ),
+    );
+  }
+
+  void showOverlay() {
+    final overlay = Overlay.of(context);
+
+    _overlayEntry = _createOverlayEntry(context);
+    overlay.insert(_overlayEntry!);
+  }
+
+  void hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    _controller.addListener(() {
+      _delegate.query = _controller.text;
+    });
+
     return AppBar(actions: [
       Container(
         width: MediaQuery.of(context).size.width,
@@ -33,6 +78,7 @@ class NexaGuideAppBar extends StatelessWidget {
             Flexible(
               flex: 5,
               child: TextField(
+                controller: _controller,
                 decoration: InputDecoration(
                   hintText: 'Search...',
                   border: OutlineInputBorder(),
@@ -40,6 +86,20 @@ class NexaGuideAppBar extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.white70,
                 ),
+                onChanged: (search) {
+                  _overlayEntry?.remove();
+                  showOverlay();
+                },
+                onTap: () {
+                  showOverlay();
+                },
+                onTapOutside: (e) {
+                  hideOverlay();
+                },
+                onSubmitted: (search) {
+                  _controller.clear();
+                  hideOverlay();
+                },
               ),
             ),
           ],
@@ -47,9 +107,71 @@ class NexaGuideAppBar extends StatelessWidget {
       ),
     ]);
   }
+}
 
-/*
+class LocationSearchDelegate extends SearchDelegate {
+  List<String> searchTerms = ['Lisboa', 'Porto', 'Faro'];
 
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            query = '';
+          })
+    ];
+  }
 
- */
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var x in searchTerms) {
+      if (x.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(x);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    if (query.isEmpty) {
+      return Container();
+    }
+    List<String> matchQuery = [];
+    for (var x in searchTerms) {
+      if (x.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(x);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return Material(
+            child: ListTile(
+              title: Text(result)
+        ));
+      },
+    );
+  }
 }
