@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter/services.dart';
+import 'package:csv/csv.dart';
 import 'package:nexaguide_ipm/map/map.dart';
-import 'package:latlong2/latlong.dart';
 
 import 'appBar.dart';
+import 'database/model/city.dart';
+import 'database/nexaguide_db.dart';
 
 typedef MapCallback = void Function(String data);
 
@@ -56,18 +58,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  final database = NexaGuideDB();
 
   static double initLat = 38.66098;
   static double initLng = -9.20443;
@@ -79,6 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() { _data = data; });
     print("Received: $_data");
     // move map to somewhere
+    /*
+    MapController mapController = map.mapController;
+    MapCamera mapCamera = mapController.camera;
+    LatLng pos = mapCamera.center;
+    mapController.move(LatLng(pos.latitude+0.002, pos.longitude), mapCamera.zoom);
+     */
   }
 
   @override
@@ -97,16 +94,35 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
                 child: map
             ),
-            ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    MapController mapController = map.mapController;
-                    MapCamera mapCamera = mapController.camera;
-                    LatLng pos = mapCamera.center;
-                    mapController.move(LatLng(pos.latitude+0.002, pos.longitude), mapCamera.zoom);
-                  });
-                },
-                child: Text('Just testing'))
+            // This row just contains testing options, delete later
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        database.fetchCityById(1);
+                      });
+                    },
+                    child: Text('Just testing')
+                ),
+                FutureBuilder<List<City>> (
+                  future: database.fetchAllCities(),
+                  builder: (context, snapshot) {
+                    return snapshot.hasData ?
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            print("something");
+                            snapshot.data?.forEach((city) {print(city);});
+                          });
+                        },
+                        child: Text('Just testing 2')
+                    ) : Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ],
+            )
           ]
       ),
     );

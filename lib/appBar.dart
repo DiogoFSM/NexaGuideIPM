@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 
+// TODO: Profile/Menu buttons
+
 class NexaGuideAppBar extends StatefulWidget {
   const NexaGuideAppBar({super.key, required this.onSuggestionPress});
 
