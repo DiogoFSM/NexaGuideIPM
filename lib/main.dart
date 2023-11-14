@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:csv/csv.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:nexaguide_ipm/map/map.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'appBar.dart';
 import 'database/model/city.dart';
 import 'database/nexaguide_db.dart';
 
-typedef MapCallback = void Function(String data);
+typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 
 void main() {
   runApp(const MyApp());
@@ -64,18 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
   static double initLng = -9.20443;
   MapWidget map = MapWidget(lat: initLat, lng: initLng);
 
-  String _data = '';
-
-  void _moveMapTo(String data) {
-    setState(() { _data = data; });
-    print("Received: $_data");
-    // move map to somewhere
-    /*
+  void _moveMapTo(double lat, double lng, double zoom) {
+    print("Received: lat: $lat; lng: $lng; zoom: $zoom");
     MapController mapController = map.mapController;
-    MapCamera mapCamera = mapController.camera;
-    LatLng pos = mapCamera.center;
-    mapController.move(LatLng(pos.latitude+0.002, pos.longitude), mapCamera.zoom);
-     */
+    mapController.move(LatLng(lat, lng), zoom);
   }
 
   @override

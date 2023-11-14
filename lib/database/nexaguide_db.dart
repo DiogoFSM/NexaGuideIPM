@@ -91,4 +91,16 @@ class NexaGuideDB {
     final database = await DatabaseService().database;
     await database.rawDelete('''DELETE FROM $citiesTableName''');
   }
+
+  Future<List<City>> searchCities(String search) async {
+    final database = await DatabaseService().database;
+
+    var result = await database.query(
+      citiesTableName,
+      where: 'name LIKE ?', // The WHERE clause
+      whereArgs: ['%$search%'], // The argument for the WHERE clause
+    );
+
+    return result.map( (city) => City.fromSqfliteDatabase(city)).toList();
+  }
 }

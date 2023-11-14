@@ -29,9 +29,6 @@ class DatabaseService {
       path,
       version: 1,
       onCreate: create,
-      onOpen: (db) {
-        print('open!');
-      },
       singleInstance: true,
     );
     return database;

@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'database/model/city.dart';
+import 'database/nexaguide_db.dart';
 import 'main.dart';
 
 // TODO: Profile/Menu buttons
+// TODO: Ao clicar numa das sugestoes, ocultar a lista e completar a pesquisa
 
 class NexaGuideAppBar extends StatefulWidget {
   const NexaGuideAppBar({super.key, required this.onSuggestionPress});
 
-  final MapCallback onSuggestionPress;
+  final MoveMapCallback onSuggestionPress;
 
   @override
   State<StatefulWidget> createState() => _NexaGuideAppBarState();
@@ -130,9 +133,9 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
 }
 
 class LocationSearchDelegate extends SearchDelegate {
-  List<String> searchTerms = ['Lisboa', 'Porto', 'Faro'];
+  //List<String> searchTerms = ['Lisboa', 'Porto', 'Faro'];
 
-  final MapCallback onSuggestionPress;
+  final MoveMapCallback onSuggestionPress;
   LocationSearchDelegate({required this.onSuggestionPress});
 
   @override
@@ -156,6 +159,7 @@ class LocationSearchDelegate extends SearchDelegate {
     );
   }
 
+  /*
   @override
   Widget buildResults(BuildContext context) {
     List<String> matchQuery = [];
@@ -174,7 +178,37 @@ class LocationSearchDelegate extends SearchDelegate {
       },
     );
   }
+   */
 
+  @override
+  Widget buildResults(BuildContext context) {
+    return FutureBuilder<List<City>>(
+      future: NexaGuideDB().searchCities(query),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<City> matchQuery = snapshot.data!;
+          return ListView.builder(
+            itemCount: matchQuery.length,
+            itemBuilder: (context, index) {
+              var result = matchQuery[index];
+              return ListTile(
+                title: Text(result.name),
+                subtitle: Text(result.country),
+              );
+            },
+          );
+        }
+        else if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+        else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  /*
   @override
   Widget buildSuggestions(BuildContext context) {
     if (query.isEmpty) {
@@ -198,6 +232,43 @@ class LocationSearchDelegate extends SearchDelegate {
                 onSuggestionPress(result);
               },
         ));
+      },
+    );
+  }
+  */
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    if (query.isEmpty) {
+      return Container();
+    }
+    return FutureBuilder<List<City>>(
+      future: NexaGuideDB().searchCities(query),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<City> matchQuery = snapshot.data!;
+          return ListView.builder(
+            itemCount: matchQuery.length,
+            itemBuilder: (context, index) {
+              var result = matchQuery[index];
+              return Material(
+                child: ListTile(
+                  title: Text(result.name),
+                  subtitle: Text(result.country),
+                  onTap: () {
+                    onSuggestionPress(result.lat, result.lng, 14.0);
+                  },
+                ),
+              );
+            },
+          );
+        }
+        else if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+        else {
+          return Center(child: CircularProgressIndicator());
+        }
       },
     );
   }
