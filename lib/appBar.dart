@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'main.dart';
 
 class NexaGuideAppBar extends StatefulWidget {
-  const NexaGuideAppBar({super.key});
+  const NexaGuideAppBar({super.key, required this.onSuggestionPress});
+
+  final MapCallback onSuggestionPress;
 
   @override
   State<StatefulWidget> createState() => _NexaGuideAppBarState();
@@ -11,7 +14,13 @@ class NexaGuideAppBar extends StatefulWidget {
 class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
   OverlayEntry? _overlayEntry;
   final TextEditingController _controller = TextEditingController();
-  final LocationSearchDelegate _delegate = LocationSearchDelegate();
+  late LocationSearchDelegate _delegate;
+
+  @override
+  void initState() {
+    super.initState();
+    _delegate = LocationSearchDelegate(onSuggestionPress: widget.onSuggestionPress);
+  }
 
   OverlayEntry _createOverlayEntry(context) {
     RenderBox renderBox = context.findRenderObject();
@@ -121,6 +130,9 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
 class LocationSearchDelegate extends SearchDelegate {
   List<String> searchTerms = ['Lisboa', 'Porto', 'Faro'];
 
+  final MapCallback onSuggestionPress;
+  LocationSearchDelegate({required this.onSuggestionPress});
+
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -180,7 +192,8 @@ class LocationSearchDelegate extends SearchDelegate {
             child: ListTile(
               title: Text(result),
               onTap: () {
-                print(result);
+                //print(result);
+                onSuggestionPress(result);
               },
         ));
       },

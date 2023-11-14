@@ -5,6 +5,8 @@ import 'package:latlong2/latlong.dart';
 
 import 'appBar.dart';
 
+typedef MapCallback = void Function(String data);
+
 void main() {
   runApp(const MyApp());
 }
@@ -71,6 +73,14 @@ class _MyHomePageState extends State<MyHomePage> {
   static double initLng = -9.20443;
   MapWidget map = MapWidget(lat: initLat, lng: initLng);
 
+  String _data = '';
+
+  void _moveMapTo(String data) {
+    setState(() { _data = data; });
+    print("Received: $_data");
+    // move map to somewhere
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -83,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       body: Column(
           children:[
-            NexaGuideAppBar(),
+            NexaGuideAppBar(onSuggestionPress: _moveMapTo),
             Expanded(
                 child: map
             ),
