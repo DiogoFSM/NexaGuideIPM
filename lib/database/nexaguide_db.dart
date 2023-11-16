@@ -37,7 +37,7 @@ class NexaGuideDB {
       }
 
       try{
-        await b.commit(continueOnError: true);
+        await b.commit(continueOnError: true, noResult: true);
         print("Cities table successfully initialized." );
       }catch(e){
         print("Error initializing cities ==> ${e.toString()}");
@@ -138,6 +138,37 @@ class NexaGuideDB {
     );
   }
 
+  Future<int> createPOIWithTags({required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, required List<String> tags}) async {
+    final database = await DatabaseService().database;
+    int id = -1;
+    await database.transaction((txn) async {
+      var b = txn.batch();
+        id = await txn.rawInsert(
+          '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID) VALUES (?,?,?,?,?,?,?)''',
+          [name, lat, lng, address, website, price, cityID]
+        );
+
+        if (id >= 0) {
+          for (var t in tags) {
+            b.rawInsert('''INSERT INTO $poiTagsTableName (id, tag) VALUES (?,?)''',
+            [id, t]);
+          }
+        }
+        else {
+          print("Insertion failed!");
+        }
+        try{
+          await b.commit(continueOnError: true, noResult: true);
+          print("POI with tags successfully created." );
+        }catch(e){
+          print("Error commiting batch ==> ${e.toString()}");
+        }
+
+    });
+
+    return id;
+  }
+
   Future<int> updatePOI({required int id, String? name, double? lat, double? lng, String? address, String? website, int? price, int? cityID}) async {
     final database = await DatabaseService().database;
     return await database.update(
@@ -201,6 +232,7 @@ class NexaGuideDB {
       POI poi = await buildPOIWithTags(p);
       result.add(poi);
     }
+
     return result;
   }
 

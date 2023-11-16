@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nexaguide_ipm/main.dart';
 
-class MapWidget extends StatelessWidget {
-  final double lat;
-  final double lng;
+class MapWidget extends StatefulWidget {
+  final double initLat;
+  final double initLng;
+  final MapBoundsCallback updateBoundsCallback;
   final MapController mapController = MapController();
+  MapWidget({Key? key, required this.initLat, required this.initLng, required this.updateBoundsCallback}) : super(key: key);
 
-  MapWidget({Key? key, required this.lat, required this.lng}) : super(key: key);
+  @override
+  State<MapWidget> createState() => _MapWidgetState();
+}
 
+class _MapWidgetState extends State<MapWidget> {
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      mapController: this.mapController,
+      mapController: widget.mapController,
       options: MapOptions(
-        initialCenter: LatLng(lat, lng),
+        initialCenter: LatLng(widget.initLat, widget.initLng),
         initialZoom: 16.0,
+        onMapReady: () {
+          widget.updateBoundsCallback(widget.mapController.camera.visibleBounds);
+        },
+        onPositionChanged: (MapPosition pos, bool hasGesture) {
+          widget.updateBoundsCallback(pos.bounds!);
+        }
       ),
       children: [
         TileLayer(
@@ -30,4 +42,5 @@ class MapWidget extends StatelessWidget {
       ],
     );
   }
+
 }

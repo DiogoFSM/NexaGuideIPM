@@ -7,9 +7,11 @@ import 'package:sqflite/sqflite.dart';
 
 import 'appBar.dart';
 import 'database/model/city.dart';
+import 'database/model/poi.dart';
 import 'database/nexaguide_db.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
+typedef MapBoundsCallback = void Function(LatLngBounds bounds);
 
 void main() {
   runApp(const MyApp());
@@ -24,15 +26,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'NexaGuide',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.orange,
 
       ),
@@ -44,15 +37,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -61,27 +45,45 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final database = NexaGuideDB();
+  LatLngBounds? mapBounds;
 
   static double initLat = 38.66098;
   static double initLng = -9.20443;
-  MapWidget map = MapWidget(lat: initLat, lng: initLng);
+
+  late MapWidget map;
+
+  @override
+  void initState() {
+    super.initState();
+    map = MapWidget(initLat: initLat, initLng: initLng, updateBoundsCallback: _updateMapBounds);
+  }
 
   void _moveMapTo(double lat, double lng, double zoom) {
     print("Received: lat: $lat; lng: $lng; zoom: $zoom");
     MapController mapController = map.mapController;
     mapController.move(LatLng(lat, lng), zoom);
+    mapBounds = mapController.camera.visibleBounds;
+  }
+
+  void _updateMapBounds(LatLngBounds bounds) {
+    setState(() {
+      mapBounds = bounds;
+    });
+
+  }
+
+  Future<List<POI>> _getVisiblePOIs() async {
+    List<POI> l = [];
+    if (mapBounds != null) {
+      l = await database.fetchPOIByCoordinates(mapBounds!.south, mapBounds!.north, mapBounds!.west, mapBounds!.east);
+      //l = await database.fetchPOIByCoordinates(38.0, 39.0, -10.0, -9.0);
+    }
+    return l;
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-
       body: Column(
           children:[
             NexaGuideAppBar(onSuggestionPress: _moveMapTo),
@@ -95,26 +97,28 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        print(database.fetchCityById(1));
+                        database.createPOIWithTags(name: 'FCT', lat: 38.66098, lng: -9.20443, website: 'https://www.fct.unl.pt/', tags:['University']);
                       });
                     },
-                    child: Text('Just testing')
+                    child: Text('Test POI')
                 ),
-                FutureBuilder<List<City>> (
-                  future: database.fetchAllCities(),
+                FutureBuilder<List<POI>> (
+                  future: _getVisiblePOIs(),
                   builder: (context, snapshot) {
                     return snapshot.hasData ?
                     ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            print("something");
-                            snapshot.data?.forEach((city) {print(city);});
+                            //snapshot.data?.forEach((city) {print(city);});
+                            snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
                           });
                         },
-                        child: Text('Print ALL cities')
+                        child: Text('Print visible POI')
                     ) : Center(child: CircularProgressIndicator());
                   },
                 ),
+                // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi
+                // We need to make sure the database is always initialized when the user opens the app for the first time
                 FutureBuilder<String>(
                   future: DatabaseService().fullPath,
                   builder: (context, snapshot) {

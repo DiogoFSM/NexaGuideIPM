@@ -24,9 +24,9 @@ class POI {
   factory POI.fromSqfliteDatabase({required Map<String, dynamic> map, List<String>? tags}) => POI(
     id: map['id']?.toInt() ?? 0,
     name: map['name'] ?? '',
-    lat: map['lat'].toDouble(),
-    lng: map['lng'].toDouble(),
-    cityID: map['cityID'].toInt(),
+    lat: map['lat']?.toDouble() ?? 0.0,
+    lng: map['lng']?.toDouble() ?? 0.0,
+    cityID: map['cityID']?.toInt() ?? -1,
     tags: tags ?? [],
     address: map['address'] ?? '',
     website: map['website'] ?? '',
