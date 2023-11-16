@@ -26,7 +26,14 @@ class _MapWidgetState extends State<MapWidget> {
           widget.updateBoundsCallback(widget.mapController.camera.visibleBounds);
         },
         onPositionChanged: (MapPosition pos, bool hasGesture) {
-          widget.updateBoundsCallback(pos.bounds!);
+          if (!hasGesture) {
+            widget.updateBoundsCallback(pos.bounds!);
+          }
+        },
+        onMapEvent: (MapEvent e) {
+          if (e is MapEventMoveEnd) {
+            widget.updateBoundsCallback(e.camera.visibleBounds);
+          }
         }
       ),
       children: [

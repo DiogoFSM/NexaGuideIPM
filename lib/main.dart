@@ -108,10 +108,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     return snapshot.hasData ?
                     ElevatedButton(
                         onPressed: () {
+                          snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
+                          /*
                           setState(() {
                             //snapshot.data?.forEach((city) {print(city);});
                             snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
                           });
+                           */
                         },
                         child: Text('Print visible POI')
                     ) : Center(child: CircularProgressIndicator());
