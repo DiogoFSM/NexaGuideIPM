@@ -256,7 +256,7 @@ class LocationSearchDelegate extends SearchDelegate {
                   title: Text(result.name),
                   subtitle: Text(result.country),
                   onTap: () {
-                    onSuggestionPress(result.lat, result.lng, 14.0);
+                    onSuggestionPress(result.lat, result.lng, 13.0);
                   },
                 ),
               );

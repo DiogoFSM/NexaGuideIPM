@@ -54,7 +54,9 @@ class DatabaseService {
   }
 
   Future<void> createDB(Database database) async {
-    await NexaGuideDB().createTable(database);
+    await NexaGuideDB().createCitiesTable(database);
+    await NexaGuideDB().createPOITable(database);
+    await NexaGuideDB().createPOITagsTable(database);
     await _loadCitiesFromCSV();
   }
 

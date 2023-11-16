@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:nexaguide_ipm/database/database_service.dart';
 import 'package:nexaguide_ipm/map/map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'appBar.dart';
 import 'database/model/city.dart';
@@ -93,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        database.fetchCityById(1);
+                        print(database.fetchCityById(1));
                       });
                     },
                     child: Text('Just testing')
@@ -109,7 +111,21 @@ class _MyHomePageState extends State<MyHomePage> {
                             snapshot.data?.forEach((city) {print(city);});
                           });
                         },
-                        child: Text('Just testing 2')
+                        child: Text('Print ALL cities')
+                    ) : Center(child: CircularProgressIndicator());
+                  },
+                ),
+                FutureBuilder<String>(
+                  future: DatabaseService().fullPath,
+                  builder: (context, snapshot) {
+                    return snapshot.hasData ?
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            deleteDatabase(snapshot.data!);
+                          });
+                        },
+                        child: Text('Delete Database!!!')
                     ) : Center(child: CircularProgressIndicator());
                   },
                 ),
