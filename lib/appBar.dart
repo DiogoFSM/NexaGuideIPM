@@ -5,7 +5,6 @@ import 'database/nexaguide_db.dart';
 import 'main.dart';
 
 // TODO: Profile/Menu buttons
-// TODO: Ao clicar numa das sugestoes, ocultar a lista e completar a pesquisa
 
 class NexaGuideAppBar extends StatefulWidget {
   const NexaGuideAppBar({super.key, required this.onSuggestionPress});
@@ -24,7 +23,7 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
   @override
   void initState() {
     super.initState();
-    _delegate = LocationSearchDelegate(onSuggestionPress: widget.onSuggestionPress);
+    _delegate = LocationSearchDelegate(onSuggestionPress: widget.onSuggestionPress, hideOverlay: hideOverlay, searchBarController: _controller);
   }
 
   OverlayEntry _createOverlayEntry(context) {
@@ -133,10 +132,10 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
 }
 
 class LocationSearchDelegate extends SearchDelegate {
-  //List<String> searchTerms = ['Lisboa', 'Porto', 'Faro'];
-
   final MoveMapCallback onSuggestionPress;
-  LocationSearchDelegate({required this.onSuggestionPress});
+  final void Function() hideOverlay;
+  final TextEditingController searchBarController;
+  LocationSearchDelegate({required this.onSuggestionPress, required this.searchBarController, required this.hideOverlay});
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -158,27 +157,6 @@ class LocationSearchDelegate extends SearchDelegate {
       },
     );
   }
-
-  /*
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var x in searchTerms) {
-      if (x.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(x);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-        );
-      },
-    );
-  }
-   */
 
   @override
   Widget buildResults(BuildContext context) {
@@ -208,35 +186,6 @@ class LocationSearchDelegate extends SearchDelegate {
     );
   }
 
-  /*
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    if (query.isEmpty) {
-      return Container();
-    }
-    List<String> matchQuery = [];
-    for (var x in searchTerms) {
-      if (x.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(x);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return Material(
-            child: ListTile(
-              title: Text(result),
-              onTap: () {
-                //print(result);
-                onSuggestionPress(result);
-              },
-        ));
-      },
-    );
-  }
-  */
-
   @override
   Widget buildSuggestions(BuildContext context) {
     if (query.isEmpty) {
@@ -256,6 +205,8 @@ class LocationSearchDelegate extends SearchDelegate {
                   title: Text(result.name),
                   subtitle: Text(result.country),
                   onTap: () {
+                    searchBarController.text = result.name;
+                    hideOverlay();
                     onSuggestionPress(result.lat, result.lng, 13.0);
                   },
                 ),
