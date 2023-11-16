@@ -189,13 +189,36 @@ class LocationSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     if (query.isEmpty) {
-      return Container();
+      return Container(
+        child: Center(
+          child: Text("Search for a place...",
+              style: TextStyle(
+                  inherit: false,
+                  color: Colors.black54,
+                  fontSize: 20
+              )
+          ),
+        ),
+      );
     }
     return FutureBuilder<List<City>>(
       future: NexaGuideDB().searchCities(query),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<City> matchQuery = snapshot.data!;
+          if (matchQuery.isEmpty) {
+            return Container(
+              child: Center(
+                child: Text("No results.",
+                  style: TextStyle(
+                    inherit: false,
+                    color: Colors.black54,
+                    fontSize: 20
+                  )
+                ),
+              ),
+            );
+          }
           return ListView.builder(
             itemCount: matchQuery.length,
             itemBuilder: (context, index) {
