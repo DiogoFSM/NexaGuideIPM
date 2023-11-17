@@ -68,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
     map = MapWidget(initLat: initLat, initLng: initLng, getMarkers: getMarkers, updateBoundsCallback: _updateMapBounds);
   }
 
+  // TODO: maybe these functions to move map, update visible POI, etc should be on map.dart, will see later
   void _moveMapTo(double lat, double lng, double zoom) {
     print("Received: lat: $lat; lng: $lng; zoom: $zoom");
     MapController mapController = map.mapController;
