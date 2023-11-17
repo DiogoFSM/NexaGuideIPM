@@ -8,6 +8,7 @@ class POI {
   final String? address;
   final String? website;
   final int? price;
+  final String? description;
 
   POI({
     required this.id,
@@ -19,6 +20,7 @@ class POI {
     this.address,
     this.website,
     this.price,
+    this.description,
   });
 
   factory POI.fromSqfliteDatabase({required Map<String, dynamic> map, List<String>? tags}) => POI(
@@ -31,6 +33,7 @@ class POI {
     address: map['address'] ?? '',
     website: map['website'] ?? '',
     price: map['price'] ?? -1,
+    description: map['description'] ?? '',
   );
 
   @override

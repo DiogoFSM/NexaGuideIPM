@@ -9,6 +9,7 @@ import 'appBar.dart';
 import 'database/model/city.dart';
 import 'database/model/poi.dart';
 import 'database/nexaguide_db.dart';
+import 'map/locationPopup.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 typedef MapBoundsCallback = Future<void> Function(LatLngBounds bounds);
@@ -109,9 +110,11 @@ class _MyHomePageState extends State<MyHomePage> {
     for (POI p in visiblePOIs!) {
       markers.add(Marker(
         point: LatLng(p.lat, p.lng),
-        width: 100,
-        height: 100,
-        child: Icon(Icons.chat_bubble, color:Colors.indigo), //TODO: this should be a fancier widget, that you can click, etc.
+        rotate: true,
+        width: 300,
+        height: 224,
+        //child: Icon(Icons.location_pin, color:Colors.indigo, size: 50.0,), //TODO: this should be a fancier widget, that you can click, etc.
+        child: LocationPopup(location: p)
         )
       );
     }
@@ -140,7 +143,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        database.createPOIWithTags(name: 'FCT', lat: 38.66098, lng: -9.20443, website: 'https://www.fct.unl.pt/', tags:['University']);
+                        database.createPOIWithTags(
+                            name: 'FCT NOVA',
+                            lat: 38.66098,
+                            lng: -9.20443,
+                            website: 'https://www.fct.unl.pt/',
+                            description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia",
+                            tags:['University'])
+                        ;
                       });
                     },
                     child: Text('Test POI')
@@ -163,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ) : Center(child: CircularProgressIndicator());
                   },
                 ),
-                // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi
+                // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi list
                 // We need to make sure the database is always initialized when the user opens the app for the first time
                 FutureBuilder<String>(
                   future: DatabaseService().fullPath,

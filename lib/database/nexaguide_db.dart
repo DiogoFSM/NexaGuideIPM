@@ -125,27 +125,28 @@ class NexaGuideDB {
     "website" TEXT,
     "price" INTEGER,
     "cityID" INTEGER,
+    "description" TEXT,
     PRIMARY KEY ("id" AUTOINCREMENT),
     FOREIGN KEY ("cityID") REFERENCES $citiesTableName ("id") ON UPDATE CASCADE ON DELETE CASCADE
     );""");
   }
 
-  Future<int> createPOI({required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID}) async {
+  Future<int> createPOI({required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, String? description}) async {
     final database = await DatabaseService().database;
     return await database.rawInsert(
-        '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID) VALUES (?,?,?,?,?,?,?)''',
-        [name, lat, lng, address, website, price, cityID]
+        '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID, description) VALUES (?,?,?,?,?,?,?,?)''',
+        [name, lat, lng, address, website, price, cityID, description]
     );
   }
 
-  Future<int> createPOIWithTags({required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, required List<String> tags}) async {
+  Future<int> createPOIWithTags({required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, String? description, required List<String> tags}) async {
     final database = await DatabaseService().database;
     int id = -1;
     await database.transaction((txn) async {
       var b = txn.batch();
         id = await txn.rawInsert(
-          '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID) VALUES (?,?,?,?,?,?,?)''',
-          [name, lat, lng, address, website, price, cityID]
+            '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID, description) VALUES (?,?,?,?,?,?,?,?)''',
+            [name, lat, lng, address, website, price, cityID, description]
         );
 
         if (id >= 0) {
@@ -169,7 +170,7 @@ class NexaGuideDB {
     return id;
   }
 
-  Future<int> updatePOI({required int id, String? name, double? lat, double? lng, String? address, String? website, int? price, int? cityID}) async {
+  Future<int> updatePOI({required int id, String? name, double? lat, double? lng, String? address, String? website, int? price, int? cityID, String? description}) async {
     final database = await DatabaseService().database;
     return await database.update(
         poiTableName,
@@ -181,6 +182,7 @@ class NexaGuideDB {
           if (website != null) 'website': website,
           if (price != null) 'price': price,
           if (cityID != null) 'cityID': cityID,
+          if (description != null) 'description': description
         },
         where: 'id = ?',
         conflictAlgorithm: ConflictAlgorithm.rollback,
@@ -242,7 +244,7 @@ class NexaGuideDB {
     return POI.fromSqfliteDatabase(map: poi, tags: tags);
   }
 
-  // TODO: Search POI based on multiple filters
+  // TODO: Search POI based on multiple filters and tags
 
   Future<void> createPOITagsTable(Database database) async {
     await database.execute("""

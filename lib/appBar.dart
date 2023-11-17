@@ -79,8 +79,9 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
     return AppBar(actions: [
       Container(
         width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
               flex: 1,

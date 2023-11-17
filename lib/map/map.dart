@@ -45,13 +45,6 @@ class _MapWidgetState extends State<MapWidget> {
         onMapEvent: (MapEvent e) {
           if (e is MapEventMoveEnd) {
             updateBoundsAndMarkers();
-            /*
-            widget.updateBoundsCallback(widget.mapController.camera.visibleBounds).then((_) {
-              setState(() {
-                markers = widget.getMarkers();
-              });
-            });
-             */
           }
         }
       ),
