@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       );
     }
-    print("Markers: $markers");
+    print("No. of Markers: ${markers.length}");
     return markers;
   }
 

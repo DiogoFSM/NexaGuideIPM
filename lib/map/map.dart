@@ -33,7 +33,7 @@ class _MapWidgetState extends State<MapWidget> {
       mapController: widget.mapController,
       options: MapOptions(
         initialCenter: LatLng(widget.initLat, widget.initLng),
-        initialZoom: 16.0,
+        initialZoom: 15.0,
         onMapReady: () {
           updateBoundsAndMarkers();
         },
