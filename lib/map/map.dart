@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -7,14 +8,26 @@ class MapWidget extends StatefulWidget {
   final double initLat;
   final double initLng;
   final MapBoundsCallback updateBoundsCallback;
+  final MapMarkersCallback getMarkers;
   final MapController mapController = MapController();
-  MapWidget({Key? key, required this.initLat, required this.initLng, required this.updateBoundsCallback}) : super(key: key);
+  MapWidget({Key? key, required this.initLat, required this.initLng, required this.updateBoundsCallback, required this.getMarkers}) : super(key: key);
 
   @override
   State<MapWidget> createState() => _MapWidgetState();
 }
 
 class _MapWidgetState extends State<MapWidget> {
+  List<Marker> markers = [];
+
+  void updateBoundsAndMarkers() {
+    widget.updateBoundsCallback(widget.mapController.camera.visibleBounds).then((_) {
+      List<Marker> newMarkers = widget.getMarkers();
+      setState(() {
+        markers = widget.getMarkers();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
@@ -23,16 +36,23 @@ class _MapWidgetState extends State<MapWidget> {
         initialCenter: LatLng(widget.initLat, widget.initLng),
         initialZoom: 16.0,
         onMapReady: () {
-          widget.updateBoundsCallback(widget.mapController.camera.visibleBounds);
+          updateBoundsAndMarkers();
         },
         onPositionChanged: (MapPosition pos, bool hasGesture) {
           if (!hasGesture) {
-            widget.updateBoundsCallback(pos.bounds!);
+            updateBoundsAndMarkers();
           }
         },
         onMapEvent: (MapEvent e) {
           if (e is MapEventMoveEnd) {
-            widget.updateBoundsCallback(e.camera.visibleBounds);
+            updateBoundsAndMarkers();
+            /*
+            widget.updateBoundsCallback(widget.mapController.camera.visibleBounds).then((_) {
+              setState(() {
+                markers = widget.getMarkers();
+              });
+            });
+             */
           }
         }
       ),
@@ -40,6 +60,9 @@ class _MapWidgetState extends State<MapWidget> {
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.example.app',
+        ),
+        MarkerLayer(
+          markers: markers,
         ),
         RichAttributionWidget(
           attributions: [
