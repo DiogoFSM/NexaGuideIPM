@@ -21,7 +21,6 @@ class _MapWidgetState extends State<MapWidget> {
 
   void updateBoundsAndMarkers() {
     widget.updateBoundsCallback(widget.mapController.camera.visibleBounds).then((_) {
-      List<Marker> newMarkers = widget.getMarkers();
       setState(() {
         markers = widget.getMarkers();
       });
