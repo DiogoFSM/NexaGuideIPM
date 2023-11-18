@@ -79,10 +79,11 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
     return AppBar(actions: [
       Container(
         width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            /*
             Flexible(
               flex: 1,
               child: InkWell(
@@ -101,13 +102,25 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                 ),
               ),
             ),
+             */
+            Flexible(
+              flex: 1,
+              child: IconButton(
+                onPressed: () {
+
+                },
+                icon: Icon(Icons.menu_rounded),
+                iconSize: 28,
+              ),
+            ),
+
             Flexible(
               flex: 5,
               child: TextField(
                 controller: _controller,
                 textAlignVertical: TextAlignVertical.bottom,
-                style: TextStyle(fontFamily: 'GillSansMT', fontSize: 19),
-                decoration: InputDecoration(
+                style: const TextStyle(fontFamily: 'GillSansMT', fontSize: 19),
+                decoration: const InputDecoration(
                   hintText: 'Search...',
                   //hintStyle: TextStyle(color: Colors.black54, fontFamily: 'GillSansMT',),
                   border: OutlineInputBorder(),
@@ -126,6 +139,28 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                   //_controller.clear();
                   hideOverlay();
                 },
+              ),
+            ),
+
+            Flexible(
+              flex: 1,
+              child: IconButton(
+                onPressed: () {
+
+                },
+                icon: Icon(Icons.tune_rounded),
+                iconSize: 28,
+              ),
+            ),
+
+            Flexible(
+              flex: 1,
+              child: IconButton(
+                onPressed: () {
+
+                },
+                icon: Icon(Icons.account_circle),
+                iconSize: 28,
               ),
             ),
           ],
