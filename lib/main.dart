@@ -9,6 +9,13 @@ import 'database/model/city.dart';
 import 'database/model/event.dart';
 import 'database/model/poi.dart';
 import 'database/nexaguide_db.dart';
+import 'map/locationMarker.dart';
+import 'map/locationPopup.dart';
+import 'eventsPage.dart';
+
+typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
+typedef MapBoundsCallback = Future<void> Function(LatLngBounds bounds);
+typedef MapMarkersCallback = List<Marker> Function();
 
 void main() {
   runApp(const MyApp());
@@ -64,6 +71,15 @@ class _MyHomePageState extends State<MyHomePage> {
     return l;
   }
 
+  void _navigateToEventsPage() async {
+    database.createEvent(name: "Nos Alive", poiID: 1, dateStart: "13 Jul", dateEnd: "16 Jul", location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45);
+    List<Event> events = await database.fetchAllEvents();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => eventsPage(events: events)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               tags:['University']
                           );
 
-                          database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 0, dateEnd: 100, tags: ["Festival"]);
+                          database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 0, dateEnd: 100, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);
                         });
                       },
                       child: Text('Test POI')
@@ -111,7 +127,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
-
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            _navigateToEventsPage();                          },
+                          child: Text('Events Page')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
                 /*
                 Flexible(
                   child: FutureBuilder<List<POI>> (

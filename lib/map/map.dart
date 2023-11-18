@@ -112,7 +112,7 @@ class _MapWidgetState extends State<MapWidget> {
         MarkerLayer(
           markers: markers,
         ),
-        RichAttributionWidget(
+        const RichAttributionWidget(
           attributions: [
             TextSourceAttribution('OpenStreetMap contributors'),
           ],
