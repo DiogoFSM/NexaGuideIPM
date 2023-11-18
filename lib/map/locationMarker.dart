@@ -43,7 +43,7 @@ class _LocationMarkerState extends State<LocationMarker> {
       ),
     );
 
-    double offsetTop = offset.dy <= height/2 ? offset.dy : offset.dy - 270;
+    double offsetTop = offset.dy <= height/2 ? offset.dy + 10 : offset.dy - 270;
 
     return OverlayEntry(
       builder: (context) => Positioned(
@@ -73,7 +73,7 @@ class _LocationMarkerState extends State<LocationMarker> {
           _overlayEntry?.remove();
           showOverlay();
         },
-        iconSize: 28,
+        iconSize: 36,
       );
   }
 }
