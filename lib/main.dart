@@ -141,54 +141,60 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        database.createPOIWithTags(
-                            name: 'FCT NOVA',
-                            lat: 38.66098,
-                            lng: -9.20443,
-                            website: 'https://www.fct.unl.pt/',
-                            description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia",
-                            tags:['University'])
-                        ;
-                      });
-                    },
-                    child: Text('Test POI')
+                Flexible(
+                  child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          database.createPOIWithTags(
+                              name: 'FCT NOVA',
+                              lat: 38.66098,
+                              lng: -9.20443,
+                              website: 'https://www.fct.unl.pt/',
+                              description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia",
+                              tags:['University'])
+                          ;
+                        });
+                      },
+                      child: Text('Test POI')
+                  ),
                 ),
-                FutureBuilder<List<POI>> (
-                  future: _getVisiblePOIs(),
-                  builder: (context, snapshot) {
-                    return snapshot.hasData ?
-                    ElevatedButton(
-                        onPressed: () {
-                          snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
-                          /*
-                          setState(() {
-                            //snapshot.data?.forEach((city) {print(city);});
+                Flexible(
+                  child: FutureBuilder<List<POI>> (
+                    future: _getVisiblePOIs(),
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
                             snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
-                          });
-                           */
-                        },
-                        child: Text('Print visible POI')
-                    ) : Center(child: CircularProgressIndicator());
-                  },
+                            /*
+                            setState(() {
+                              //snapshot.data?.forEach((city) {print(city);});
+                              snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
+                            });
+                             */
+                          },
+                          child: Text('Print visible POI')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
                 ),
                 // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi list
                 // We need to make sure the database is always initialized when the user opens the app for the first time
-                FutureBuilder<String>(
-                  future: DatabaseService().fullPath,
-                  builder: (context, snapshot) {
-                    return snapshot.hasData ?
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            deleteDatabase(snapshot.data!);
-                          });
-                        },
-                        child: Text('Delete Database!!!')
-                    ) : Center(child: CircularProgressIndicator());
-                  },
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              deleteDatabase(snapshot.data!);
+                            });
+                          },
+                          child: Text('Delete Database!!!')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
                 ),
               ],
             )
