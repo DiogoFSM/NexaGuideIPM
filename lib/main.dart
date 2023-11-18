@@ -121,8 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
         point: LatLng(p.lat, p.lng),
         rotate: true,
         alignment: Alignment.topCenter,
-        //child: Icon(Icons.location_pin, color:Colors.indigo, size: 50.0,), //TODO: this should be a fancier widget, that you can click, etc.
-        //child: LocationPopup(location: p)
         child: LocationMarker(location: p),
       )
       );

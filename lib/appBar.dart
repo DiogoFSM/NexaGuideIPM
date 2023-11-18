@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nexaguide_ipm/search/searchResultsPage.dart';
 import 'database/model/city.dart';
 import 'database/nexaguide_db.dart';
 import 'main.dart';
-
-// TODO: Profile/Menu buttons
 
 class NexaGuideAppBar extends StatefulWidget {
   const NexaGuideAppBar({super.key, required this.onSuggestionPress});
@@ -76,96 +75,106 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
       _delegate.query = _controller.text;
     });
 
-    return AppBar(actions: [
-      Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            /*
-            Flexible(
-              flex: 1,
-              child: InkWell(
-                onTap: () {
-                  // do something
-                },
-                child: Ink.image(
-                  image: AssetImage('assets/nexaguide3.png'),
-                  fit: BoxFit.scaleDown,
-                  width: 40,
-                  height: 40,
-                  child: InkWell(
-                    splashColor: Colors.black.withOpacity(0.5),
-                    highlightColor: Colors.black.withOpacity(0.2),
+    return AppBar(
+      automaticallyImplyLeading: false,
+      actions: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              /*
+              Flexible(
+                flex: 1,
+                child: InkWell(
+                  onTap: () {
+                    // do something
+                  },
+                  child: Ink.image(
+                    image: AssetImage('assets/nexaguide3.png'),
+                    fit: BoxFit.scaleDown,
+                    width: 40,
+                    height: 40,
+                    child: InkWell(
+                      splashColor: Colors.black.withOpacity(0.5),
+                      highlightColor: Colors.black.withOpacity(0.2),
+                    ),
                   ),
                 ),
               ),
-            ),
-             */
-            Flexible(
-              flex: 1,
-              child: IconButton(
-                onPressed: () {
+               */
 
-                },
-                icon: Icon(Icons.menu_rounded),
-                iconSize: 28,
-              ),
-            ),
 
-            Flexible(
-              flex: 5,
-              child: TextField(
-                controller: _controller,
-                textAlignVertical: TextAlignVertical.bottom,
-                style: const TextStyle(fontFamily: 'GillSansMT', fontSize: 19),
-                decoration: const InputDecoration(
-                  hintText: 'Search...',
-                  //hintStyle: TextStyle(color: Colors.black54, fontFamily: 'GillSansMT',),
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.white70,
+              Flexible(
+                flex: 1,
+                child: IconButton(
+                  onPressed: () {
+
+                  },
+                  icon: Icon(Icons.menu_rounded),
+                  iconSize: 28,
                 ),
-                onChanged: (search) {
-                  _overlayEntry?.remove();
-                  showOverlay();
-                },
-                onTap: () {
-                  showOverlay();
-                },
-                onSubmitted: (search) {
-                  //_controller.clear();
-                  hideOverlay();
-                },
               ),
-            ),
 
-            Flexible(
-              flex: 1,
-              child: IconButton(
-                onPressed: () {
-
-                },
-                icon: Icon(Icons.tune_rounded),
-                iconSize: 28,
+              Flexible(
+                flex: 5,
+                child: TextField(
+                  controller: _controller,
+                  textAlignVertical: TextAlignVertical.bottom,
+                  style: const TextStyle(fontFamily: 'GillSansMT', fontSize: 19),
+                  decoration: InputDecoration(
+                    hintText: 'Search...',
+                    //hintStyle: TextStyle(color: Colors.black54, fontFamily: 'GillSansMT',),
+                    border: OutlineInputBorder(),
+                    //suffixIcon: Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(initLat: 38.66098, initLng: -9.20443)));
+                      },
+                      icon: Icon(Icons.search),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white70,
+                  ),
+                  onChanged: (search) {
+                    _overlayEntry?.remove();
+                    showOverlay();
+                  },
+                  onTap: () {
+                    showOverlay();
+                  },
+                  onSubmitted: (search) {
+                    //_controller.clear();
+                    hideOverlay();
+                  },
+                ),
               ),
-            ),
 
-            Flexible(
-              flex: 1,
-              child: IconButton(
-                onPressed: () {
+              Flexible(
+                flex: 1,
+                child: IconButton(
+                  onPressed: () {
 
-                },
-                icon: Icon(Icons.account_circle),
-                iconSize: 28,
+                  },
+                  icon: Icon(Icons.tune_rounded),
+                  iconSize: 28,
+                ),
               ),
-            ),
-          ],
+
+              Flexible(
+                flex: 1,
+                child: IconButton(
+                  onPressed: () {
+
+                  },
+                  icon: Icon(Icons.account_circle),
+                  iconSize: 28,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
     ]);
   }
 }
