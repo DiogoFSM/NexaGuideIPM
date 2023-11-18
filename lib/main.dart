@@ -11,6 +11,7 @@ import 'database/model/poi.dart';
 import 'database/nexaguide_db.dart';
 import 'map/locationMarker.dart';
 import 'map/locationPopup.dart';
+import 'eventsPage.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 typedef MapBoundsCallback = Future<void> Function(LatLngBounds bounds);
@@ -174,6 +175,24 @@ class _MyHomePageState extends State<MyHomePage> {
                              */
                           },
                           child: Text('Print visible POI')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+                Flexible(
+                  child: FutureBuilder<List<POI>> (
+                    future: _getVisiblePOIs(),
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            // Navigate to the EventsPage
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => eventsPage()),
+                            );
+                          },
+                          child: Text('Events Page')
                       ) : Center(child: CircularProgressIndicator());
                     },
                   ),

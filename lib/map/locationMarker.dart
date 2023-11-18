@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../database/model/poi.dart';
@@ -68,7 +67,7 @@ class _LocationMarkerState extends State<LocationMarker> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        icon: Icon(Icons.location_pin),
+        icon: const Icon(Icons.location_pin),
         onPressed: () {
           _overlayEntry?.remove();
           showOverlay();

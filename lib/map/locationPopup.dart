@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../database/model/poi.dart';
@@ -64,7 +63,7 @@ class _LocationPopupState extends State<LocationPopup> {
                 ),
                 Material(
                   child: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       widget.closePopup();
                     },
@@ -122,19 +121,19 @@ class _LocationPopupState extends State<LocationPopup> {
                     ],
                   )
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Flexible(
                     flex: 1,
                     child: Column (
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
+                        const Expanded(
                           flex: 3,
                           child: Image(
                             image: AssetImage('assets/placeholder.png'), // TODO: Get an image
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Flexible(
                           flex: 1,
                           child: ElevatedButton(

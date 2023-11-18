@@ -39,7 +39,7 @@ class DatabaseService {
     List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);
     List<City> citiesToInsert = [];
     listData.removeAt(0);
-    listData.forEach((city) {
+    for (var city in listData) {
       //print("NAME: ${city[0]}, LAT: ${city[2]}, LNG: ${city[3]}, POP: ${city[9]}");
       var name = city[0];
       var lat = city[2] != "" ? double.parse(city[2]) : 0.0;
@@ -49,7 +49,7 @@ class DatabaseService {
 
       //print("$name $lat $lng $country $population");
       citiesToInsert.add(City(id: -1, name: name, lat: lat, lng: lng, country: country, population: population));
-    });
+    }
     NexaGuideDB().initializeCities(citiesToInsert);
   }
 
