@@ -7,8 +7,10 @@ import '../map/map.dart';
 class SearchResultsPage extends StatefulWidget {
   final double initLat;
   final double initLng;
+  final double initZoom;
+  final double initRotation;
 
-  const SearchResultsPage({super.key, required this.initLat, required this.initLng});
+  const SearchResultsPage({super.key, required this.initLat, required this.initLng, required this.initZoom, required this.initRotation});
 
   @override
   State<SearchResultsPage> createState() => _SearchResultsPageState();
@@ -20,7 +22,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   @override
   void initState() {
     super.initState();
-    map = MapWidget(initLat: widget.initLat, initLng: widget.initLng, getMarkers: () {return [];}, updateBoundsCallback: (a) async {});
+    map = MapWidget(initLat: widget.initLat, initLng: widget.initLng, initZoom: widget.initZoom, initRotation: widget.initRotation,);
   }
 
   @override
@@ -28,7 +30,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     return Scaffold(
       body: Column(
         children: [
-          NexaGuideAppBar(onSuggestionPress: (a, b, c) {}),
+          NexaGuideAppBar(mapController: map.mapController),
           Expanded(
             child: Container(
               padding: EdgeInsets.all(12),

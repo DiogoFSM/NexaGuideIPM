@@ -1,14 +1,20 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nexaguide_ipm/search/searchResultsPage.dart';
 import 'database/model/city.dart';
 import 'database/nexaguide_db.dart';
-import 'main.dart';
+
+typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 
 class NexaGuideAppBar extends StatefulWidget {
-  const NexaGuideAppBar({super.key, required this.onSuggestionPress});
+  //final MoveMapCallback onSuggestionPress;
+  final MapController mapController;
 
-  final MoveMapCallback onSuggestionPress;
+  //const NexaGuideAppBar({super.key, required this.onSuggestionPress});
+  const NexaGuideAppBar({super.key, required this.mapController});
 
   @override
   State<StatefulWidget> createState() => _NexaGuideAppBarState();
@@ -19,10 +25,16 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
   final TextEditingController _controller = TextEditingController();
   late LocationSearchDelegate _delegate;
 
+  void moveMapTo(double lat, double lng, double zoom) {
+    print("Moving to: lat: $lat; lng: $lng; zoom: $zoom");
+    widget.mapController.move(LatLng(lat, lng), zoom);
+    //mapBounds = mapController.camera.visibleBounds;
+  }
+
   @override
   void initState() {
     super.initState();
-    _delegate = LocationSearchDelegate(onSuggestionPress: widget.onSuggestionPress, hideOverlay: hideOverlay, searchBarController: _controller);
+    _delegate = LocationSearchDelegate(onSuggestionPress: moveMapTo, hideOverlay: hideOverlay, searchBarController: _controller);
   }
 
   OverlayEntry _createOverlayEntry(context) {
@@ -34,7 +46,25 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
         onTapOutside: (e) {
           hideOverlay();
         },
-        child: _delegate.buildSuggestions(context),
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white38,
+                border: Border.symmetric(
+                  horizontal: BorderSide(
+                    color: Colors.black54,
+                    width: 2.0,
+                  ),
+                ),
+              ),
+              child: _delegate.buildSuggestions(context),
+            ),
+          ),
+        ),
+
+
     );
 
     return OverlayEntry(
@@ -44,7 +74,7 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
           width: size.width,
           child: Container(
             height: 150,
-            color: Colors.white,
+            //color: Colors.red,
             child: TapRegion(
               onTapOutside: (e) {
                 hideOverlay();
@@ -130,7 +160,12 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                     //suffixIcon: Icon(Icons.search),
                     suffixIcon: IconButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(initLat: 38.66098, initLng: -9.20443)));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
+                          initLat: widget.mapController.camera.center.latitude,
+                          initLng: widget.mapController.camera.center.longitude,
+                          initZoom: widget.mapController.camera.zoom,
+                          initRotation: widget.mapController.camera.rotation,
+                        )));
                       },
                       icon: Icon(Icons.search),
                     ),
@@ -237,16 +272,14 @@ class LocationSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     if (query.isEmpty) {
-      return Container(
-        child: Center(
-          child: Text("Search for a place...",
-              style: TextStyle(
-                  inherit: false,
-                  color: Colors.black54,
-                  fontFamily: 'GillSansMT',
-                  fontSize: 20
-              )
-          ),
+      return const Center(
+        child: Text("Search for a place...",
+          style: TextStyle(
+            inherit: false,
+            color: Colors.black54,
+            fontFamily: 'GillSansMT',
+            fontSize: 20
+          )
         ),
       );
     }
@@ -256,16 +289,14 @@ class LocationSearchDelegate extends SearchDelegate {
         if (snapshot.hasData) {
           List<City> matchQuery = snapshot.data!;
           if (matchQuery.isEmpty) {
-            return Container(
-              child: Center(
-                child: Text("No results.",
-                  style: TextStyle(
-                    inherit: false,
-                    color: Colors.black54,
-                    fontFamily: 'GillSansMT',
-                    fontSize: 20
-                  )
-                ),
+            return const Center(
+              child: Text("No results.",
+                style: TextStyle(
+                  inherit: false,
+                  color: Colors.black54,
+                  fontFamily: 'GillSansMT',
+                  fontSize: 20
+                )
               ),
             );
           }
@@ -275,6 +306,7 @@ class LocationSearchDelegate extends SearchDelegate {
             itemBuilder: (context, index) {
               var result = matchQuery[index];
               return Material(
+                color: Colors.transparent,
                 child: ListTile(
                   title: Text(result.name, style: TextStyle(fontFamily: 'GillSansMT', fontSize: 19)),
                   subtitle: Text(result.country, style: TextStyle(fontFamily: 'GillSansMT', fontSize: 15)),
