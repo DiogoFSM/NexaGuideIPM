@@ -105,8 +105,11 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
               flex: 5,
               child: TextField(
                 controller: _controller,
+                textAlignVertical: TextAlignVertical.bottom,
+                style: TextStyle(fontFamily: 'GillSansMT', fontSize: 19),
                 decoration: InputDecoration(
                   hintText: 'Search...',
+                  //hintStyle: TextStyle(color: Colors.black54, fontFamily: 'GillSansMT',),
                   border: OutlineInputBorder(),
                   suffixIcon: Icon(Icons.search),
                   filled: true,
@@ -196,6 +199,7 @@ class LocationSearchDelegate extends SearchDelegate {
               style: TextStyle(
                   inherit: false,
                   color: Colors.black54,
+                  fontFamily: 'GillSansMT',
                   fontSize: 20
               )
           ),
@@ -214,6 +218,7 @@ class LocationSearchDelegate extends SearchDelegate {
                   style: TextStyle(
                     inherit: false,
                     color: Colors.black54,
+                    fontFamily: 'GillSansMT',
                     fontSize: 20
                   )
                 ),
@@ -222,12 +227,13 @@ class LocationSearchDelegate extends SearchDelegate {
           }
           return ListView.builder(
             itemCount: matchQuery.length,
+            itemExtent: 60,
             itemBuilder: (context, index) {
               var result = matchQuery[index];
               return Material(
                 child: ListTile(
-                  title: Text(result.name),
-                  subtitle: Text(result.country),
+                  title: Text(result.name, style: TextStyle(fontFamily: 'GillSansMT', fontSize: 19)),
+                  subtitle: Text(result.country, style: TextStyle(fontFamily: 'GillSansMT', fontSize: 15)),
                   onTap: () {
                     searchBarController.text = result.name;
                     hideOverlay();

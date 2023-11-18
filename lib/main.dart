@@ -9,6 +9,7 @@ import 'appBar.dart';
 import 'database/model/city.dart';
 import 'database/model/poi.dart';
 import 'database/nexaguide_db.dart';
+import 'map/locationMarker.dart';
 import 'map/locationPopup.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
@@ -111,10 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
       markers.add(Marker(
         point: LatLng(p.lat, p.lng),
         rotate: true,
-        width: 300,
-        height: 224,
+        alignment: Alignment.topCenter,
         //child: Icon(Icons.location_pin, color:Colors.indigo, size: 50.0,), //TODO: this should be a fancier widget, that you can click, etc.
-        child: LocationPopup(location: p)
+        //child: LocationPopup(location: p)
+        child: LocationMarker(location: p),
         )
       );
     }

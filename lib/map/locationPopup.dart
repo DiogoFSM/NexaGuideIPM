@@ -5,8 +5,9 @@ import '../database/model/poi.dart';
 
 class LocationPopup extends StatefulWidget {
   final POI location;
+  final void Function() closePopup;
 
-  const LocationPopup({super.key, required this.location});
+  const LocationPopup({super.key, required this.location, required this.closePopup});
 
   @override
   State<LocationPopup> createState() => _LocationPopupState();
@@ -51,6 +52,9 @@ class _LocationPopupState extends State<LocationPopup> {
                   child: Text(
                     widget.location.name,
                     style: const TextStyle(
+                      inherit: false,
+                      color: Colors.black,
+                      fontFamily: 'GillSansMT',
                       fontWeight: FontWeight.bold,
                       fontSize: 19,
                     ),
@@ -58,11 +62,13 @@ class _LocationPopupState extends State<LocationPopup> {
                     maxLines: 2,
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    // TODO: close popup
-                  },
+                Material(
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      widget.closePopup();
+                    },
+                  ),
                 ),
               ],
             ),
@@ -87,7 +93,11 @@ class _LocationPopupState extends State<LocationPopup> {
                         flex: 3,
                         child: Text(
                           widget.location.description!,
+                          textAlign: TextAlign.justify,
                           style: const TextStyle(
+                            inherit: false,
+                            color: Colors.black,
+                            fontFamily: 'GillSansMT',
                             fontSize: 15,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -100,7 +110,10 @@ class _LocationPopupState extends State<LocationPopup> {
                         child: Text(
                           widget.location.tags.toString(),
                           style: const TextStyle(
-                            fontSize: 16,
+                            inherit: false,
+                            color: Colors.black,
+                            fontFamily: 'GillSansMT',
+                            fontSize: 15,
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -109,7 +122,7 @@ class _LocationPopupState extends State<LocationPopup> {
                     ],
                   )
                 ),
-
+                SizedBox(width: 12),
                 Flexible(
                     flex: 1,
                     child: Column (
@@ -128,7 +141,7 @@ class _LocationPopupState extends State<LocationPopup> {
                             onPressed: () {
                               // TODO: Go to POI detailed page
                             },
-                            child: const Text('View +')
+                            child: const Text('View +', style: TextStyle(fontFamily: 'GillSansMT')),
                           ),
                         )
                       ],
@@ -137,68 +150,6 @@ class _LocationPopupState extends State<LocationPopup> {
               ]
             )
           )
-
-          /*
-          Flexible (
-            flex: 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  flex: 3,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          widget.location.description!,
-                          style: const TextStyle(
-                            fontSize: 15,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 4,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Image(
-                          image: AssetImage('assets/nexaguide3.png'),
-
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                Flexible(
-                  flex: 1,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          widget.location.tags.toString(),
-                          style: const TextStyle(
-                              fontSize: 16,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-
-                      ElevatedButton(
-                          onPressed: () {
-                            // TODO: Go to POI detailed page
-                          },
-                          child: const Text('View +')
-                      )
-                    ]
-                  )
-                )
-              ],
-            ),
-          ),
-          */
         ],
       ),
     );
