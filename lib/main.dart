@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //child: Icon(Icons.location_pin, color:Colors.indigo, size: 50.0,), //TODO: this should be a fancier widget, that you can click, etc.
         //child: LocationPopup(location: p)
         child: LocationMarker(location: p),
-        )
+      )
       );
     }
     print("No. of Markers: ${markers.length}");
@@ -134,6 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
   bool visibleAreaTooBig() {
     return mapBounds != null &&
         ((mapBounds!.north - mapBounds!.south) >= markerLoadThreshold || (mapBounds!.east - mapBounds!.west) >= markerLoadThreshold/2);
+  }
+
+  void _navigateToEventsPage() async {
+    database.createEvent(name: "Nos Alive", poiID: 1, dateStart: "13 Jul", dateEnd: "16 Jul", location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45);
+    List<Event> events = await database.fetchAllEvents();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => eventsPage(events: events)),
+    );
   }
 
   @override
@@ -162,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               tags:['University']
                           );
 
-                          database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 0, dateEnd: 100, tags: ["Festival"]);
+                          database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 0, dateEnd: 100, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);
                         });
                       },
                       child: Text('Test POI')
@@ -183,7 +192,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
-
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            _navigateToEventsPage();                          },
+                          child: Text('Events Page')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
                 /*
                 Flexible(
                   child: FutureBuilder<List<POI>> (
@@ -201,24 +222,6 @@ class _MyHomePageState extends State<MyHomePage> {
                              */
                           },
                           child: Text('Print visible POI')
-                      ) : Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                ),
-                Flexible(
-                  child: FutureBuilder<List<POI>> (
-                    future: _getVisiblePOIs(),
-                    builder: (context, snapshot) {
-                      return snapshot.hasData ?
-                      ElevatedButton(
-                          onPressed: () {
-                            // Navigate to the EventsPage
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => eventsPage()),
-                            );
-                          },
-                          child: Text('Events Page')
                       ) : Center(child: CircularProgressIndicator());
                     },
                   ),

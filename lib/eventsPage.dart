@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
-import 'eventDetailPage.dart';
+import 'database/model/event.dart';
+import 'database/nexaguide_db.dart';
 
 class eventsPage extends StatefulWidget {
+  final List<Event> events;
+
+  eventsPage({Key? key, required this.events}) : super(key: key);
+
   @override
   _EventsPageState createState() => _EventsPageState();
 }
 
 class _EventsPageState extends State<eventsPage> {
-  final List<Event> events = List.generate(20, (index) => Event(index));
+  late final List<Event> events;
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
+    events = widget.events;
+
     _pageController.addListener(() {
       int next = _pageController.page!.round();
       if (_currentPage != next) {
@@ -157,7 +164,7 @@ class EventGridItem extends StatelessWidget {
             child: ListBody(
               children: <Widget>[
                 Text(
-                  event.title,
+                  event.name,
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
@@ -168,9 +175,11 @@ class EventGridItem extends StatelessWidget {
                 SizedBox(height: 8),
                 Text('Horário: ${event.startTime} - ${event.endTime}'),
                 SizedBox(height: 8),
-                Text('Data: ${event.startDate} - ${event.endDate}'),
+                Text('Data: ${event.dateStart} - ${event.dateEnd}'),
                 SizedBox(height: 8),
                 Text('Preço: ${event.price}'),
+                SizedBox(height: 8),
+                Text('Site: ${event.website}'),
                 SizedBox(height: 8),
                 Row(
                   children: <Widget>[
@@ -181,7 +190,7 @@ class EventGridItem extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 8),
-                Text('O melhor festival em Portugal bla bla bla...'), // Replace with actual description
+                Text('${event.description}'), // Replace with actual description
               ],
             ),
           ),
@@ -207,7 +216,7 @@ class EventGridItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              event.title,
+              event.name,
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -217,7 +226,7 @@ class EventGridItem extends StatelessWidget {
             ),
             SizedBox(height: 4), // Give some space between text widgets
             Text(event.location),
-            Text('${event.startDate} - ${event.endDate}'),
+            Text('${event.dateStart} - ${event.dateEnd}'),
             Spacer(), // Use Spacer to push the button to the bottom of the card
             ElevatedButton(
               child: Text('Ver+'),
@@ -228,18 +237,4 @@ class EventGridItem extends StatelessWidget {
       ),
     );
   }
-}
-
-// Placeholder for event data model
-class Event {
-  final int id;
-  String get title => 'Event $id'; // Example title, replace with actual data
-  String get location => 'Algés'; // Example location, replace with actual data
-  String get startTime => '18:00h'; // Example start time, replace with actual data
-  String get endTime => '04:00h'; // Example end time, replace with actual data
-  String get endDate => '16 jul'; // Example end date, replace with actual data
-  String get startDate => '12 jul'; // Example start date, replace with actual data
-  String get price => '60€'; // Example price, replace with actual data
-
-  Event(this.id);
 }

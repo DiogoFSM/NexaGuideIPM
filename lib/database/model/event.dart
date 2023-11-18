@@ -1,10 +1,13 @@
 class Event {
   final int id;
   final String name;
-  final int dateStart;
-  final int dateEnd;
+  final String dateStart;
+  final String dateEnd;
   final int poiID;
   final List<String> tags;
+  final String location;
+  final String startTime;
+  final String endTime;
   final String? website;
   final int? price;
   final String? description;
@@ -14,6 +17,9 @@ class Event {
     required this.name,
     required this.dateStart,
     required this.dateEnd,
+    required this.location,
+    required this.startTime,
+    required this.endTime,
     required this.poiID,
     required this.tags,
     this.website,
@@ -24,8 +30,11 @@ class Event {
   factory Event.fromSqfliteDatabase({required Map<String, dynamic> map, List<String>? tags}) => Event(
     id: map['id']?.toInt() ?? 0,
     name: map['name'] ?? '',
-    dateStart: map['dateStart']?.toInt() ?? 0,
-    dateEnd: map['dateEnd']?.toInt() ?? 0,
+    location: map['location'] ?? '',
+    startTime: map['startTime'] ?? '',
+    endTime: map['endTime'] ?? '',
+    dateStart: map['dateStart']?? '',
+    dateEnd: map['dateEnd'] ?? '',
     poiID: map['poiID']?.toInt() ?? -1,
     tags: tags ?? [],
     website: map['website'] ?? '',

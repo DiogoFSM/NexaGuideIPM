@@ -301,6 +301,9 @@ class NexaGuideDB {
     "name" TEXT NOT NULL,
     "dateStart" INTEGER NOT NULL,
     "dateEnd" INTEGER NOT NULL,
+    "location" TEXT NOT NULL,
+    "startTime" TEXT NOT NULL,
+    "endTime" TEXT NOT NULL,
     "website" TEXT,
     "price" INTEGER,
     "poiID" INTEGER NOT NULL,
@@ -312,22 +315,22 @@ class NexaGuideDB {
 
   // TODO: Search events based on multiple filters
 
-  Future<int> createEvent({required String name, required int poiID, required int dateStart, required int dateEnd, String? website, int? price, String? description}) async {
+  Future<int> createEvent({required String name, required int poiID, required String dateStart, required String dateEnd, required String location, required String endTime, required startTime, String? website, int? price, String? description}) async {
     final database = await DatabaseService().database;
     return await database.rawInsert(
-        '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, website, price, poiID, description) VALUES (?,?,?,?,?,?,?)''',
-        [name, dateStart, dateEnd, website, price, poiID, description]
+        '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description) VALUES (?,?,?,?,?,?,?,?,?,?)''',
+        [name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description]
     );
   }
 
-  Future<int> createEventWithTags({required String name, required int poiID, required int dateStart, required int dateEnd, String? website, int? price, String? description, required List<String> tags}) async {
+  Future<int> createEventWithTags({required String name, required int poiID, required int dateStart, required int dateEnd, required String location, required String endTime, required startTime, String? website, int? price, String? description, required List<String> tags}) async {
     final database = await DatabaseService().database;
     int id = -1;
     await database.transaction((txn) async {
       var b = txn.batch();
       id = await txn.rawInsert(
-          '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, website, price, poiID, description) VALUES (?,?,?,?,?,?,?)''',
-          [name, dateStart, dateEnd, website, price, poiID, description]
+          '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description) VALUES (?,?,?,?,?,?,?,?,?,?)''',
+          [name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description]
       );
 
       if (id >= 0) {
@@ -397,6 +400,19 @@ class NexaGuideDB {
     return result;
   }
 
+  Future<List<Event>> fetchAllEvents() async {
+    final database = await DatabaseService().database;
+    final events = await database.rawQuery(
+        'SELECT * FROM $eventsTableName'
+    );
+
+    List<Event> result = [];
+    for (var e in events) {
+      Event ev = await buildEventWithTags(e);
+      result.add(ev);
+    }
+    return result;
+  }
   /*
   // TODO
   Future<List<Event>> fetchEventsByCoordinates(double latMin, double latMax, double lngMin, double lngMax) async {
