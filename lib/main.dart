@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'appBar.dart';
 import 'database/model/city.dart';
+import 'database/model/event.dart';
 import 'database/model/poi.dart';
 import 'database/nexaguide_db.dart';
 import 'map/locationMarker.dart';
@@ -106,6 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return l;
   }
 
+  Future<List<Event>> _getPOIEvents(int poiID) async {
+    List<Event> l = [];
+    l = await database.fetchEventsByPOI(poiID);
+    return l;
+  }
+
   List<Marker> getMarkers() {
     List<Marker> markers = [];
     for (POI p in visiblePOIs!) {
@@ -151,13 +158,32 @@ class _MyHomePageState extends State<MyHomePage> {
                               lng: -9.20443,
                               website: 'https://www.fct.unl.pt/',
                               description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia",
-                              tags:['University'])
-                          ;
+                              tags:['University']
+                          );
+
+                          database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 0, dateEnd: 100, tags: ["Festival"]);
                         });
                       },
                       child: Text('Test POI')
                   ),
                 ),
+
+                Flexible(
+                  child: FutureBuilder<List<Event>> (
+                    future: _getPOIEvents(1),
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            snapshot.data?.forEach((event) {print("${event.name} ${event.tags}");});
+                          },
+                          child: Text('Print FCT Events')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+
+                /*
                 Flexible(
                   child: FutureBuilder<List<POI>> (
                     future: _getVisiblePOIs(),
@@ -178,8 +204,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
+                */
                 // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi list
-                // We need to make sure the database is always initialized when the user opens the app for the first time
+                // TODO We need to make sure the database is always initialized when the user opens the app for the first time
                 Flexible(
                   child: FutureBuilder<String>(
                     future: DatabaseService().fullPath,

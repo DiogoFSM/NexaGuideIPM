@@ -2,6 +2,7 @@ import 'package:nexaguide_ipm/database/database_service.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'model/city.dart';
+import 'model/event.dart';
 import 'model/poi.dart';
 
 class NexaGuideDB {
@@ -274,7 +275,7 @@ class NexaGuideDB {
     await database.rawDelete('''DELETE FROM $poiTagsTableName WHERE id = ?''', [id]);
   }
 
-  Future<void> deleteTag(String tag) async {
+  Future<void> deleteTagAllPOI(String tag) async {
     final database = await DatabaseService().database;
     await database.rawDelete('''DELETE FROM $poiTagsTableName WHERE tag = ?''', [tag]);
   }
@@ -283,6 +284,183 @@ class NexaGuideDB {
     final database = await DatabaseService().database;
     final res = await database.rawQuery(
         '''SELECT * FROM $poiTagsTableName WHERE id=?''', [id]
+    );
+
+    return res.map( (row) => row['tag'] as String).toList();
+  }
+
+  /// EVENTS
+
+  final String eventsTableName = "events";
+  final String eventsTagsTableName = "eventsTags";
+
+  Future<void> createEventsTable(Database database) async {
+    await database.execute("""
+    CREATE TABLE IF NOT EXISTS $eventsTableName (
+    "id" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
+    "dateStart" INTEGER NOT NULL,
+    "dateEnd" INTEGER NOT NULL,
+    "website" TEXT,
+    "price" INTEGER,
+    "poiID" INTEGER NOT NULL,
+    "description" TEXT,
+    PRIMARY KEY ("id" AUTOINCREMENT),
+    FOREIGN KEY ("poiID") REFERENCES $poiTableName ("id") ON UPDATE CASCADE ON DELETE CASCADE
+    );""");
+  }
+
+  // TODO: Search events based on multiple filters
+
+  Future<int> createEvent({required String name, required int poiID, required int dateStart, required int dateEnd, String? website, int? price, String? description}) async {
+    final database = await DatabaseService().database;
+    return await database.rawInsert(
+        '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, website, price, poiID, description) VALUES (?,?,?,?,?,?,?)''',
+        [name, dateStart, dateEnd, website, price, poiID, description]
+    );
+  }
+
+  Future<int> createEventWithTags({required String name, required int poiID, required int dateStart, required int dateEnd, String? website, int? price, String? description, required List<String> tags}) async {
+    final database = await DatabaseService().database;
+    int id = -1;
+    await database.transaction((txn) async {
+      var b = txn.batch();
+      id = await txn.rawInsert(
+          '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, website, price, poiID, description) VALUES (?,?,?,?,?,?,?)''',
+          [name, dateStart, dateEnd, website, price, poiID, description]
+      );
+
+      if (id >= 0) {
+        for (var t in tags) {
+          b.rawInsert('''INSERT INTO $eventsTagsTableName (id, tag) VALUES (?,?)''',
+              [id, t]);
+        }
+      }
+      else {
+        print("Insertion failed!");
+      }
+      try{
+        await b.commit(continueOnError: true, noResult: true);
+        print("Event with tags successfully created." );
+      }catch(e){
+        print("Error commiting batch ==> ${e.toString()}");
+      }
+
+    });
+
+    return id;
+  }
+
+  Future<int> updateEvent({required int id, String? name, int? dateStart, int? dateEnd, String? website, int? price, int? poiID, String? description}) async {
+    final database = await DatabaseService().database;
+    return await database.update(
+        poiTableName,
+        {
+          if (name != null) 'name': name,
+          if (dateStart != null) 'dateStart': dateStart,
+          if (dateEnd != null) 'dateEnd': dateEnd,
+          if (website != null) 'website': website,
+          if (price != null) 'price': price,
+          if (poiID != null) 'poiID': poiID,
+          if (description != null) 'description': description
+        },
+        where: 'id = ?',
+        conflictAlgorithm: ConflictAlgorithm.rollback,
+        whereArgs: [id]
+    );
+  }
+
+  Future<void> deleteEvent(int id) async {
+    final database = await DatabaseService().database;
+    await database.rawDelete('''DELETE FROM $eventsTableName WHERE id = ?''', [id]);
+  }
+
+  Future<Event> fetchEventById(int id) async {
+    final database = await DatabaseService().database;
+    final events = await database.rawQuery(
+        '''SELECT * FROM $eventsTableName WHERE id=?''', [id]
+    );
+    return buildEventWithTags(events.first);
+  }
+
+  Future<List<Event>> fetchEventsByPOI(int poiID) async {
+    final database = await DatabaseService().database;
+    final events = await database.rawQuery(
+        '''SELECT * FROM $eventsTableName WHERE poiID=?''', [poiID]
+    );
+
+    List<Event> result = [];
+    for (var e in events) {
+      Event ev = await buildEventWithTags(e);
+      result.add(ev);
+    }
+    return result;
+  }
+
+  /*
+  // TODO
+  Future<List<Event>> fetchEventsByCoordinates(double latMin, double latMax, double lngMin, double lngMax) async {
+    final database = await DatabaseService().database;
+    final poi = await database.rawQuery(
+        '''SELECT * FROM $poiTableName 
+        WHERE lat between ? and ?
+        AND lng between ? and ? ''',
+        [latMin, latMax, lngMin, lngMax]
+    );
+
+    List<POI> result = [];
+    for (var p in poi) {
+      POI poi = await buildPOIWithTags(p);
+      result.add(poi);
+    }
+
+    return result;
+  }
+   */
+
+  Future<Event> buildEventWithTags(Map<String, Object?> event) async {
+    int id = event['id'] as int;
+    List<String> tags = await fetchEventTags(id);
+    return Event.fromSqfliteDatabase(map: event, tags: tags);
+  }
+
+  Future<void> createEventsTagsTable(Database database) async {
+    await database.execute("""
+    CREATE TABLE IF NOT EXISTS $eventsTagsTableName (
+    "id" INTEGER NOT NULL,
+    "tag" TEXT NOT NULL,
+    PRIMARY KEY ("id", "tag"),
+    FOREIGN KEY ("id") REFERENCES $eventsTableName ("id") ON UPDATE CASCADE ON DELETE CASCADE
+    );""");
+  }
+
+  Future<int> insertEventTag(int id, String tag) async {
+    final database = await DatabaseService().database;
+    return await database.rawInsert(
+        '''INSERT INTO $eventsTagsTableName (id, tag) VALUES (?,?)''',
+        [id, tag]
+    );
+  }
+
+  Future<void> deleteEventTag(int id, String tag) async {
+    final database = await DatabaseService().database;
+    await database.rawDelete('''DELETE FROM $eventsTagsTableName WHERE id = ? AND tag = ?''', [id, tag]);
+  }
+
+  Future<void> clearEventTags(int id) async {
+    final database = await DatabaseService().database;
+    await database.rawDelete('''DELETE FROM $eventsTagsTableName WHERE id = ?''', [id]);
+  }
+
+  Future<void> deleteTagAllEvents(String tag) async {
+    final database = await DatabaseService().database;
+    await database.rawDelete('''DELETE FROM $eventsTagsTableName WHERE tag = ?''', [tag]);
+  }
+
+  Future<List<String>> fetchEventTags(int id) async {
+    final database = await DatabaseService().database;
+    final res = await database.rawQuery(
+        '''SELECT * FROM $eventsTagsTableName WHERE id=?''', [id]
     );
 
     return res.map( (row) => row['tag'] as String).toList();
