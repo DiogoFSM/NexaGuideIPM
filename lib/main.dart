@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               tags:['University']
                           );
 
-                          database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 0, dateEnd: 100, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);
+                          database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 1694563200000, dateEnd: 1694822400000, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);
                         });
                       },
                       child: Text('Test POI')

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'database/model/event.dart';
 import 'database/nexaguide_db.dart';
 
@@ -151,11 +152,16 @@ class _EventsPageState extends State<eventsPage> {
 }
 
 class EventGridItem extends StatelessWidget {
+  DateFormat format = DateFormat('dd/MM/yyyy');
   final Event event;
 
   EventGridItem(this.event);
 
   void _showEventDetailsDialog(BuildContext context) {
+    String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
+    String dateEnd = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateEnd).toLocal());
+    String dateText = dateStart == dateEnd ? dateStart : '$dateStart - $dateEnd';
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -171,15 +177,16 @@ class EventGridItem extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 8),
-                Text('Morada: ${event.location}'),
+                Text('Address: ${event.location}'),
                 SizedBox(height: 8),
-                Text('Horário: ${event.startTime} - ${event.endTime}'),
+                Text('Time: ${event.startTime} - ${event.endTime}'),
                 SizedBox(height: 8),
-                Text('Data: ${event.dateStart} - ${event.dateEnd}'),
+                //Text('Data: ${event.dateStart} - ${event.dateEnd}'),
+                Text('Date: $dateText'),
                 SizedBox(height: 8),
-                Text('Preço: ${event.price}'),
+                Text('Price: ${event.price}'),
                 SizedBox(height: 8),
-                Text('Site: ${event.website}'),
+                Text('Website: ${event.website}'),
                 SizedBox(height: 8),
                 Row(
                   children: <Widget>[
@@ -196,7 +203,7 @@ class EventGridItem extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Fechar'),
+              child: Text('Close'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -209,6 +216,10 @@ class EventGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
+    String dateEnd = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateEnd).toLocal());
+    String dateText = dateStart == dateEnd ? dateStart : '$dateStart - $dateEnd';
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -226,10 +237,10 @@ class EventGridItem extends StatelessWidget {
             ),
             SizedBox(height: 4), // Give some space between text widgets
             Text(event.location),
-            Text('${event.dateStart} - ${event.dateEnd}'),
+            Text(dateText),
             Spacer(), // Use Spacer to push the button to the bottom of the card
             ElevatedButton(
-              child: Text('Ver+'),
+              child: Text('View +'),
               onPressed: () => _showEventDetailsDialog(context),
             ),
           ],
