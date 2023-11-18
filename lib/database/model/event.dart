@@ -1,8 +1,8 @@
 class Event {
   final int id;
   final String name;
-  final String dateStart;
-  final String dateEnd;
+  final int dateStart;
+  final int dateEnd;
   final int poiID;
   final List<String> tags;
   final String location;
@@ -33,8 +33,8 @@ class Event {
     location: map['location'] ?? '',
     startTime: map['startTime'] ?? '',
     endTime: map['endTime'] ?? '',
-    dateStart: map['dateStart']?? '',
-    dateEnd: map['dateEnd'] ?? '',
+    dateStart: map['dateStart']?? 0,
+    dateEnd: map['dateEnd'] ?? 0,
     poiID: map['poiID']?.toInt() ?? -1,
     tags: tags ?? [],
     website: map['website'] ?? '',

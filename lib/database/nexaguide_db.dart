@@ -315,7 +315,7 @@ class NexaGuideDB {
 
   // TODO: Search events based on multiple filters
 
-  Future<int> createEvent({required String name, required int poiID, required String dateStart, required String dateEnd, required String location, required String endTime, required startTime, String? website, int? price, String? description}) async {
+  Future<int> createEvent({required String name, required int poiID, required int dateStart, required int dateEnd, required String location, required String endTime, required startTime, String? website, int? price, String? description}) async {
     final database = await DatabaseService().database;
     return await database.rawInsert(
         '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description) VALUES (?,?,?,?,?,?,?,?,?,?)''',
