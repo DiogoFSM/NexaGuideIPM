@@ -18,7 +18,7 @@ class SearchResultsPage extends StatefulWidget {
 }
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
-  static int locationsPerPage = 4;
+  static int locationsPerPage = 6;
   late MapWidget map;
   final PageController _pageController = PageController();
   int _currentPage = 0;
@@ -135,7 +135,7 @@ class POIGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10.0),
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(10.0),
       width: 300.0,
       height: 224.0,
       decoration: BoxDecoration(

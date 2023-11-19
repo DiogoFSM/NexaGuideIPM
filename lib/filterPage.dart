@@ -118,11 +118,11 @@ class _FilterPageState extends State<FilterPage> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.filter_list),
+      icon: const Icon(Icons.tune_rounded),
       onPressed: () {
         showFilters();
       },
-      iconSize: 36,
+      iconSize: 28,
     );
   }
 }
