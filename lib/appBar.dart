@@ -189,6 +189,7 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                 ),
               ),
 
+              /*
               Flexible(
                 flex: 1,
                 child: IconButton(
@@ -204,7 +205,12 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                   iconSize: 28,
                 ),
               ),
+               */
 
+              Flexible(
+                flex: 1,
+                child: FilterPage()
+              ),
 
               Flexible(
                 flex: 1,
