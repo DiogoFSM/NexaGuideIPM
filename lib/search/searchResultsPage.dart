@@ -18,12 +18,12 @@ class SearchResultsPage extends StatefulWidget {
 }
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
-  static int locationsPerPage = 6;
+  static int locationsPerPage = 4;
   late MapWidget map;
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  POI p = POI(id: 1, name: 'FCT NOVA', lat: 38.66098, lng: -9.20443, tags: ['University'], description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia") ; // TODO: Delete later
+  POI p = POI(id: 1, name: 'FCT NOVA', lat: 38.66098, lng: -9.20443, tags: ['University'], cityName:'Almada', description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia") ; // TODO: Just for testing, Delete later
   List<POI> locations = [];
 
   @override
@@ -53,7 +53,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           NexaGuideAppBar(mapController: map.mapController),
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(12),
+              padding: EdgeInsets.all(8),
               child: Column(
                 children: [
                   Expanded(
@@ -130,9 +130,10 @@ class POIGridItem extends StatelessWidget {
   final POI poi;
   POIGridItem({super.key, required this.poi});
 
-
   @override
   Widget build(BuildContext context) {
+    String poiPrice = (poi.price != null && poi.price! > 0) ? "${poi.price!} €" : "Free";
+
     return Container(
       margin: const EdgeInsets.all(10.0),
       padding: const EdgeInsets.all(10.0),
@@ -185,7 +186,7 @@ class POIGridItem extends StatelessWidget {
                             Expanded(
                               flex: 3,
                               child: Text(
-                                poi.description!,
+                                "City:  ${poi.cityName}\nPrice:  $poiPrice",
                                 textAlign: TextAlign.justify,
                                 style: const TextStyle(
                                   inherit: false,

@@ -103,7 +103,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               lng: -9.20443,
                               website: 'https://www.fct.unl.pt/',
                               description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia",
-                              tags:['University']
+                              tags:['University'],
+                              cityID: 3595
                           );
 
                           database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 1694563200000, dateEnd: 1694822400000, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);

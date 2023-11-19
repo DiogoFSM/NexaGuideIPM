@@ -199,7 +199,10 @@ class NexaGuideDB {
   Future<POI> fetchPOIById(int id) async {
     final database = await DatabaseService().database;
     final poi = await database.rawQuery(
-        '''SELECT * FROM $poiTableName WHERE id=?''', [id]
+        '''SELECT $poiTableName.*, $citiesTableName.name as cityName FROM $poiTableName 
+        INNER JOIN $citiesTableName ON cityID = $citiesTableName.id
+        WHERE $poiTableName.id=?''',
+        [id]
     );
     final tags = await fetchPOITags(id);
     return POI.fromSqfliteDatabase(map: poi.first, tags: tags);
@@ -208,7 +211,10 @@ class NexaGuideDB {
   Future<List<POI>> fetchPOIByCity(int cityID) async {
     final database = await DatabaseService().database;
     final poi = await database.rawQuery(
-        '''SELECT * FROM $poiTableName WHERE cityID=?''', [cityID]
+        '''SELECT $poiTableName.*, $citiesTableName.name as cityName FROM $poiTableName 
+        INNER JOIN $citiesTableName ON cityID = $citiesTableName.id
+        WHERE $citiesTableName.cityID=?''',
+        [cityID]
     );
 
     List<POI> result = [];
@@ -224,9 +230,10 @@ class NexaGuideDB {
   Future<List<POI>> fetchPOIByCoordinates(double latMin, double latMax, double lngMin, double lngMax) async {
     final database = await DatabaseService().database;
     final poi = await database.rawQuery(
-        '''SELECT * FROM $poiTableName 
-        WHERE lat between ? and ?
-        AND lng between ? and ? ''',
+        '''SELECT $poiTableName.*, $citiesTableName.name as cityName FROM $poiTableName 
+        INNER JOIN $citiesTableName ON cityID = $citiesTableName.id
+        WHERE $poiTableName.lat between ? and ?
+        AND $poiTableName.lng between ? and ? ''',
         [latMin, latMax, lngMin, lngMax]
     );
     List<POI> result = [];

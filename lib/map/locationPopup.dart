@@ -91,7 +91,8 @@ class _LocationPopupState extends State<LocationPopup> {
                       Expanded(
                         flex: 3,
                         child: Text(
-                          widget.location.description!,
+                          "${widget.location.cityName}\n\n ${widget.location.description}",
+                          //widget.location.description!,
                           textAlign: TextAlign.justify,
                           style: const TextStyle(
                             inherit: false,
@@ -100,7 +101,7 @@ class _LocationPopupState extends State<LocationPopup> {
                             fontSize: 15,
                           ),
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 4,
+                          maxLines: 5,
                         ),
                       ),
 
