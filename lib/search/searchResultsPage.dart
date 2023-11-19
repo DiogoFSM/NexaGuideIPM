@@ -193,7 +193,6 @@ class POIGridItem extends StatelessWidget {
                                 flex: 3,
                                 child: Text(
                                   "City:  ${poi.cityName}\nPrice:  $poiPrice",
-                                  textAlign: TextAlign.justify,
                                   style: const TextStyle(
                                     inherit: false,
                                     color: Colors.black,

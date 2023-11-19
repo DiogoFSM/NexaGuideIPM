@@ -45,6 +45,7 @@ class LocationSinglePage extends StatelessWidget {
           ],
         ),
         body: SingleChildScrollView(
+          padding: const EdgeInsets.all(14),
           child: Column(
             children: [
               DetailsSection(location: location),
@@ -77,7 +78,54 @@ class DetailsSection extends StatelessWidget {
     String priceText = (location.price != null) ? (location.price! > 0 ? "${location.price!} €" : "Free") : '???';
 
     return Container(
-      padding: EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(location.name, style: GillMT.normal(18),),
+          const Divider(color: Colors.black87, thickness: 1),
+
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("• City:  ${location.cityName ?? '???'}", style: GillMT.normal(18),),
+                    Text("• Address:  ${location.address ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
+                    Text("• Ticket price:  $priceText" , style: GillMT.normal(18).copyWith(height: 1.3),),
+                    Linkify(
+                      onOpen: (link) async {
+                        Uri uri = Uri.parse(link.url);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        } else {
+                          throw 'Could not launch $link';
+                        }
+                      },
+                      text: "• Website:  ${location.website ?? '???'}",
+                      style: GillMT.normal(18).copyWith(height: 1.3),
+                      linkStyle: TextStyle(color: Colors.blue),
+                    ),
+                    Text("Tags:  ${location.tags}" , style: GillMT.normal(18).copyWith(height: 1.3),),
+                  ],
+                ),
+              ),
+
+              Expanded(
+                flex: 1,
+                child: Text(location.name)
+              ),
+            ],
+          ),
+
+          const Divider(color: Colors.black87, thickness: 1),
+
+          Text(location.description ?? '(No description available)' , style: GillMT.normal(18).copyWith(height: 1.3), textAlign: TextAlign.justify,),
+        ],
+      )
+
+      /*
       child: Row(
         children: [
           Expanded(
@@ -86,12 +134,11 @@ class DetailsSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(location.name, style: GillMT.normal(18),),
-                Divider(color: Colors.black87, thickness: 1),
-                Text("City:  ${location.cityName ?? '???'}", style: GillMT.normal(18).copyWith(height: 1.3),),
-                Text("Address:  ${location.address ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
-                Text("Ticket price:  $priceText" , style: GillMT.normal(18).copyWith(height: 1.3),),
-                //Text("Website:  ${location.website ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
+                const Divider(color: Colors.black87, thickness: 1),
 
+                Text("• City:  ${location.cityName ?? '???'}", style: GillMT.normal(18),),
+                Text("• Address:  ${location.address ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
+                Text("• Ticket price:  $priceText" , style: GillMT.normal(18).copyWith(height: 1.3),),
                 Linkify(
                   onOpen: (link) async {
                     Uri uri = Uri.parse(link.url);
@@ -101,10 +148,14 @@ class DetailsSection extends StatelessWidget {
                       throw 'Could not launch $link';
                     }
                   },
-                  text: "Website:  ${location.website ?? '???'}",
+                  text: "• Website:  ${location.website ?? '???'}",
                   style: GillMT.normal(18).copyWith(height: 1.3),
                   linkStyle: TextStyle(color: Colors.blue),
                 ),
+                Text("Tags:  ${location.tags}" , style: GillMT.normal(18).copyWith(height: 1.3),),
+                const Divider(color: Colors.black87, thickness: 1),
+
+                Text(location.description ?? '(No description available)' , style: GillMT.normal(18).copyWith(height: 1.3), textAlign: TextAlign.justify,),
               ],
             )
           ),
@@ -119,6 +170,8 @@ class DetailsSection extends StatelessWidget {
           ),
         ],
       ),
+      */
+
     );
   }
 

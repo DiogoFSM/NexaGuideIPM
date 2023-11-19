@@ -187,17 +187,17 @@ class EventGridItem extends StatelessWidget {
                   color: Colors.black26,
                   thickness: 2,
                 ),
-                Text('Location:  ${event.location}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
-                // TODO: Meter o sitio (POI) onde o evento decorre
+                Text('• Location:  ${event.location}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                // TODO: Talvez meter o sitio (POI) onde o evento decorre??
                 SizedBox(height: 8),
-                Text('Time:  ${event.startTime} - ${event.endTime}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                Text('• Time:  ${event.startTime} - ${event.endTime}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
                 //Text('Data: ${event.dateStart} - ${event.dateEnd}'),
-                Text('Date:  $dateText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                Text('• Date:  $dateText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
-                Text('Price:  $priceText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                Text('• Price:  $priceText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
-                Text('Website:  ${event.website}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                Text('• Website:  ${event.website}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
                 Row(
                   children: <Widget>[
@@ -211,6 +211,7 @@ class EventGridItem extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 8),
+                // TODO: Adicionar tags
                 Text('${event.description}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)), // Replace with actual description
               ],
             ),
