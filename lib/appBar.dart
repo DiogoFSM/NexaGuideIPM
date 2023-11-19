@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:nexaguide_ipm/search/searchResultsPage.dart';
 import 'database/model/city.dart';
 import 'database/nexaguide_db.dart';
+import 'filterPage.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 
@@ -190,12 +191,18 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                 flex: 1,
                 child: IconButton(
                   onPressed: () {
-
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return FilterPage();
+                      },
+                    );
                   },
                   icon: Icon(Icons.tune_rounded),
                   iconSize: 28,
                 ),
               ),
+
 
               Flexible(
                 flex: 1,
