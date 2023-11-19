@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:nexaguide_ipm/Review/Review.dart';
 import 'package:nexaguide_ipm/database/database_service.dart';
 import 'package:nexaguide_ipm/map/map.dart';
 import 'package:sqflite/sqflite.dart';
@@ -80,6 +81,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+
+  void _navigateToReviewsPage() async {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ReviewPage(placeName: "placeName", userName: "userName", userPhotoUrl:" userPhotoUrl")),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +121,19 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text('Test POI')
                   ),
                 ),
-
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            _navigateToReviewsPage();                          },
+                          child: Text('Review Page')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
                 Flexible(
                   child: FutureBuilder<List<Event>> (
                     future: _getPOIEvents(1),
@@ -180,6 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
+
               ],
             )
           ]

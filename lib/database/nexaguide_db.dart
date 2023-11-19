@@ -37,30 +37,30 @@ class NexaGuideDB {
         );
       }
 
-      try{
+      try {
         await b.commit(continueOnError: true, noResult: true);
-        print("Cities table successfully initialized." );
-      }catch(e){
+        print("Cities table successfully initialized.");
+      } catch (e) {
         print("Error initializing cities ==> ${e.toString()}");
       }
     });
-
   }
 
-  Future<int> createCity({required String name, required String country, int? population, required double lat, required double lng}) async {
+  Future<int> createCity(
+      {required String name, required String country, int? population, required double lat, required double lng}) async {
     final database = await DatabaseService().database;
     return await database.rawInsert(
-      '''INSERT INTO $citiesTableName (name, country, population, lat, lng) VALUES (?,?,?,?,?)''',
-      [name, country, population, lat, lng]
+        '''INSERT INTO $citiesTableName (name, country, population, lat, lng) VALUES (?,?,?,?,?)''',
+        [name, country, population, lat, lng]
     );
   }
 
   Future<List<City>> fetchAllCities() async {
     final database = await DatabaseService().database;
     final cities = await database.rawQuery(
-      '''SELECT * FROM $citiesTableName ORDER BY id ASC'''
+        '''SELECT * FROM $citiesTableName ORDER BY id ASC'''
     );
-    return cities.map( (city) => City.fromSqfliteDatabase(city)).toList();
+    return cities.map((city) => City.fromSqfliteDatabase(city)).toList();
   }
 
   Future<City> fetchCityById(int id) async {
@@ -71,26 +71,28 @@ class NexaGuideDB {
     return City.fromSqfliteDatabase(city.first);
   }
 
-  Future<int> updateCity({required int id, String? name, String? country, int? population, double? lat, double? lng}) async {
+  Future<int> updateCity(
+      {required int id, String? name, String? country, int? population, double? lat, double? lng}) async {
     final database = await DatabaseService().database;
     return await database.update(
-      citiesTableName,
-      {
-        if (name != null) 'name': name,
-        if (country != null) 'country': country,
-        if (population != null) 'population': population,
-        if (lat != null) 'lat': lat,
-        if (lng != null) 'lng': lng,
-      },
-      where: 'id = ?',
-      conflictAlgorithm: ConflictAlgorithm.rollback,
-      whereArgs: [id]
+        citiesTableName,
+        {
+          if (name != null) 'name': name,
+          if (country != null) 'country': country,
+          if (population != null) 'population': population,
+          if (lat != null) 'lat': lat,
+          if (lng != null) 'lng': lng,
+        },
+        where: 'id = ?',
+        conflictAlgorithm: ConflictAlgorithm.rollback,
+        whereArgs: [id]
     );
   }
 
   Future<void> deleteCity(int id) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $citiesTableName WHERE id = ?''', [id]);
+    await database.rawDelete(
+        '''DELETE FROM $citiesTableName WHERE id = ?''', [id]);
   }
 
   Future<void> deleteAllCities() async {
@@ -107,7 +109,7 @@ class NexaGuideDB {
       whereArgs: ['%$search%'], // The argument for the WHERE clause
     );
 
-    return result.map( (city) => City.fromSqfliteDatabase(city)).toList();
+    return result.map((city) => City.fromSqfliteDatabase(city)).toList();
   }
 
   /// POIs
@@ -132,7 +134,8 @@ class NexaGuideDB {
     );""");
   }
 
-  Future<int> createPOI({required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, String? description}) async {
+  Future<int> createPOI(
+      {required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, String? description}) async {
     final database = await DatabaseService().database;
     return await database.rawInsert(
         '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID, description) VALUES (?,?,?,?,?,?,?,?)''',
@@ -140,38 +143,41 @@ class NexaGuideDB {
     );
   }
 
-  Future<int> createPOIWithTags({required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, String? description, required List<String> tags}) async {
+  Future<int> createPOIWithTags(
+      {required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, String? description, required List<
+          String> tags}) async {
     final database = await DatabaseService().database;
     int id = -1;
     await database.transaction((txn) async {
       var b = txn.batch();
-        id = await txn.rawInsert(
-            '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID, description) VALUES (?,?,?,?,?,?,?,?)''',
-            [name, lat, lng, address, website, price, cityID, description]
-        );
+      id = await txn.rawInsert(
+          '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID, description) VALUES (?,?,?,?,?,?,?,?)''',
+          [name, lat, lng, address, website, price, cityID, description]
+      );
 
-        if (id >= 0) {
-          for (var t in tags) {
-            b.rawInsert('''INSERT INTO $poiTagsTableName (id, tag) VALUES (?,?)''',
-            [id, t]);
-          }
+      if (id >= 0) {
+        for (var t in tags) {
+          b.rawInsert(
+              '''INSERT INTO $poiTagsTableName (id, tag) VALUES (?,?)''',
+              [id, t]);
         }
-        else {
-          print("Insertion failed!");
-        }
-        try{
-          await b.commit(continueOnError: true, noResult: true);
-          print("POI with tags successfully created." );
-        }catch(e){
-          print("Error commiting batch ==> ${e.toString()}");
-        }
-
+      }
+      else {
+        print("Insertion failed!");
+      }
+      try {
+        await b.commit(continueOnError: true, noResult: true);
+        print("POI with tags successfully created.");
+      } catch (e) {
+        print("Error commiting batch ==> ${e.toString()}");
+      }
     });
 
     return id;
   }
 
-  Future<int> updatePOI({required int id, String? name, double? lat, double? lng, String? address, String? website, int? price, int? cityID, String? description}) async {
+  Future<int> updatePOI(
+      {required int id, String? name, double? lat, double? lng, String? address, String? website, int? price, int? cityID, String? description}) async {
     final database = await DatabaseService().database;
     return await database.update(
         poiTableName,
@@ -193,7 +199,8 @@ class NexaGuideDB {
 
   Future<void> deletePOI(int id) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $poiTableName WHERE id = ?''', [id]);
+    await database.rawDelete(
+        '''DELETE FROM $poiTableName WHERE id = ?''', [id]);
   }
 
   Future<POI> fetchPOIById(int id) async {
@@ -221,7 +228,8 @@ class NexaGuideDB {
     //return poi.map( (p) => POI.fromSqfliteDatabase(map: p)).toList();
   }
 
-  Future<List<POI>> fetchPOIByCoordinates(double latMin, double latMax, double lngMin, double lngMax) async {
+  Future<List<POI>> fetchPOIByCoordinates(double latMin, double latMax,
+      double lngMin, double lngMax) async {
     final database = await DatabaseService().database;
     final poi = await database.rawQuery(
         '''SELECT * FROM $poiTableName 
@@ -265,17 +273,21 @@ class NexaGuideDB {
 
   Future<void> deletePOITag(int id, String tag) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $poiTagsTableName WHERE id = ? AND tag = ?''', [id, tag]);
+    await database.rawDelete(
+        '''DELETE FROM $poiTagsTableName WHERE id = ? AND tag = ?''',
+        [id, tag]);
   }
 
   Future<void> clearPOITags(int id) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $poiTagsTableName WHERE id = ?''', [id]);
+    await database.rawDelete(
+        '''DELETE FROM $poiTagsTableName WHERE id = ?''', [id]);
   }
 
   Future<void> deleteTagAllPOI(String tag) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $poiTagsTableName WHERE tag = ?''', [tag]);
+    await database.rawDelete(
+        '''DELETE FROM $poiTagsTableName WHERE tag = ?''', [tag]);
   }
 
   Future<List<String>> fetchPOITags(int id) async {
@@ -284,7 +296,7 @@ class NexaGuideDB {
         '''SELECT * FROM $poiTagsTableName WHERE id=?''', [id]
     );
 
-    return res.map( (row) => row['tag'] as String).toList();
+    return res.map((row) => row['tag'] as String).toList();
   }
 
   /// EVENTS
@@ -313,46 +325,72 @@ class NexaGuideDB {
 
   // TODO: Search events based on multiple filters
 
-  Future<int> createEvent({required String name, required int poiID, required int dateStart, required int dateEnd, required String location, required String endTime, required startTime, String? website, int? price, String? description}) async {
+  Future<int> createEvent(
+      {required String name, required int poiID, required int dateStart, required int dateEnd, required String location, required String endTime, required startTime, String? website, int? price, String? description}) async {
     final database = await DatabaseService().database;
     return await database.rawInsert(
         '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description) VALUES (?,?,?,?,?,?,?,?,?,?)''',
-        [name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description]
+        [
+          name,
+          dateStart,
+          dateEnd,
+          location,
+          startTime,
+          endTime,
+          website,
+          price,
+          poiID,
+          description
+        ]
     );
   }
 
-  Future<int> createEventWithTags({required String name, required int poiID, required int dateStart, required int dateEnd, required String location, required String endTime, required startTime, String? website, int? price, String? description, required List<String> tags}) async {
+  Future<int> createEventWithTags(
+      {required String name, required int poiID, required int dateStart, required int dateEnd, required String location, required String endTime, required startTime, String? website, int? price, String? description, required List<
+          String> tags}) async {
     final database = await DatabaseService().database;
     int id = -1;
     await database.transaction((txn) async {
       var b = txn.batch();
       id = await txn.rawInsert(
           '''INSERT INTO $eventsTableName (name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description) VALUES (?,?,?,?,?,?,?,?,?,?)''',
-          [name, dateStart, dateEnd, location, startTime, endTime, website, price, poiID, description]
+          [
+            name,
+            dateStart,
+            dateEnd,
+            location,
+            startTime,
+            endTime,
+            website,
+            price,
+            poiID,
+            description
+          ]
       );
 
       if (id >= 0) {
         for (var t in tags) {
-          b.rawInsert('''INSERT INTO $eventsTagsTableName (id, tag) VALUES (?,?)''',
+          b.rawInsert(
+              '''INSERT INTO $eventsTagsTableName (id, tag) VALUES (?,?)''',
               [id, t]);
         }
       }
       else {
         print("Insertion failed!");
       }
-      try{
+      try {
         await b.commit(continueOnError: true, noResult: true);
-        print("Event with tags successfully created." );
-      }catch(e){
+        print("Event with tags successfully created.");
+      } catch (e) {
         print("Error commiting batch ==> ${e.toString()}");
       }
-
     });
 
     return id;
   }
 
-  Future<int> updateEvent({required int id, String? name, int? dateStart, int? dateEnd, String? website, int? price, int? poiID, String? description}) async {
+  Future<int> updateEvent(
+      {required int id, String? name, int? dateStart, int? dateEnd, String? website, int? price, int? poiID, String? description}) async {
     final database = await DatabaseService().database;
     return await database.update(
         poiTableName,
@@ -373,7 +411,8 @@ class NexaGuideDB {
 
   Future<void> deleteEvent(int id) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $eventsTableName WHERE id = ?''', [id]);
+    await database.rawDelete(
+        '''DELETE FROM $eventsTableName WHERE id = ?''', [id]);
   }
 
   Future<Event> fetchEventById(int id) async {
@@ -411,6 +450,7 @@ class NexaGuideDB {
     }
     return result;
   }
+
   /*
   // TODO
   Future<List<Event>> fetchEventsByCoordinates(double latMin, double latMax, double lngMin, double lngMax) async {
@@ -458,17 +498,21 @@ class NexaGuideDB {
 
   Future<void> deleteEventTag(int id, String tag) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $eventsTagsTableName WHERE id = ? AND tag = ?''', [id, tag]);
+    await database.rawDelete(
+        '''DELETE FROM $eventsTagsTableName WHERE id = ? AND tag = ?''',
+        [id, tag]);
   }
 
   Future<void> clearEventTags(int id) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $eventsTagsTableName WHERE id = ?''', [id]);
+    await database.rawDelete(
+        '''DELETE FROM $eventsTagsTableName WHERE id = ?''', [id]);
   }
 
   Future<void> deleteTagAllEvents(String tag) async {
     final database = await DatabaseService().database;
-    await database.rawDelete('''DELETE FROM $eventsTagsTableName WHERE tag = ?''', [tag]);
+    await database.rawDelete(
+        '''DELETE FROM $eventsTagsTableName WHERE tag = ?''', [tag]);
   }
 
   Future<List<String>> fetchEventTags(int id) async {
@@ -477,7 +521,64 @@ class NexaGuideDB {
         '''SELECT * FROM $eventsTagsTableName WHERE id=?''', [id]
     );
 
-    return res.map( (row) => row['tag'] as String).toList();
+    return res.map((row) => row['tag'] as String).toList();
   }
+
+  ///REVIEWS
+  final String reviewsTableName = "review";
+
+  Future<void> createReviewsTable(Database database) async {
+    await database.execute("""
+  CREATE TABLE IF NOT EXISTS $reviewsTableName (
+  "username" TEXT NOT NULL,
+  "placeName" TEXT NOT NULL,
+  "rating" REAL NOT NULL,
+  "reviewText" TEXT,
+  "images" TEXT, 
+  PRIMARY KEY ("username", "placeName")
+  );""");
+  }
+
+  Future<int> insertReview({required String username, required String placeName,
+    required double rating, String? reviewText, List<String>? images}) async {
+    final database = await DatabaseService().database;
+    if (database == null) {
+    print("nullDB");
+  }
+    String imagePaths = images?.join(',') ?? '';
+    return await database.rawInsert(
+        '''INSERT INTO $reviewsTableName (username, placeName, rating, reviewText, images) VALUES (?,?,?,?,?)''',
+        [username, placeName, rating, reviewText, imagePaths]
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchReviewsByUserAndPlace(String username, String placeName) async {
+    final database = await DatabaseService().database;
+    return await database.rawQuery(
+        '''SELECT * FROM $reviewsTableName WHERE username=? AND placeName=?''',
+        [username, placeName]
+    );
+  }
+
+  Future<int> updateReview({required String username, required String placeName, double? rating, String? reviewText, List<String>? images}) async {
+    final database = await DatabaseService().database;
+    String imagePaths = images?.join(',') ?? '';
+    return await database.update(
+        reviewsTableName,
+        {
+          if (rating != null) 'rating': rating,
+          if (reviewText != null) 'reviewText': reviewText,
+          if (images != null) 'images': imagePaths
+        },
+        where: 'username = ? AND placeName = ?',
+        whereArgs: [username, placeName]
+    );
+  }
+
+  Future<void> deleteReview(String username, String placeName) async {
+    final database = await DatabaseService().database;
+    await database.rawDelete('''DELETE FROM $reviewsTableName WHERE username = ? AND placeName = ?''', [username, placeName]);
+  }
+
 
 }
