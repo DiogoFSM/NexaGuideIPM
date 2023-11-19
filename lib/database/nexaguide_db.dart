@@ -229,13 +229,11 @@ class NexaGuideDB {
         AND lng between ? and ? ''',
         [latMin, latMax, lngMin, lngMax]
     );
-
     List<POI> result = [];
     for (var p in poi) {
       POI poi = await buildPOIWithTags(p);
       result.add(poi);
     }
-
     return result;
   }
 

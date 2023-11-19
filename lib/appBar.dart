@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nexaguide_ipm/search/searchResultsPage.dart';
 import 'database/model/city.dart';
+import 'database/model/poi.dart';
 import 'database/nexaguide_db.dart';
 import 'filterPage.dart';
 
@@ -161,6 +162,7 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                     //suffixIcon: Icon(Icons.search),
                     suffixIcon: IconButton(
                       onPressed: () {
+                        List<POI> l = [];
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
                           initLat: widget.mapController.camera.center.latitude,
                           initLng: widget.mapController.camera.center.longitude,
