@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../database/model/poi.dart';
+import '../text_styles/TextStyleGillMT.dart';
 
 class LocationSinglePage extends StatelessWidget {
   final POI location;
@@ -42,10 +43,7 @@ class LocationSinglePage extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Section(
-                title: 'Section 1',
-                content: 'This is the content of section 1.',
-              ),
+              DetailsSection(location: location),
               Divider(),
               Section(
                 title: 'Section 2',
@@ -65,14 +63,52 @@ class LocationSinglePage extends StatelessWidget {
   }
 }
 
+class DetailsSection extends StatelessWidget {
+  final POI location;
+
+  const DetailsSection({super.key, required this.location});
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(location.name, style: GillMT.normal(16),),
+                Text("Address: ${location.address ?? '(Unknown)'}" , style: GillMT.normal(16),),
+                Text(location.name, style: GillMT.normal(16),),
+              ],
+            )
+          ),
+
+          Expanded(
+            flex: 1,
+            child: Column(
+              children: [
+                Text(location.name),
+              ],
+            )
+          ),
+        ],
+      ),
+    );
+  }
+
+}
+
+
 class Section extends StatelessWidget {
   final String title;
   final String content;
 
   const Section({Key? key, required this.title, required this.content})
       : super(key: key);
-
-
 
   @override
   Widget build(BuildContext context) {
