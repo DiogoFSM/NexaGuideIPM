@@ -82,7 +82,7 @@ class DetailsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(location.name, style: GillMT.normal(18),),
-          const Divider(color: Colors.black87, thickness: 1),
+          const Divider(color: Colors.black87, thickness: 0.2),
 
           Row(
             children: [
@@ -91,7 +91,9 @@ class DetailsSection extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("• City:  ${location.cityName ?? '???'}", style: GillMT.normal(18),),
+                    // TODO: Melhorar as tags
+                    Text("Tags:  ${location.tags}" , style: GillMT.normal(18),),
+                    Text("• City:  ${location.cityName ?? '???'}", style: GillMT.normal(18).copyWith(height: 1.3),),
                     Text("• Address:  ${location.address ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
                     Text("• Ticket price:  $priceText" , style: GillMT.normal(18).copyWith(height: 1.3),),
                     Linkify(
@@ -107,19 +109,60 @@ class DetailsSection extends StatelessWidget {
                       style: GillMT.normal(18).copyWith(height: 1.3),
                       linkStyle: TextStyle(color: Colors.blue),
                     ),
-                    Text("Tags:  ${location.tags}" , style: GillMT.normal(18).copyWith(height: 1.3),),
                   ],
                 ),
               ),
 
               Expanded(
                 flex: 1,
-                child: Text(location.name)
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+
+                          },
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+
+                              Icon(Icons.star_border_rounded, color: Colors.black,),
+                              // TODO: Replace with reviews average and count
+                              Flexible(
+                                child: Text("4.5 (543)" , style: GillMT.normal(15).copyWith(color: Colors.black),)
+                              )
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+
+                          },
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, padding: EdgeInsets.all(2)),
+                          child: Text("Write Review" , style: GillMT.normal(15).copyWith(color: Colors.black),),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
 
-          const Divider(color: Colors.black87, thickness: 1),
+          const Divider(color: Colors.black87, thickness: 0.2),
 
           Text(location.description ?? '(No description available)' , style: GillMT.normal(18).copyWith(height: 1.3), textAlign: TextAlign.justify,),
         ],
