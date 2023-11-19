@@ -40,30 +40,35 @@ class _EventsPageState extends State<eventsPage> {
         appBar: AppBar(
           title: Row(
             children: [
-              IconButton(
-                icon: Icon(Icons.filter_list),
-                onPressed: () {
-                  showFiltersDialog(context);
-                },
-              ),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white70,
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Search Events',
+                      hintText: 'Search Events...',
                       border: InputBorder.none,
                     ),
+                    style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)
                     // onChanged or onSubmitted for handling input
                   ),
                 ),
               ),
+
               IconButton(
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.tune_rounded),
+                iconSize: 28,
+                onPressed: () {
+                  showFiltersDialog(context);
+                },
+              ),
+
+              IconButton(
+                icon: Icon(Icons.account_circle),
+                iconSize: 28,
                 onPressed: () {
                   // Handle profile action
                 },
@@ -114,7 +119,7 @@ class _EventsPageState extends State<eventsPage> {
               width: 10,
               height: 10,
               decoration: BoxDecoration(
-                color: _currentPage == index ? Colors.blue : Colors.grey,
+                color: _currentPage == index ? Colors.orange : Colors.grey,
                 shape: BoxShape.circle,
               ),
             ),
@@ -161,6 +166,7 @@ class EventGridItem extends StatelessWidget {
     String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
     String dateEnd = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateEnd).toLocal());
     String dateText = dateStart == dateEnd ? dateStart : '$dateStart - $dateEnd';
+    String priceText = (event.price != null && event.price! > 0) ? "${event.price!} €" : "Free";
 
     showDialog(
       context: context,
@@ -174,30 +180,38 @@ class EventGridItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'GillSansMT'
                   ),
                 ),
+                const Divider(
+                  color: Colors.black26,
+                  thickness: 2,
+                ),
+                Text('Location:  ${event.location}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                // TODO: Meter o sitio (POI) onde o evento decorre
                 SizedBox(height: 8),
-                Text('Address: ${event.location}'),
-                SizedBox(height: 8),
-                Text('Time: ${event.startTime} - ${event.endTime}'),
+                Text('Time:  ${event.startTime} - ${event.endTime}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
                 //Text('Data: ${event.dateStart} - ${event.dateEnd}'),
-                Text('Date: $dateText'),
+                Text('Date:  $dateText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
-                Text('Price: ${event.price}'),
+                Text('Price:  $priceText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
-                Text('Website: ${event.website}'),
+                Text('Website:  ${event.website}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
                 Row(
                   children: <Widget>[
-                    Icon(Icons.location_on, color: Colors.blue),
-                    Icon(Icons.favorite_border, color: Colors.blue),
-                    Icon(Icons.star_border, color: Colors.blue),
+                    // TODO: Trocar para iconButton
+                    Icon(Icons.pin_drop_rounded, color: Colors.orange, size: 36),
+                    SizedBox(width: 15),
+                    Icon(Icons.bookmark_add_outlined, color: Colors.orange, size: 36),
+                    SizedBox(width: 15),
+                    Icon(Icons.star_outline_rounded, color: Colors.orange, size: 36),
                     // Add more icons as needed
                   ],
                 ),
                 SizedBox(height: 8),
-                Text('${event.description}'), // Replace with actual description
+                Text('${event.description}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)), // Replace with actual description
               ],
             ),
           ),
@@ -219,31 +233,61 @@ class EventGridItem extends StatelessWidget {
     String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
     String dateEnd = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateEnd).toLocal());
     String dateText = dateStart == dateEnd ? dateStart : '$dateStart - $dateEnd';
+    String priceText = (event.price != null && event.price! > 0) ? "${event.price!} €" : "Free";
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              event.name,
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
+    return Container(
+      margin: const EdgeInsets.all(4.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Flexible(
+                flex: 1,
+                child: Text(
+                  event.name,
+                  style: TextStyle(
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'GillSansMT',
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            SizedBox(height: 4), // Give some space between text widgets
-            Text(event.location),
-            Text(dateText),
-            Spacer(), // Use Spacer to push the button to the bottom of the card
-            ElevatedButton(
-              child: Text('View +'),
-              onPressed: () => _showEventDetailsDialog(context),
-            ),
-          ],
+
+              const Divider(
+                color: Colors.black26,
+                thickness: 2,
+              ),
+
+              //SizedBox(height: 4), // Give some space between text widgets
+              Expanded(
+                flex: 3,
+                child: Text(
+                  "${event.location}\n$dateText\nPrice:  $priceText",
+                    style: TextStyle(fontFamily: 'GillSansMT', fontSize: 15)
+                )
+              ),
+
+              //Text(event.location),
+              //Text(dateText),
+              //Spacer(), // Use Spacer to push the button to the bottom of the card
+              Flexible(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      child: Text('View +', style: TextStyle(fontFamily: 'GillSansMT')),
+                      onPressed: () => _showEventDetailsDialog(context),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
