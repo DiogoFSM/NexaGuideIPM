@@ -44,14 +44,15 @@ class _EventsPageState extends State<eventsPage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white70,
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Search Events',
+                      hintText: 'Search Events...',
                       border: InputBorder.none,
                     ),
+                    style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)
                     // onChanged or onSubmitted for handling input
                   ),
                 ),
@@ -179,23 +180,24 @@ class EventGridItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'GillSansMT'
                   ),
                 ),
                 const Divider(
                   color: Colors.black26,
                   thickness: 2,
                 ),
-                Text('Location: ${event.location}'),
+                Text('Location:  ${event.location}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 // TODO: Meter o sitio (POI) onde o evento decorre
                 SizedBox(height: 8),
-                Text('Time: ${event.startTime} - ${event.endTime}'),
+                Text('Time:  ${event.startTime} - ${event.endTime}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
                 //Text('Data: ${event.dateStart} - ${event.dateEnd}'),
-                Text('Date: $dateText'),
+                Text('Date:  $dateText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
-                Text('Price: $priceText'),
+                Text('Price:  $priceText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
-                Text('Website: ${event.website}'),
+                Text('Website:  ${event.website}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
                 SizedBox(height: 8),
                 Row(
                   children: <Widget>[
@@ -209,7 +211,7 @@ class EventGridItem extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 8),
-                Text('${event.description}'), // Replace with actual description
+                Text('${event.description}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)), // Replace with actual description
               ],
             ),
           ),
@@ -246,8 +248,9 @@ class EventGridItem extends StatelessWidget {
                 child: Text(
                   event.name,
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 17.0,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'GillSansMT',
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -263,7 +266,8 @@ class EventGridItem extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: Text(
-                  "${event.location}\n$dateText\nPrice: $priceText"
+                  "${event.location}\n$dateText\nPrice:  $priceText",
+                    style: TextStyle(fontFamily: 'GillSansMT', fontSize: 15)
                 )
               ),
 
@@ -276,7 +280,7 @@ class EventGridItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      child: Text('View +'),
+                      child: Text('View +', style: TextStyle(fontFamily: 'GillSansMT')),
                       onPressed: () => _showEventDetailsDialog(context),
                     ),
                   ],
