@@ -45,7 +45,7 @@ class _EventsPageState extends State<eventsPage> {
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextField(
                     decoration: InputDecoration(
