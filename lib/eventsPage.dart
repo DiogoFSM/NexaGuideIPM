@@ -152,7 +152,7 @@ class _EventsPageState extends State<eventsPage> {
 }
 
 class EventGridItem extends StatelessWidget {
-  DateFormat format = DateFormat('dd/MM/yyyy');
+  final DateFormat format = DateFormat('dd/MM/yyyy');
   final Event event;
 
   EventGridItem(this.event);

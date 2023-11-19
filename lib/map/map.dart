@@ -12,6 +12,7 @@ class MapWidget extends StatefulWidget {
   final double initZoom;
   final double initRotation;
   final MapController mapController = MapController();
+  static final NexaGuideDB database = NexaGuideDB();
 
   MapWidget({Key? key, required this.initLat, required this.initLng, required this.initZoom, required this.initRotation}) : super(key: key);
 
@@ -22,10 +23,17 @@ class MapWidget extends StatefulWidget {
     print("Moving to: lat: $lat; lng: $lng; zoom: $zoom");
     mapController.move(LatLng(lat, lng), zoom);
   }
+
+  Future<List<POI>> getVisiblePOIs() async {
+    List<POI> list = [];
+    var mapBounds = mapController.camera.visibleBounds;
+    list = await database.fetchPOIByCoordinates(mapBounds.south, mapBounds.north, mapBounds.west, mapBounds.east);
+    return list;
+  }
+
 }
 
 class _MapWidgetState extends State<MapWidget> {
-  NexaGuideDB database = NexaGuideDB();
   List<Marker> markers = [];
   List<POI> visiblePOIs = [];
 
@@ -39,7 +47,7 @@ class _MapWidgetState extends State<MapWidget> {
     List<POI> l = [];
     var mapBounds = widget.mapController.camera.visibleBounds;
     if (!visibleAreaTooBig()) {
-      l = await database.fetchPOIByCoordinates(mapBounds.south, mapBounds.north, mapBounds.west, mapBounds.east);
+      l = await MapWidget.database.fetchPOIByCoordinates(mapBounds.south, mapBounds.north, mapBounds.west, mapBounds.east);
     }
     visiblePOIs = l;
   }
