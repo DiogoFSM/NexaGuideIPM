@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _navigateToEventsPage() async {
-    database.createEvent(name: "Nos Alive", poiID: 1, dateStart: 0, dateEnd: 200, location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45);
+    database.createEvent(name: "Nos Alive", poiID: 1, dateStart: 0, dateEnd: 200, location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45, description: 'O melhor da musica em Portugal');
     List<Event> events = await database.fetchAllEvents();
     Navigator.push(
       context,
@@ -106,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               tags:['University'],
                               cityID: 3595
                           );
-
                           database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 1694563200000, dateEnd: 1694822400000, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);
                         });
                       },
@@ -141,28 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
-                /*
-                Flexible(
-                  child: FutureBuilder<List<POI>> (
-                    future: _getVisiblePOIs(),
-                    builder: (context, snapshot) {
-                      return snapshot.hasData ?
-                      ElevatedButton(
-                          onPressed: () {
-                            snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
-                            /*
-                            setState(() {
-                              //snapshot.data?.forEach((city) {print(city);});
-                              snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
-                            });
-                             */
-                          },
-                          child: Text('Print visible POI')
-                      ) : Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                ),
-                */
+
                 // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi list
                 // TODO We need to make sure the database is always initialized when the user opens the app for the first time
                 Flexible(

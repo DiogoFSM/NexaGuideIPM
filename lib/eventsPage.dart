@@ -40,12 +40,6 @@ class _EventsPageState extends State<eventsPage> {
         appBar: AppBar(
           title: Row(
             children: [
-              IconButton(
-                icon: Icon(Icons.filter_list),
-                onPressed: () {
-                  showFiltersDialog(context);
-                },
-              ),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8),
@@ -62,8 +56,18 @@ class _EventsPageState extends State<eventsPage> {
                   ),
                 ),
               ),
+
               IconButton(
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.tune_rounded),
+                iconSize: 28,
+                onPressed: () {
+                  showFiltersDialog(context);
+                },
+              ),
+
+              IconButton(
+                icon: Icon(Icons.account_circle),
+                iconSize: 28,
                 onPressed: () {
                   // Handle profile action
                 },
@@ -161,6 +165,7 @@ class EventGridItem extends StatelessWidget {
     String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
     String dateEnd = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateEnd).toLocal());
     String dateText = dateStart == dateEnd ? dateStart : '$dateStart - $dateEnd';
+    String priceText = (event.price != null && event.price! > 0) ? "${event.price!} €" : "Free";
 
     showDialog(
       context: context,
@@ -176,23 +181,30 @@ class EventGridItem extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 8),
-                Text('Address: ${event.location}'),
+                const Divider(
+                  color: Colors.black26,
+                  thickness: 2,
+                ),
+                Text('Location: ${event.location}'),
+                // TODO: Meter o sitio (POI) onde o evento decorre
                 SizedBox(height: 8),
                 Text('Time: ${event.startTime} - ${event.endTime}'),
                 SizedBox(height: 8),
                 //Text('Data: ${event.dateStart} - ${event.dateEnd}'),
                 Text('Date: $dateText'),
                 SizedBox(height: 8),
-                Text('Price: ${event.price}'),
+                Text('Price: $priceText'),
                 SizedBox(height: 8),
                 Text('Website: ${event.website}'),
                 SizedBox(height: 8),
                 Row(
                   children: <Widget>[
-                    Icon(Icons.location_on, color: Colors.blue),
-                    Icon(Icons.favorite_border, color: Colors.blue),
-                    Icon(Icons.star_border, color: Colors.blue),
+                    // TODO: Trocar para iconButton
+                    Icon(Icons.pin_drop_rounded, color: Colors.orange, size: 36),
+                    SizedBox(width: 15),
+                    Icon(Icons.bookmark_add_outlined, color: Colors.orange, size: 36),
+                    SizedBox(width: 15),
+                    Icon(Icons.star_outline_rounded, color: Colors.orange, size: 36),
                     // Add more icons as needed
                   ],
                 ),
@@ -219,31 +231,59 @@ class EventGridItem extends StatelessWidget {
     String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
     String dateEnd = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateEnd).toLocal());
     String dateText = dateStart == dateEnd ? dateStart : '$dateStart - $dateEnd';
+    String priceText = (event.price != null && event.price! > 0) ? "${event.price!} €" : "Free";
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              event.name,
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
+    return Container(
+      margin: const EdgeInsets.all(4.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Flexible(
+                flex: 1,
+                child: Text(
+                  event.name,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            SizedBox(height: 4), // Give some space between text widgets
-            Text(event.location),
-            Text(dateText),
-            Spacer(), // Use Spacer to push the button to the bottom of the card
-            ElevatedButton(
-              child: Text('View +'),
-              onPressed: () => _showEventDetailsDialog(context),
-            ),
-          ],
+
+              const Divider(
+                color: Colors.black26,
+                thickness: 2,
+              ),
+
+              //SizedBox(height: 4), // Give some space between text widgets
+              Expanded(
+                flex: 3,
+                child: Text(
+                  "${event.location}\n$dateText\nPrice: $priceText"
+                )
+              ),
+
+              //Text(event.location),
+              //Text(dateText),
+              //Spacer(), // Use Spacer to push the button to the bottom of the card
+              Flexible(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      child: Text('View +'),
+                      onPressed: () => _showEventDetailsDialog(context),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
