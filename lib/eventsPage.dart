@@ -119,7 +119,7 @@ class _EventsPageState extends State<eventsPage> {
               width: 10,
               height: 10,
               decoration: BoxDecoration(
-                color: _currentPage == index ? Colors.blue : Colors.grey,
+                color: _currentPage == index ? Colors.orange : Colors.grey,
                 shape: BoxShape.circle,
               ),
             ),
