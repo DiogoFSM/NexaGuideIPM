@@ -26,7 +26,7 @@ class _ReviewPageState extends State<ReviewPage> {
   final ImagePicker _picker = ImagePicker();
   List<XFile>? _imageFiles;
   double _currentRating = 0;
-
+  bool old =false;
   @override
   void initState() {
     super.initState();
@@ -37,6 +37,7 @@ class _ReviewPageState extends State<ReviewPage> {
     try {
       final List<Map<String, dynamic>> reviewDataList = await NexaGuideDB().fetchReviewsByUserAndPlace(widget.userName, widget.placeName);
       if (reviewDataList.isNotEmpty) {
+        old=true;
         final reviewData = reviewDataList.first;
         print('Review Data: $reviewData'); // Debugging line
 
@@ -79,6 +80,7 @@ class _ReviewPageState extends State<ReviewPage> {
       // Optionally, reset the form fields and state
       _reviewController.clear();
       setState(() {
+        old=false;
         _currentRating = 0;
         _imageFiles = [];
       });
@@ -242,11 +244,11 @@ class _ReviewPageState extends State<ReviewPage> {
                 ),
               ),
 
-            ElevatedButton(
+           if(!old)ElevatedButton(
               onPressed: _pickImages,
               child: Text('Upload Images'),
             ),
-            ElevatedButton(
+            if(!old)ElevatedButton(
               onPressed: _submitReview,
               child: Text('Submit'),
               style: ElevatedButton.styleFrom(
