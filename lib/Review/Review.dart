@@ -235,7 +235,7 @@ class _ReviewPageState extends State<ReviewPage> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      IconButton(
+                      if(!old)IconButton(
                         icon: Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _removeImage(file),
                       ),
@@ -247,13 +247,17 @@ class _ReviewPageState extends State<ReviewPage> {
            if(!old)ElevatedButton(
               onPressed: _pickImages,
               child: Text('Upload Images'),
+              style:ElevatedButton.styleFrom(
+                primary:Colors.amber
+              )
+              ,
             ),
             if(!old)ElevatedButton(
               onPressed: _submitReview,
               child: Text('Submit'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue, // Background color
-                onPrimary: Colors.white, // Text Color (Foreground color)
+                primary: Colors.orange, // Background color
+                onPrimary: Colors.black, // Text Color (Foreground color)
               ),
             ),
           ],
