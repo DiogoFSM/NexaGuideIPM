@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../appBar.dart';
 import '../database/model/poi.dart';
+import '../location/locationSinglePage.dart';
 import '../map/map.dart';
 
 class SearchResultsPage extends StatefulWidget {
@@ -134,116 +135,122 @@ class POIGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     String poiPrice = (poi.price != null && poi.price! > 0) ? "${poi.price!} €" : "Free";
 
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      padding: const EdgeInsets.all(10.0),
-      width: 300.0,
-      height: 224.0,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          color: Colors.black45,
-          width: 2.0,
+    return TapRegion(
+      onTapInside: (e) {
+        print(e);
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LocationSinglePage (location: poi)));
+      },
+      child: Container(
+        margin: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(10.0),
+        width: 300.0,
+        height: 224.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: Colors.black45,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(10),
         ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible (
-            flex: 1,
-            child: Text(
-              poi.name,
-              style: const TextStyle(
-                inherit: false,
-                color: Colors.black,
-                fontFamily: 'GillSansMT',
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible (
+              flex: 1,
+              child: Text(
+                poi.name,
+                style: const TextStyle(
+                  inherit: false,
+                  color: Colors.black,
+                  fontFamily: 'GillSansMT',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
             ),
-          ),
 
-          const Divider(
-            color: Colors.black26,
-            thickness: 2,
-          ),
+            const Divider(
+              color: Colors.black26,
+              thickness: 2,
+            ),
 
-          Flexible(
-              flex: 3,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                        flex: 2,
-                        child: Column (
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                "City:  ${poi.cityName}\nPrice:  $poiPrice",
-                                textAlign: TextAlign.justify,
-                                style: const TextStyle(
-                                  inherit: false,
-                                  color: Colors.black,
-                                  fontFamily: 'GillSansMT',
-                                  fontSize: 15,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 3,
-                              ),
-                            ),
-                          ],
-                        ),
-                    ),
-                    const SizedBox(width: 12),
-                    Flexible(
-                        flex: 1,
-                        child: Column (
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Flexible(
-                                flex: 1,
+            Flexible(
+                flex: 3,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                          flex: 2,
+                          child: Column (
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 3,
                                 child: Text(
-                                  "4.5", // TODO Replace with actual average value of reviews
+                                  "City:  ${poi.cityName}\nPrice:  $poiPrice",
+                                  textAlign: TextAlign.justify,
                                   style: const TextStyle(
+                                    inherit: false,
+                                    color: Colors.black,
                                     fontFamily: 'GillSansMT',
-                                    fontSize: 16,
+                                    fontSize: 15,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 3,
                                 ),
-                            ),
+                              ),
+                            ],
+                          ),
+                      ),
+                      const SizedBox(width: 12),
+                      Flexible(
+                          flex: 1,
+                          child: Column (
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                  flex: 1,
+                                  child: Text(
+                                    "4.5", // TODO Replace with actual average value of reviews
+                                    style: const TextStyle(
+                                      fontFamily: 'GillSansMT',
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                              ),
 
-                            const Flexible(
-                              flex: 2,
-                              child: Icon(Icons.star_outline_rounded, size: 40, color: Colors.orange,)
-                            ),
-                          ],
-                        )
-                    )
-                  ]
-              )
-          ),
-
-          Expanded(
-            flex: 1,
-            child: Text(
-              poi.tags.toString(),
-              style: const TextStyle(
-                inherit: false,
-                color: Colors.black,
-                fontFamily: 'GillSansMT',
-                fontSize: 15,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+                              const Flexible(
+                                flex: 2,
+                                child: Icon(Icons.star_outline_rounded, size: 40, color: Colors.orange,)
+                              ),
+                            ],
+                          )
+                      )
+                    ]
+                )
             ),
-          ),
-        ],
+
+            Expanded(
+              flex: 1,
+              child: Text(
+                poi.tags.toString(),
+                style: const TextStyle(
+                  inherit: false,
+                  color: Colors.black,
+                  fontFamily: 'GillSansMT',
+                  fontSize: 15,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
