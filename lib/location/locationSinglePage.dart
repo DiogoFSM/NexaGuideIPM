@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../database/model/poi.dart';
 import '../text_styles/TextStyleGillMT.dart';
+
+
 
 class LocationSinglePage extends StatelessWidget {
   final POI location;
@@ -68,11 +72,12 @@ class DetailsSection extends StatelessWidget {
 
   const DetailsSection({super.key, required this.location});
 
-
   @override
   Widget build(BuildContext context) {
+    String priceText = (location.price != null) ? (location.price! > 0 ? "${location.price!} €" : "Free") : '???';
+
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(12),
       child: Row(
         children: [
           Expanded(
@@ -80,9 +85,26 @@ class DetailsSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(location.name, style: GillMT.normal(16),),
-                Text("Address: ${location.address ?? '(Unknown)'}" , style: GillMT.normal(16),),
-                Text(location.name, style: GillMT.normal(16),),
+                Text(location.name, style: GillMT.normal(18),),
+                Divider(color: Colors.black87, thickness: 1),
+                Text("City:  ${location.cityName ?? '???'}", style: GillMT.normal(18).copyWith(height: 1.3),),
+                Text("Address:  ${location.address ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
+                Text("Ticket price:  $priceText" , style: GillMT.normal(18).copyWith(height: 1.3),),
+                //Text("Website:  ${location.website ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
+
+                Linkify(
+                  onOpen: (link) async {
+                    Uri uri = Uri.parse(link.url);
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri);
+                    } else {
+                      throw 'Could not launch $link';
+                    }
+                  },
+                  text: "Website:  ${location.website ?? '???'}",
+                  style: GillMT.normal(18).copyWith(height: 1.3),
+                  linkStyle: TextStyle(color: Colors.blue),
+                ),
               ],
             )
           ),

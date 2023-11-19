@@ -24,7 +24,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  POI p = POI(id: 1, name: 'FCT NOVA', lat: 38.66098, lng: -9.20443, tags: ['University'], cityName:'Almada', description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia") ; // TODO: Just for testing, Delete later
+  POI p = POI(id: 1, name: 'FCT NOVA', lat: 38.66098, lng: -9.20443, tags: ['University'], cityName:'Almada', website: 'https://www.fct.unl.pt/', description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia") ; // TODO: Just for testing, Delete later
   List<POI> locations = [];
 
   @override
@@ -133,7 +133,7 @@ class POIGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String poiPrice = (poi.price != null && poi.price! > 0) ? "${poi.price!} €" : "Free";
+    String poiPrice = (poi.price != null) ? (poi.price! > 0 ? "${poi.price!} €" : "Free") : '???';
 
     return TapRegion(
       onTapInside: (e) {
