@@ -168,7 +168,7 @@ class _ReviewPageState extends State<ReviewPage> {
               }
             },
             itemBuilder: (BuildContext context) {
-              return {'Update'}.map((String choice) {
+              return {'Delete'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
