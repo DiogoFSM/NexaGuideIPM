@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'database/model/event.dart';
 import 'database/nexaguide_db.dart';
+import 'collectionsPage.dart';
 
 class eventsPage extends StatefulWidget {
   final List<Event> events;
@@ -94,7 +95,23 @@ class _EventsPageState extends State<eventsPage> {
                   ),
                   itemCount: pageEvents.length,
                   itemBuilder: (context, index) {
-                    return EventGridItem(pageEvents[index]);
+                    Event currentEvent = pageEvents[index];
+                    return EventGridItem(
+                      event: currentEvent,
+                      onBookmark: (eventId, collectionId) {
+                        NexaGuideDB().addEventToCollection(eventId, collectionId).then((_) {
+                          // Handle success, maybe show a snackbar message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Event added to collection')),
+                          );
+                        }).catchError((e) {
+                          // Handle error, maybe show a snackbar message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Failed to add event to collection')),
+                          );
+                        });
+                      },
+                    );
                   },
                 );
               },
@@ -159,8 +176,9 @@ class _EventsPageState extends State<eventsPage> {
 class EventGridItem extends StatelessWidget {
   final DateFormat format = DateFormat('dd/MM/yyyy');
   final Event event;
+  final Function(int eventId, int collectionId) onBookmark;
 
-  EventGridItem(this.event);
+  EventGridItem({required this.event, required this.onBookmark});
 
   void _showEventDetailsDialog(BuildContext context) {
     String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
@@ -204,7 +222,22 @@ class EventGridItem extends StatelessWidget {
                     // TODO: Trocar para iconButton
                     Icon(Icons.pin_drop_rounded, color: Colors.orange, size: 36),
                     SizedBox(width: 15),
-                    Icon(Icons.bookmark_add_outlined, color: Colors.orange, size: 36),
+                    IconButton(
+                      icon: Icon(Icons.bookmark_add_outlined, color: Colors.orange, size: 36),
+                      onPressed: () async {
+                        // Open the collections page and await the selected collection
+                        final selectedCollectionId = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CollectionsPage(selectMode: true),
+                          ),
+                        );
+                        // If a collection was selected, call the callback to add the event to the collection
+                        if (selectedCollectionId != null) {
+                          onBookmark(event.id, selectedCollectionId);
+                        }
+                      },
+                    ),
                     SizedBox(width: 15),
                     Icon(Icons.star_outline_rounded, color: Colors.orange, size: 36),
                     // Add more icons as needed
