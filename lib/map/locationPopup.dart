@@ -129,11 +129,12 @@ class _LocationPopupState extends State<LocationPopup> {
                     child: Column (
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Expanded(
+                        Expanded(
                           flex: 3,
-                          child: Image(
-                            image: AssetImage('assets/placeholder.png'), // TODO: Get an image
-                          ),
+                          child: widget.location.photoURLs!.isNotEmpty ?
+                          Image.network(widget.location.photoURLs!.first, width: 100, height: 100, fit: BoxFit.cover)
+                        : Image.asset('assets/placeholder.png')
+                          //Image(image: AssetImage('assets/placeholder.png'),)
                         ),
                         const SizedBox(height: 10),
                         Flexible(

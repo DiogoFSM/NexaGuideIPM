@@ -95,7 +95,7 @@ class LocationSinglePage extends StatelessWidget {
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                child: PhotosSection()
+                child: PhotosSection(photoURLs: location.photoURLs ?? [],)
               ),
 
               SizedBox(height:10),
@@ -404,7 +404,9 @@ class _EventsSectionState extends State<EventsSection> {
 }
 
 class PhotosSection extends StatefulWidget {
-  const PhotosSection({super.key});
+  final List<String> photoURLs;
+
+  const PhotosSection({super.key, required this.photoURLs});
 
   @override
   State<StatefulWidget> createState() => _PhotosSectionState();
@@ -417,11 +419,13 @@ class _PhotosSectionState extends State<PhotosSection> {
   int _currentPage = 0;
   int pageCount = 0;
 
+  /*
   final imageURLs = [
     'https://www.fct.unl.pt/sites/default/files/imagens/noticias/2015/03/DSC_5142_Tratado.jpg',
     'https://arquivo.codingfest.fct.unl.pt/2016/sites/www.codingfest.fct.unl.pt/files/imagens/fctnova.jpeg',
     'https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png',
   ];
+   */
 
   @override
   void initState() {
@@ -467,9 +471,9 @@ class _PhotosSectionState extends State<PhotosSection> {
                     SwipeImageGallery(
                       context: context,
                       itemBuilder: (context, index) {
-                        return Image.network(imageURLs[index]);
+                        return Image.network(photos[index]);
                       },
-                      itemCount: imageURLs.length,
+                      itemCount: photos.length,
                       initialIndex: startIndex+index,
                     ).show();
                   },
@@ -517,7 +521,8 @@ class _PhotosSectionState extends State<PhotosSection> {
 
   @override
   Widget build(BuildContext context) {
-    pageCount = (imageURLs.length / photosPerPage).ceil();
+    pageCount = (widget.photoURLs.length / photosPerPage).ceil();
+
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -525,16 +530,17 @@ class _PhotosSectionState extends State<PhotosSection> {
         children: [
           Text("Photos", style: GillMT.title(20),),
           SizedBox(height: 10),
-          //Text('Photos will appear here', style: GillMT.normal(16),),
-          SizedBox(
-            height: 220,
-            child: Column(
-              children: [
-                buildPhotoGrid(imageURLs),
-                _buildPageIndicator()
-              ],
+          pageCount == 0 ?
+            Text('There are no photos of this place available at the moment.', style: GillMT.normal(15),)
+          : SizedBox(
+              height: 220,
+              child: Column(
+                children: [
+                  buildPhotoGrid(widget.photoURLs),
+                  _buildPageIndicator()
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

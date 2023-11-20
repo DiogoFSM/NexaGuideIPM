@@ -12,6 +12,7 @@ class POI {
   final String? cityName;
   final double? avgRating;
   final int? reviewCount;
+  final List<String>? photoURLs;
 
   POI({
     required this.id,
@@ -26,10 +27,11 @@ class POI {
     this.description,
     this.cityName,
     this.avgRating,
-    this.reviewCount
+    this.reviewCount,
+    this.photoURLs,
   });
 
-  factory POI.fromSqfliteDatabase({required Map<String, dynamic> map, List<String>? tags, double? rating, int? revCount}) => POI(
+  factory POI.fromSqfliteDatabase({required Map<String, dynamic> map, List<String>? tags, double? rating, int? revCount, List<String>? urls}) => POI(
     id: map['id']?.toInt() ?? 0,
     name: map['name'] ?? '',
     lat: map['lat']?.toDouble() ?? 0.0,
@@ -43,6 +45,7 @@ class POI {
     cityName: map['cityName'] ?? '???',
     avgRating: rating ?? 0.0,
     reviewCount: revCount ?? 0,
+    photoURLs: urls ?? []
   );
 
   @override

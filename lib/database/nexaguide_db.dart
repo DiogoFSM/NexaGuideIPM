@@ -253,10 +253,14 @@ class NexaGuideDB {
         [id]
     );
     final tags = await fetchPOITags(id);
+
     List<num> ratingAndCount = await fetchAverageRatingAndCount(id);
     double avgRating = ratingAndCount[0] as double;
     int count = ratingAndCount[1] as int;
-    return POI.fromSqfliteDatabase(map: poi.first, tags: tags, rating: avgRating, revCount: count);
+
+    List<String> photoURLs = await fetchPOIPhotos(id);
+
+    return POI.fromSqfliteDatabase(map: poi.first, tags: tags, rating: avgRating, revCount: count, urls: photoURLs);
   }
 
   Future<List<POI>> fetchPOIByCity(int cityID) async {
@@ -321,9 +325,12 @@ class NexaGuideDB {
     for (var p in poi) {
       int id = p['id'] as int;
       List<String> poiTags = await fetchPOITags(id);
+
       List<num> ratingAndCount = await fetchAverageRatingAndCount(id);
       double avgRating = ratingAndCount[0] as double;
       int count = ratingAndCount[1] as int;
+
+      List<String> photoURLs = await fetchPOIPhotos(id);
 
       bool containsAllTags = tags != null && tags.every((tag) => poiTags.contains(tag));
       bool tagsFilter = tags == null || tags.isEmpty || containsAllTags;
@@ -333,7 +340,7 @@ class NexaGuideDB {
       bool ratingFilter = ratingBiggerThanMin && ratingLowerThanMax;
 
       if (tagsFilter && ratingFilter) {
-          var poi = POI.fromSqfliteDatabase(map: p, tags: poiTags, rating: avgRating, revCount: count);
+          var poi = POI.fromSqfliteDatabase(map: p, tags: poiTags, rating: avgRating, revCount: count, urls: photoURLs);
           result.add(poi);
       }
     }
@@ -342,11 +349,16 @@ class NexaGuideDB {
 
   Future<POI> buildPOIWithTags(Map<String, Object?> poi) async {
     int id = poi['id'] as int;
+
     List<String> tags = await fetchPOITags(id);
+
     List<num> ratingAndCount = await fetchAverageRatingAndCount(id);
     double avgRating = ratingAndCount[0] as double;
     int count = ratingAndCount[1] as int;
-    return POI.fromSqfliteDatabase(map: poi, tags: tags, rating: avgRating, revCount: count);
+
+    List<String> photoURLs = await fetchPOIPhotos(id);
+
+    return POI.fromSqfliteDatabase(map: poi, tags: tags, rating: avgRating, revCount: count, urls: photoURLs);
   }
 
   Future<void> createPOITagsTable(Database database) async {
