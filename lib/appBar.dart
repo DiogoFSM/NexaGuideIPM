@@ -108,81 +108,91 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
     });
 
     return AppBar(
-      automaticallyImplyLeading: false,
+      //automaticallyImplyLeading: false,
+      leading: Navigator.of(context).canPop() ?
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back),
+          iconSize: 28,
+        )
+      : InkWell(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Image.asset('assets/nexaguide3.png'),
+          ),
+      ),
       actions: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                flex: 1,
-                child: IconButton(
+        /*
+        Flexible(
+          flex: 1,
+          child: IconButton(
+            onPressed: () {
+
+            },
+            icon: Icon(Icons.menu_rounded),
+            iconSize: 28,
+          ),
+        ),
+         */
+
+        Flexible(
+          flex: 3,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: TextField(
+              controller: _controller,
+              textAlignVertical: TextAlignVertical.bottom,
+              style: const TextStyle(fontFamily: 'GillSansMT', fontSize: 19),
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                //hintStyle: TextStyle(color: Colors.black54, fontFamily: 'GillSansMT',),
+                border: OutlineInputBorder(),
+                //suffixIcon: Icon(Icons.search),
+                suffixIcon: IconButton(
                   onPressed: () {
-
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
+                      initLat: widget.mapController.camera.center.latitude,
+                      initLng: widget.mapController.camera.center.longitude,
+                      initZoom: widget.mapController.camera.zoom,
+                      initRotation: widget.mapController.camera.rotation,
+                    )));
                   },
-                  icon: Icon(Icons.menu_rounded),
-                  iconSize: 28,
+                  icon: Icon(Icons.search),
                 ),
+                filled: true,
+                fillColor: Colors.white70,
               ),
+              onChanged: (search) {
+                _overlayEntry?.remove();
+                showOverlay();
+              },
+              onTap: () {
+                showOverlay();
+              },
+              onSubmitted: (search) {
+                //_controller.clear();
+                hideOverlay();
+              },
+            ),
+          ),
+        ),
 
-              Flexible(
-                flex: 5,
-                child: TextField(
-                  controller: _controller,
-                  textAlignVertical: TextAlignVertical.bottom,
-                  style: const TextStyle(fontFamily: 'GillSansMT', fontSize: 19),
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    //hintStyle: TextStyle(color: Colors.black54, fontFamily: 'GillSansMT',),
-                    border: OutlineInputBorder(),
-                    //suffixIcon: Icon(Icons.search),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
-                          initLat: widget.mapController.camera.center.latitude,
-                          initLng: widget.mapController.camera.center.longitude,
-                          initZoom: widget.mapController.camera.zoom,
-                          initRotation: widget.mapController.camera.rotation,
-                        )));
-                      },
-                      icon: Icon(Icons.search),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white70,
-                  ),
-                  onChanged: (search) {
-                    _overlayEntry?.remove();
-                    showOverlay();
-                  },
-                  onTap: () {
-                    showOverlay();
-                  },
-                  onSubmitted: (search) {
-                    //_controller.clear();
-                    hideOverlay();
-                  },
-                ),
-              ),
+        Flexible(
+            flex: 1,
+            child: FilterPage()
+        ),
 
-              Flexible(
-                flex: 1,
-                child: FilterPage()
-              ),
+        Flexible(
+          flex: 1,
+          child: IconButton(
+            onPressed: () {
 
-              Flexible(
-                flex: 1,
-                child: IconButton(
-                  onPressed: () {
-
-                  },
-                  icon: Icon(Icons.account_circle),
-                  iconSize: 28,
-                ),
-              ),
-            ],
+            },
+            icon: Icon(Icons.account_circle),
+            iconSize: 28,
           ),
         ),
     ]);
