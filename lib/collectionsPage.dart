@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexaguide_ipm/database/nexaguide_db.dart';
 import 'package:nexaguide_ipm/database/model/collection.dart';
+import 'CollectionDetailPage.dart';
 
 class CollectionsPage extends StatefulWidget {
   final bool selectMode; // Indicates if the page is opened for selection of a collection
@@ -82,19 +83,30 @@ class _CollectionsPageState extends State<CollectionsPage> {
             margin: EdgeInsets.all(8.0),
             child: ListTile(
               title: Text(collection.name),
-              subtitle: Text('Events: ${collection.eventIds.length}'),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text('Locations: ${collection.poiIds.length}'),
+                  Text('Events: ${collection.eventIds.length}'),
+                ],
+              ),
               onTap: () {
                 if (widget.selectMode) {
-                  // Return the selected collection ID
                   Navigator.pop(context, collection.id);
                 } else {
-                  // Navigate to collection details page or perform other actions
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CollectionDetailPage(collection: collection),
+                    ),
+                  );
                 }
               },
             ),
           );
         },
-      ),
+      )
+      ,
       floatingActionButton: FloatingActionButton(
         onPressed: _showCreateCollectionDialog,
         tooltip: 'Create a new collection',
