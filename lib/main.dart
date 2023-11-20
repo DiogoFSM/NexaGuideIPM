@@ -68,6 +68,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late MapWidget map;
 
+  Map<String, dynamic> filters = {
+    'minPrice': 0,
+    'maxPrice': 200,
+    'minRating': 0,
+    'maxRating': 5,
+    'distance': 50.0,
+    'tags':[]
+  };
+
   @override
   void initState() {
     super.initState();
@@ -143,12 +152,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _applyFilters({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags}) {
+    print(filters);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
           children:[
-            NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _navigateToSearchResultsPage,),
+            NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _navigateToSearchResultsPage, onFiltersApply: _applyFilters,),
             Expanded(
                 child: Stack(
                   children: [
