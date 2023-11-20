@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
     'maxPrice': 200,
     'minRating': 0,
     'maxRating': 5,
-    'distance': 50.0,
+    'distance': 0.0,
     'tags':[]
   };
 
@@ -172,7 +172,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _applyFilters({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags}) {
-    print(filters);
+    setState(() {
+      filters = {
+        'minPrice': minPrice,
+        'maxPrice': maxPrice,
+        'minRating': minRating,
+        'maxRating': maxRating,
+        'distance': distance,
+        'tags': tags,
+      };
+    });
+    //print(filters);
   }
 
   @override
@@ -180,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Column(
           children:[
-            NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _navigateToSearchResultsPage, onFiltersApply: _applyFilters, onMenuButtonPressed: toggleSidebar,),
+            NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _navigateToSearchResultsPage, onFiltersApply: _applyFilters, onMenuButtonPressed: toggleSidebar, filtersApplied: filters,),
             Expanded(
                 child: Stack(
                   children: [
@@ -225,7 +235,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               lng: -9.20443,
                               website: 'https://www.fct.unl.pt/',
                               description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia",
-                              tags:['University'],
+                              tags:['Cultural'],
                               cityID: 3595
                           );
                           database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 1694563200000, dateEnd: 1694822400000, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);

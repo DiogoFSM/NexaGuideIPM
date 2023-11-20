@@ -15,11 +15,12 @@ typedef ApplyFilterCallback = void Function({required int minPrice, required int
 class NexaGuideAppBar extends StatefulWidget {
   //final MoveMapCallback onSuggestionPress;
   final MapController mapController;
+  final Map<String, dynamic> filtersApplied;
   final void Function(MapController m) onSearchButtonPress;
   final ApplyFilterCallback onFiltersApply;
   final VoidCallback onMenuButtonPressed;
   //const NexaGuideAppBar({super.key, required this.onSuggestionPress});
-  const NexaGuideAppBar({super.key, required this.mapController, required this.onSearchButtonPress, required this.onFiltersApply, required this.onMenuButtonPressed});
+  const NexaGuideAppBar({super.key, required this.mapController, required this.onSearchButtonPress, required this.onFiltersApply, required this.onMenuButtonPressed, required this.filtersApplied});
 
   @override
   State<StatefulWidget> createState() => _NexaGuideAppBarState();
@@ -188,7 +189,7 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
 
         Flexible(
             flex: 1,
-            child: FilterPage(onApply: widget.onFiltersApply)
+            child: FilterPage(onApply: widget.onFiltersApply, initFilters: widget.filtersApplied,)
         ),
 
         Flexible(

@@ -4,8 +4,9 @@ import 'package:nexaguide_ipm/text_styles/TextStyleGillMT.dart';
 
 class FilterPage extends StatefulWidget {
   final ApplyFilterCallback onApply;
+  final Map<String, dynamic> initFilters;
 
-  const FilterPage({super.key, required this.onApply});
+  const FilterPage({super.key, required this.onApply, required this.initFilters});
 
   @override
   _FilterPageState createState() => _FilterPageState();
@@ -31,6 +32,17 @@ class _FilterPageState extends State<FilterPage> {
     'Outdoors',
     'For Kids',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedMinPrice = widget.initFilters['minPrice'] ?? 0;
+    selectedMaxPrice = widget.initFilters['maxPrice'] ?? 200;
+    selectedStarsMin = widget.initFilters['minRating'] ?? 0;
+    selectedStarsMax = widget.initFilters['maxRating'] ?? 5;
+    selectedDistance = widget.initFilters['distance'] ?? 0.0;
+    selectedCategories = List<String>.from(widget.initFilters['tags']) ?? [];
+  }
 
   void showFilters() {
     showDialog(

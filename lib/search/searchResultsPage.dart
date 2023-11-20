@@ -36,7 +36,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     'maxPrice': 200,
     'minRating': 0,
     'maxRating': 5,
-    'distance': 50.0,
+    'distance': 0.0,
     'tags':List<String>.empty()
   };
 
@@ -82,7 +82,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         'maxPrice': maxPrice,
         'minRating': minRating,
         'maxRating': maxRating,
-        'distance': distance >= 1 ? distance : 50.0,
+        'distance': distance,
         'tags': tags,
       };
     });
@@ -95,7 +95,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     return Scaffold(
       body: Column(
         children: [
-          NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _searchButtonPress, onFiltersApply: _applyFilters, onMenuButtonPressed: () {  }, ),
+          NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _searchButtonPress, onFiltersApply: _applyFilters, onMenuButtonPressed: () {  }, filtersApplied: filters,),
           FutureBuilder(
             future: getLocations(),
             builder: (context, snapshot) {
