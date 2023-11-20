@@ -59,15 +59,14 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
       body: Column(
         children: [
           NexaGuideAppBar(mapController: map.mapController),
-          Expanded(
-            flex: 3,
-            //child: Text("some text"),
-            child: FutureBuilder(
-              future: getLocations(),
-              builder: (context, snapshot) {
-                //if (snapshot.hasData) print(pageCount);
-                return snapshot.hasData ?
-                  Column(
+          FutureBuilder(
+            future: getLocations(),
+            builder: (context, snapshot) {
+              //if (snapshot.hasData) print(pageCount);
+              return snapshot.hasData ?
+                Expanded(
+                  flex: 3,
+                  child: Column(
                     children: [
                       Expanded(
                         flex: 5,
@@ -103,11 +102,18 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                       ),
 
                     ],
-                  )
+                  ),
+                )
 
-                : CircularProgressIndicator(color:Colors.orange);
-              },
-            ),
+              : SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: CircularProgressIndicator(color:Colors.orange)
+                  )
+              );
+            },
           ),
         ]
       ),
