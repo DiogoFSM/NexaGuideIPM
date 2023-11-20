@@ -12,83 +12,119 @@ class _FilterPageState extends State<FilterPage> {
   double selectedDistance = 0.0;
   TimeOfDay? selectedTime;
   List<String> selectedCategories = [];
+  List<String> allCategories = [
+    'Music',
+    'Historical',
+    'Event',
+    'Cultural',
+    'For Kids',
+    'Open Space',
+    'Adventure'
+  ];
 
   void showFilters() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Filters'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text('Price: $selectedPrice'),
-                Slider(
-                  value: selectedPrice.toDouble(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedPrice = newValue.toInt();
-                    });
-                  },
-                  min: 0.0,
-                  max: 100.0,
-                ),
-                SizedBox(height: 20),
-
-                Text('Stars: $selectedStars'),
-                Slider(
-                  value: selectedStars.toDouble(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedStars = newValue.toInt();
-                    });
-                  },
-                  min: 0,
-                  max: 5,
-                  divisions: 5,
-                  label: '$selectedStars',
-                ),
-                SizedBox(height: 20),
-
-                Text('Days of the Week:'),
-                Wrap(
-                  spacing: 8.0,
-                  children: List<Widget>.generate(7, (int index) {
-                    return FilterChip(
-                      label: Text(getDayLabel(index)),
-                      selected: selectedDays[index],
-                      onSelected: (bool value) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Filters'),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Price: $selectedPrice €'),
+                    Slider(
+                      value: selectedPrice.toDouble(),
+                      onChanged: (newValue) {
                         setState(() {
-                          selectedDays[index] = value;
+                          selectedPrice = newValue.toInt();
                         });
                       },
-                    );
-                  }),
-                ),
-                SizedBox(height: 20),
+                      min: 0.0,
+                      max: 100.0,
+                    ),
+                    SizedBox(height: 20),
 
-                Text('Distance: ${selectedDistance.toStringAsFixed(2)} km'),
-                Slider(
-                  value: selectedDistance,
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedDistance = newValue;
-                    });
-                  },
-                  min: 0.0,
-                  max: 50.0,
-                ),
-                SizedBox(height: 20),
+                    Text('Stars: $selectedStars'),
+                    Slider(
+                      value: selectedStars.toDouble(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedStars = newValue.toInt();
+                        });
+                      },
+                      min: 0,
+                      max: 5,
+                      divisions: 5,
+                      label: '$selectedStars',
+                    ),
+                    SizedBox(height: 20),
 
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Apply'),
+                    Text('Days of the Week:'),
+                    Wrap(
+                      spacing: 8.0,
+                      children: List<Widget>.generate(7, (int index) {
+                        return FilterChip(
+                          label: Text(getDayLabel(index)),
+                          selected: selectedDays[index],
+                          onSelected: (bool value) {
+                            setState(() {
+                              selectedDays[index] = value;
+                            });
+                          },
+                        );
+                      }),
+                    ),
+                    SizedBox(height: 20),
+
+                    Text('Distance: ${selectedDistance.toStringAsFixed(2)} km'),
+                    Slider(
+                      value: selectedDistance,
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedDistance = newValue;
+                        });
+                      },
+                      min: 0.0,
+                      max: 50.0,
+                    ),
+                    SizedBox(height: 20),
+
+                    Text('Categories:'),
+                    Wrap(
+                      spacing: 8.0,
+                      children: List<Widget>.generate(allCategories.length, (int index) {
+                        return FilterChip(
+                          label: Text(allCategories[index]),
+                          selected: selectedCategories.contains(allCategories[index]),
+                          onSelected: (bool value) {
+                            setState(() {
+                              if (value) {
+                                selectedCategories.add(allCategories[index]);
+                              } else {
+                                selectedCategories.remove(allCategories[index]);
+                              }
+                            });
+                          },
+                        );
+                      }),
+                    ),
+
+                    SizedBox(height: 20),
+
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Apply'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
