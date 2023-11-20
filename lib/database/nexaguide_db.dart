@@ -118,6 +118,7 @@ class NexaGuideDB {
 
   final String poiTableName = "poi";
   final String poiTagsTableName = "poiTags";
+  final String poiPhotosTableName = "poiPhotos";
 
   Future<void> createPOITable(Database database) async {
     await database.execute("""
@@ -170,6 +171,44 @@ class NexaGuideDB {
       try {
         await b.commit(continueOnError: true, noResult: true);
         print("POI with tags successfully created.");
+      } catch (e) {
+        print("Error commiting batch ==> ${e.toString()}");
+      }
+    });
+
+    return id;
+  }
+
+  Future<int> createPOIWithTagsAndImages(
+      {required String name, required double lat, required double lng, String? address, String? website, int? price, int? cityID, String? description,
+        required List<String> tags, required List<String> photoURLs}) async {
+    final database = await DatabaseService().database;
+    int id = -1;
+    await database.transaction((txn) async {
+      var b = txn.batch();
+      id = await txn.rawInsert(
+          '''INSERT INTO $poiTableName (name, lat, lng, address, website, price, cityID, description) VALUES (?,?,?,?,?,?,?,?)''',
+          [name, lat, lng, address, website, price, cityID, description]
+      );
+
+      if (id >= 0) {
+        for (var t in tags) {
+          b.rawInsert(
+              '''INSERT INTO $poiTagsTableName (id, tag) VALUES (?,?)''',
+              [id, t]);
+        }
+        for (var url in photoURLs) {
+          b.rawInsert(
+              '''INSERT INTO $poiPhotosTableName (id, url) VALUES (?,?)''',
+              [id, url]);
+        }
+      }
+      else {
+        print("Insertion failed!");
+      }
+      try {
+        await b.commit(continueOnError: true, noResult: true);
+        print("POI with tags and images successfully created.");
       } catch (e) {
         print("Error commiting batch ==> ${e.toString()}");
       }
@@ -355,6 +394,47 @@ class NexaGuideDB {
 
     return res.map((row) => row['tag'] as String).toList();
   }
+
+  Future<void> createPOIPhotosTable(Database database) async {
+    await database.execute("""
+    CREATE TABLE IF NOT EXISTS $poiPhotosTableName (
+    "id" INTEGER NOT NULL,
+    "url" TEXT NOT NULL,
+    PRIMARY KEY ("id", "url"),
+    FOREIGN KEY ("id") REFERENCES $poiTableName ("id") ON UPDATE CASCADE ON DELETE CASCADE
+    );""");
+  }
+
+  Future<int> insertPOIPhoto(int id, String url) async {
+    final database = await DatabaseService().database;
+    return await database.rawInsert(
+        '''INSERT INTO $poiPhotosTableName (id, url) VALUES (?,?)''',
+        [id, url]
+    );
+  }
+
+  Future<void> deletePOIPhoto(int id, String url) async {
+    final database = await DatabaseService().database;
+    await database.rawDelete(
+        '''DELETE FROM $poiPhotosTableName WHERE id = ? AND url = ?''',
+        [id, url]);
+  }
+
+  Future<void> clearPOIPhotos(int id) async {
+    final database = await DatabaseService().database;
+    await database.rawDelete(
+        '''DELETE FROM $poiPhotosTableName WHERE id = ?''', [id]);
+  }
+
+  Future<List<String>> fetchPOIPhotos(int id) async {
+    final database = await DatabaseService().database;
+    final res = await database.rawQuery(
+        '''SELECT * FROM $poiPhotosTableName WHERE id=?''', [id]
+    );
+
+    return res.map((row) => row['url'] as String).toList();
+  }
+
 
   /// EVENTS
 

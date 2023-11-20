@@ -231,13 +231,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          database.createPOIWithTags(
+                          database.createPOIWithTagsAndImages(
                               name: 'FCT NOVA',
                               lat: 38.66098,
                               lng: -9.20443,
                               website: 'https://www.fct.unl.pt/',
                               description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia",
                               tags:['Cultural'],
+                              photoURLs: [
+                                'https://www.fct.unl.pt/sites/default/files/imagens/noticias/2015/03/DSC_5142_Tratado.jpg',
+                                'https://arquivo.codingfest.fct.unl.pt/2016/sites/www.codingfest.fct.unl.pt/files/imagens/fctnova.jpeg',
+                                'https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png',
+                              ],
                               cityID: 3595
                           );
                           database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 1694563200000, dateEnd: 1694822400000, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);
