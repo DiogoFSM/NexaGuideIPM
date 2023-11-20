@@ -335,9 +335,9 @@ class _PhotosSectionState extends State<PhotosSection> {
   int pageCount = 0;
 
   final remoteImages = [
-    Image.network('https://www.fct.unl.pt/sites/default/files/imagens/noticias/2015/03/DSC_5142_Tratado.jpg', width:200, fit: BoxFit.cover),
-    Image.network('https://arquivo.codingfest.fct.unl.pt/2016/sites/www.codingfest.fct.unl.pt/files/imagens/fctnova.jpeg', width:200, fit: BoxFit.cover),
-    Image.network('https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png', width:200, fit: BoxFit.cover),
+    Image.network('https://www.fct.unl.pt/sites/default/files/imagens/noticias/2015/03/DSC_5142_Tratado.jpg', width:180, fit: BoxFit.cover),
+    Image.network('https://arquivo.codingfest.fct.unl.pt/2016/sites/www.codingfest.fct.unl.pt/files/imagens/fctnova.jpeg', width:180, fit: BoxFit.cover),
+    Image.network('https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png', width:180, fit: BoxFit.cover),
   ];
 
   @override
@@ -389,7 +389,7 @@ class _PhotosSectionState extends State<PhotosSection> {
 
   Widget _buildPageIndicator() {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: List<Widget>.generate(
@@ -422,8 +422,9 @@ class _PhotosSectionState extends State<PhotosSection> {
         children: [
           Text("Photos", style: GillMT.title(20),),
           SizedBox(height: 10),
+          //Text('Photos will appear here', style: GillMT.normal(16),),
           SizedBox(
-            height: 200,
+            height: 220,
             child: Column(
               children: [
                 buildPhotoGrid(remoteImages),
@@ -458,7 +459,7 @@ class PhotosSection extends StatelessWidget {
         children: [
           Text("Photos", style: GillMT.title(20),),
           SizedBox(height: 10),
-          //Text('Photos will appear here', style: GillMT.normal(16),),
+
           Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 30),
             child: SizedBox(
