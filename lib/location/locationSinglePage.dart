@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:nexaguide_ipm/Review/Review.dart';
 import 'package:nexaguide_ipm/database/nexaguide_db.dart';
 import 'package:nexaguide_ipm/eventsPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipe_image_gallery/swipe_image_gallery.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -190,7 +192,7 @@ class DetailsSection extends StatelessWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-
+                            _addReview(context);
                           },
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, padding: EdgeInsets.all(2)),
                           child: Text("Write Review" , style: GillMT.normal(15).copyWith(color: Colors.black),),
@@ -210,7 +212,15 @@ class DetailsSection extends StatelessWidget {
       )
     );
   }
-
+  Future<void> _addReview(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? username= prefs.getString('username');
+      if(username!=null)
+   Navigator.push(context, MaterialPageRoute(
+        builder: (context) => ReviewPage(placeName: location.name, userName: username!, userPhotoUrl:"null"),
+      )
+    );
+  }
 }
 
 class EventsSection extends StatefulWidget {
