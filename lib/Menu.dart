@@ -71,7 +71,6 @@ class MenuScreen extends StatelessWidget {
   }
 
   void _navigateToEventsPage(BuildContext context) async {
-    database.createEvent(name: "Nos Alive", poiID: 1, dateStart: 0, dateEnd: 200, location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45);
     List<Event> events = await database.fetchAllEvents();
     Navigator.push(
       context,
