@@ -224,13 +224,30 @@ class _EventsSectionState extends State<EventsSection> {
               ),
               itemCount: pageEvents.length,
               itemBuilder: (context, index) {
-                return EventGridItem(pageEvents[index]);
+                return EventGridItem(
+                  event: pageEvents[index],
+                  onBookmark: (eventId, collectionId) {
+                    NexaGuideDB().addEventToCollection(eventId, collectionId).then((_) {
+                      // Handle success, maybe show a snackbar message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Event added to collection')),
+                      );
+                    }).catchError((e) {
+                      // Handle error, maybe show a snackbar message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to add event to collection')),
+                      );
+                    });
+                  },
+                );
               },
             );
           },
         ),
     );
   }
+
+
 
   Widget _buildPageIndicator() {
     return Padding(
