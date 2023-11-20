@@ -37,7 +37,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
 
   Widget _buildBody() {
     switch (_selectedIndex) {
-      case 0: // Events tab
+      case 1: // Events tab
         return FutureBuilder<List<Event>>(
           future: _events,
           builder: (context, snapshot) {
@@ -54,7 +54,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
             }
           },
         );
-      case 1: // Locations tab
+      case 0: // Locations tab
         return FutureBuilder<List<POI>>(
           future: _pois,
           builder: (context, snapshot) {
@@ -83,20 +83,20 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
         title: Text(widget.collection.name),
       ),
       body: _buildBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on),
-            label: 'Locations',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.location_on),
+              label: 'Locations',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.event),
+              label: 'Events',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+        ),
     );
   }
 }
