@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:nexaguide_ipm/database/nexaguide_db.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/model/poi.dart';
@@ -45,21 +46,25 @@ class LocationSinglePage extends StatelessWidget {
           ],
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(14),
+
           child: Column(
             children: [
-              DetailsSection(location: location),
-              Divider(),
-              Section(
-                title: 'Section 2',
-                content: 'This is the content of section 2.',
+              Container(
+                padding: const EdgeInsets.all(14),
+                child: DetailsSection(location: location)
               ),
-              Divider(),
-              Section(
-                title: 'Section 3',
-                content: 'This is the content of section 3.',
-              ),
+              Divider(thickness: 2, color: Colors.black, indent: 6, endIndent: 6,),
 
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                child: EventsSection(location: location)
+              ),
+              Divider(thickness: 2, color: Colors.black, indent: 6, endIndent: 6,),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                child: PhotosSection(location: location)
+              ),
             ],
           ),
         ),
@@ -81,7 +86,7 @@ class DetailsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(location.name, style: GillMT.normal(18),),
+          Text(location.name, style: GillMT.title(20),),
           const Divider(color: Colors.black87, thickness: 0.2),
 
           Row(
@@ -162,85 +167,65 @@ class DetailsSection extends StatelessWidget {
             ],
           ),
 
-          const Divider(color: Colors.black87, thickness: 0.2),
-
+          SizedBox(height: 10),
           Text(location.description ?? '(No description available)' , style: GillMT.normal(18).copyWith(height: 1.3), textAlign: TextAlign.justify,),
         ],
       )
+    );
+  }
 
-      /*
-      child: Row(
+}
+
+class EventsSection extends StatelessWidget {
+  final POI location;
+
+  const EventsSection({super.key, required this.location});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(location.name, style: GillMT.normal(18),),
-                const Divider(color: Colors.black87, thickness: 1),
-
-                Text("• City:  ${location.cityName ?? '???'}", style: GillMT.normal(18),),
-                Text("• Address:  ${location.address ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
-                Text("• Ticket price:  $priceText" , style: GillMT.normal(18).copyWith(height: 1.3),),
-                Linkify(
-                  onOpen: (link) async {
-                    Uri uri = Uri.parse(link.url);
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri);
-                    } else {
-                      throw 'Could not launch $link';
-                    }
-                  },
-                  text: "• Website:  ${location.website ?? '???'}",
-                  style: GillMT.normal(18).copyWith(height: 1.3),
-                  linkStyle: TextStyle(color: Colors.blue),
-                ),
-                Text("Tags:  ${location.tags}" , style: GillMT.normal(18).copyWith(height: 1.3),),
-                const Divider(color: Colors.black87, thickness: 1),
-
-                Text(location.description ?? '(No description available)' , style: GillMT.normal(18).copyWith(height: 1.3), textAlign: TextAlign.justify,),
-              ],
-            )
-          ),
-
-          Expanded(
-            flex: 1,
-            child: Column(
-              children: [
-                Text(location.name),
-              ],
-            )
+          Text("What is happening here ?", style: GillMT.title(20),),
+          SizedBox(height: 10),
+          FutureBuilder(
+            future: NexaGuideDB().fetchEventsByPOI(location.id),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return snapshot.data!.isEmpty ?
+                  Text('There are no events for this location', style: GillMT.normal(15),)
+                : Text(snapshot.data!.toString(), style: GillMT.normal(15));
+              }
+              else {
+                return const CircularProgressIndicator(color: Colors.orange);
+              }
+            }
           ),
         ],
       ),
-      */
-
     );
   }
 
 }
 
 
-class Section extends StatelessWidget {
-  final String title;
-  final String content;
+class PhotosSection extends StatelessWidget {
+  final POI location;
 
-  const Section({Key? key, required this.title, required this.content})
-      : super(key: key);
+  const PhotosSection({super.key, required this.location});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return SizedBox(
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          Text(content),
+          Text("Photos", style: GillMT.title(20),),
+          SizedBox(height: 10),
+          Text('Photos will appear here', style: GillMT.normal(16),)
         ],
       ),
     );
