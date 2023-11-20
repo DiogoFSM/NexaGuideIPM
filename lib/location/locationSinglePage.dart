@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:nexaguide_ipm/database/nexaguide_db.dart';
+import 'package:nexaguide_ipm/eventsPage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../database/model/event.dart';
 import '../database/model/poi.dart';
 import '../text_styles/TextStyleGillMT.dart';
 
@@ -112,7 +114,7 @@ class DetailsSection extends StatelessWidget {
                       },
                       text: "• Website:  ${location.website ?? '???'}",
                       style: GillMT.normal(18).copyWith(height: 1.3),
-                      linkStyle: TextStyle(color: Colors.blue),
+                      linkStyle: TextStyle(color: Colors.orange),
                     ),
                   ],
                 ),
@@ -176,35 +178,121 @@ class DetailsSection extends StatelessWidget {
 
 }
 
-class EventsSection extends StatelessWidget {
+class EventsSection extends StatefulWidget {
   final POI location;
 
-  const EventsSection({super.key, required this.location});
+  EventsSection({super.key, required this.location});
+
+  @override
+  State<StatefulWidget> createState() => _EventsSectionState();
+
+}
+
+class _EventsSectionState extends State<EventsSection> {
+  final PageController _pageController = PageController();
+  int locationsPerPage = 2;
+  int _currentPage = 0;
+  int pageCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController.addListener(() {
+      int next = _pageController.page!.round();
+      if (_currentPage != next) {
+        setState(() {
+          _currentPage = next;
+        });
+      }
+    });
+  }
+
+  Widget buildEventGrid(List<Event> events) {
+    return Expanded(
+        child: PageView.builder(
+          controller: _pageController,
+          itemCount: pageCount,
+          itemBuilder: (context, pageIndex) {
+            int startIndex = pageIndex * locationsPerPage;
+            int endIndex = startIndex + locationsPerPage;
+            List<Event> pageEvents = events.sublist(startIndex, endIndex > events.length ? events.length : endIndex);
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.1,
+              ),
+              itemCount: pageEvents.length,
+              itemBuilder: (context, index) {
+                return EventGridItem(pageEvents[index]);
+              },
+            );
+          },
+        ),
+    );
+  }
+
+  Widget _buildPageIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List<Widget>.generate(
+          pageCount,
+              (index) => Flexible(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: _currentPage == index ? Colors.orange : Colors.grey,
+                        shape: BoxShape.circle,
+                      ),
+                  ),
+                ),
+              ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("What is happening here ?", style: GillMT.title(20),),
-          SizedBox(height: 10),
-          FutureBuilder(
-            future: NexaGuideDB().fetchEventsByPOI(location.id),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return snapshot.data!.isEmpty ?
-                  Text('There are no events for this location', style: GillMT.normal(15),)
-                : Text(snapshot.data!.toString(), style: GillMT.normal(15));
-              }
-              else {
-                return const CircularProgressIndicator(color: Colors.orange);
-              }
-            }
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("What is happening here ?", style: GillMT.title(20),),
+              SizedBox(height: 10),
+              FutureBuilder(
+                  future: NexaGuideDB().fetchEventsByPOI(widget.location.id),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      pageCount = (snapshot.data!.length / locationsPerPage).ceil();
+                      if (snapshot.data!.isEmpty) {
+                        return Text('There are no events here at the moment.', style: GillMT.normal(15),);
+                      }
+                      else {
+                        return SizedBox(
+                          height: 200,
+                          child: Column(
+                            children: [
+                              buildEventGrid(snapshot.data!),
+                              _buildPageIndicator()
+                            ],
+                          ),
+                        );
+                      }
+                    }
+                    else {
+                      return const CircularProgressIndicator(color: Colors.orange);
+                    }
+                  }
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

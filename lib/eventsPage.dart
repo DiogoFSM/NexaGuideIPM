@@ -113,14 +113,16 @@ class _EventsPageState extends State<eventsPage> {
         mainAxisSize: MainAxisSize.min,
         children: List<Widget>.generate(
           pageCount,
-              (index) => Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.0),
-            child: Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: _currentPage == index ? Colors.orange : Colors.grey,
-                shape: BoxShape.circle,
+              (index) => Flexible(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.0),
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: _currentPage == index ? Colors.orange : Colors.grey,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
           ),
@@ -218,7 +220,7 @@ class EventGridItem extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Close'),
+              child: Text('Close', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17, color: Colors.orange)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -281,7 +283,8 @@ class EventGridItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      child: Text('View +', style: TextStyle(fontFamily: 'GillSansMT')),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, padding: EdgeInsets.all(2)),
+                      child: Text('View +', style: TextStyle(fontFamily: 'GillSansMT', color:Colors.black)),
                       onPressed: () => _showEventDetailsDialog(context),
                     ),
                   ],

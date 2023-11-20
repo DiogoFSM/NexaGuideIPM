@@ -109,8 +109,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         mainAxisSize: MainAxisSize.min,
         children: List<Widget>.generate(
           pageCount,
-              (index) => Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.0),
+              (index) => Flexible(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.0),
               child: Container(
                 width: 10,
                 height: 10,
@@ -120,6 +121,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 ),
               ),
             ),
+          ),
         ),
       ),
     );
