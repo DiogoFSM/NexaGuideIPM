@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:nexaguide_ipm/database/nexaguide_db.dart';
 import 'package:nexaguide_ipm/eventsPage.dart';
+import 'package:swipe_image_gallery/swipe_image_gallery.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/model/event.dart';
@@ -65,7 +66,7 @@ class LocationSinglePage extends StatelessWidget {
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-                child: PhotosSection(location: location)
+                child: PhotosSection()
               ),
             ],
           ),
@@ -208,6 +209,12 @@ class _EventsSectionState extends State<EventsSection> {
     });
   }
 
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   Widget buildEventGrid(List<Event> events) {
     return Expanded(
         child: PageView.builder(
@@ -313,11 +320,134 @@ class _EventsSectionState extends State<EventsSection> {
 
 }
 
+class PhotosSection extends StatefulWidget {
+  const PhotosSection({super.key});
 
+  @override
+  State<StatefulWidget> createState() => _PhotosSectionState();
+
+}
+
+class _PhotosSectionState extends State<PhotosSection> {
+  final PageController _pageController = PageController();
+  int photosPerPage = 2;
+  int _currentPage = 0;
+  int pageCount = 0;
+
+  final remoteImages = [
+    Image.network('https://www.fct.unl.pt/sites/default/files/imagens/noticias/2015/03/DSC_5142_Tratado.jpg', width:200, fit: BoxFit.cover),
+    Image.network('https://arquivo.codingfest.fct.unl.pt/2016/sites/www.codingfest.fct.unl.pt/files/imagens/fctnova.jpeg', width:200, fit: BoxFit.cover),
+    Image.network('https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png', width:200, fit: BoxFit.cover),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController.addListener(() {
+      int next = _pageController.page!.round();
+      if (_currentPage != next) {
+        setState(() {
+          _currentPage = next;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Widget buildPhotoGrid(List<Image> photos) {
+    return Expanded(
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: pageCount,
+        itemBuilder: (context, pageIndex) {
+          int startIndex = pageIndex * photosPerPage;
+          int endIndex = startIndex + photosPerPage;
+          List<Image> pagePhotos = photos.sublist(startIndex, endIndex > photos.length ? photos.length : endIndex);
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 1.0,
+            ),
+            itemCount: pagePhotos.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 5),
+                child: pagePhotos[index],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPageIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List<Widget>.generate(
+          pageCount,
+              (index) => Flexible(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.0),
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: _currentPage == index ? Colors.orange : Colors.grey,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    pageCount = (remoteImages.length / photosPerPage).ceil();
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Photos", style: GillMT.title(20),),
+          SizedBox(height: 10),
+          SizedBox(
+            height: 200,
+            child: Column(
+              children: [
+                buildPhotoGrid(remoteImages),
+                _buildPageIndicator()
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+}
+
+/*
 class PhotosSection extends StatelessWidget {
   final POI location;
 
-  const PhotosSection({super.key, required this.location});
+  PhotosSection({super.key, required this.location});
+
+  final remoteImages = [
+    Image.network('https://th.bing.com/th/id/R.838429a616c14ad6fafff1e0fd9c5c3c?rik=SyVM7WYDWduovQ&pid=ImgRaw&r=0', width:200, fit: BoxFit.cover),
+    Image.network('https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png', width:200, fit: BoxFit.cover),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -328,9 +458,24 @@ class PhotosSection extends StatelessWidget {
         children: [
           Text("Photos", style: GillMT.title(20),),
           SizedBox(height: 10),
-          Text('Photos will appear here', style: GillMT.normal(16),)
+          //Text('Photos will appear here', style: GillMT.normal(16),),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 30),
+            child: SizedBox(
+              height: 200,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: remoteImages.length,
+                itemBuilder: (context, index) {
+                  //return Text(index.toString());
+                  return remoteImages[index];
+                }
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
+*/
