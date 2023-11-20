@@ -84,12 +84,12 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.location_on),
-            label: 'Locations',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.event),
             label: 'Events',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.location_on),
+            label: 'Locations',
           ),
         ],
         currentIndex: _selectedIndex,
