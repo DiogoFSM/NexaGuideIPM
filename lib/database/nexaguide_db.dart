@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'model/city.dart';
 import 'model/event.dart';
 import 'model/poi.dart';
+import 'model/collection.dart';
 
 class NexaGuideDB {
 
@@ -457,6 +458,124 @@ class NexaGuideDB {
     }
     return result;
   }
+  Future<void> createCollectionsTable(Database database) async {
+    await database.execute("""
+    CREATE TABLE IF NOT EXISTS collections (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      creationDate INT
+    );
+  """);
+  }
+
+  Future<void> createCollectionEventsTable(Database database) async {
+    await database.execute("""
+    CREATE TABLE IF NOT EXISTS collection_events (
+      collection_id INTEGER,
+      event_id INTEGER,
+      FOREIGN KEY (collection_id) REFERENCES collections(id),
+      FOREIGN KEY (event_id) REFERENCES events(id),
+      PRIMARY KEY (collection_id, event_id)
+    );
+  """);
+  }
+
+  Future<void> createCollectionPOITable(Database database) async {
+    await database.execute("""
+    CREATE TABLE IF NOT EXISTS collection_poi (
+      collection_id INTEGER,
+      poi_id INTEGER,
+      FOREIGN KEY (collection_id) REFERENCES collections(id),
+      FOREIGN KEY (poi_id) REFERENCES poi(id),
+      PRIMARY KEY (collection_id, poi_id)
+    );
+  """);
+  }
+
+  Future<int> createCollection(String name, List<int> eventIds, List<int> poiIds, int creationDate) async {
+    final database = await DatabaseService().database;
+    int collectionId = await database.insert(
+      'collections',
+      {'name': name,
+       'creationDate': creationDate},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    for (var eventId in eventIds) {
+      await database.insert(
+        'collection_events',
+        {
+          'collection_id': collectionId,
+          'event_id': eventId,
+        },
+      );
+    }
+    for (var poiId in poiIds) {
+      await database.insert(
+        'collection_poi',
+        {
+          'collection_id': collectionId,
+          'poi_id': poiId,
+        },
+      );
+    }
+    return collectionId;
+  }
+
+  Future<void> addEventToCollection(int eventId, int collectionId) async {
+    final database = await DatabaseService().database;
+
+    // Check if the event is already in the collection
+    final existing = await database.query(
+      'collection_events',
+      where: 'collection_id = ? AND event_id = ?',
+      whereArgs: [collectionId, eventId],
+    );
+
+    // If not, add the event to the collection
+    if (existing.isEmpty) {
+      await database.insert(
+        'collection_events',
+        {
+          'collection_id': collectionId,
+          'event_id': eventId,
+        },
+      );
+    }
+  }
+
+
+  Future<List<Collection>> fetchAllCollections() async {
+    final database = await DatabaseService().database;
+    final List<Map<String, dynamic>> collectionMaps = await database.query('collections');
+
+    List<Collection> collections = [];
+    for (var collectionMap in collectionMaps) {
+      final List<Map<String, dynamic>> eventMaps = await database.query(
+        'collection_events',
+        where: 'collection_id = ?',
+        whereArgs: [collectionMap['id']],
+      );
+      final List<Map<String, dynamic>> poiMaps = await database.query(
+        'collection_poi',
+        where: 'collection_id = ?',
+        whereArgs: [collectionMap['id']],
+      );
+      List<int> eventIds = eventMaps.map((e) => e['event_id'] as int).toList();
+      List<int> poiIds = poiMaps.map((e) => e['poi_id'] as int).toList();
+
+      collections.add(Collection(
+        id: collectionMap['id'],
+        name: collectionMap['name'],
+        eventIds: eventIds,
+        poiIds: poiIds,
+        creationDate: collectionMap['creationDate']
+      ));
+    }
+
+    return collections;
+  }
+
 
   /*
   // TODO

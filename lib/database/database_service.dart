@@ -60,6 +60,9 @@ class DatabaseService {
     await NexaGuideDB().createEventsTable(database);
     await NexaGuideDB().createEventsTagsTable(database);
     await NexaGuideDB().createReviewsTable(database);
+    await NexaGuideDB().createCollectionsTable(database);
+    await NexaGuideDB().createCollectionEventsTable(database);
+    await NexaGuideDB().createCollectionPOITable(database);
     await _loadCitiesFromCSV();
   }
 

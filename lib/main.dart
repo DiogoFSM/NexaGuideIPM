@@ -13,6 +13,7 @@ import 'database/nexaguide_db.dart';
 import 'map/locationMarker.dart';
 import 'map/locationPopup.dart';
 import 'eventsPage.dart';
+import 'collectionsPage.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 typedef MapBoundsCallback = Future<void> Function(LatLngBounds bounds);
@@ -81,6 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _navigateToCollectionsPage() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CollectionsPage()),
+    );
+  }
 
   void _navigateToReviewsPage() async {
 
@@ -161,7 +168,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
-
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            _navigateToCollectionsPage();                          },
+                          child: Text('Collections Page')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
                 // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi list
                 // TODO We need to make sure the database is always initialized when the user opens the app for the first time
                 Flexible(
