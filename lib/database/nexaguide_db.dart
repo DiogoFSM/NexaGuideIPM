@@ -266,7 +266,7 @@ class NexaGuideDB {
 
     if (cityID != null) query += "AND $citiesTableName.id = $cityID ";
     if (minPrice != null) query += "AND $poiTableName.price >= $minPrice ";
-    if (maxPrice != null) query += "AND $poiTableName.price <= $maxPrice OR $poiTableName.price IS NULL ";
+    if (maxPrice != null) query += "AND ($poiTableName.price <= $maxPrice OR $poiTableName.price IS NULL) ";
     if (latMin != null) query += "AND $poiTableName.lat >= $latMin ";
     if (latMax != null) query += "AND $poiTableName.lat <= $latMax ";
     if (lngMin != null) query += "AND $poiTableName.lng >= $lngMin ";
