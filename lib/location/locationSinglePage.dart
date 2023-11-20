@@ -334,10 +334,10 @@ class _PhotosSectionState extends State<PhotosSection> {
   int _currentPage = 0;
   int pageCount = 0;
 
-  final remoteImages = [
-    Image.network('https://www.fct.unl.pt/sites/default/files/imagens/noticias/2015/03/DSC_5142_Tratado.jpg', width:180, fit: BoxFit.cover),
-    Image.network('https://arquivo.codingfest.fct.unl.pt/2016/sites/www.codingfest.fct.unl.pt/files/imagens/fctnova.jpeg', width:180, fit: BoxFit.cover),
-    Image.network('https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png', width:180, fit: BoxFit.cover),
+  final imageURLs = [
+    'https://www.fct.unl.pt/sites/default/files/imagens/noticias/2015/03/DSC_5142_Tratado.jpg',
+    'https://arquivo.codingfest.fct.unl.pt/2016/sites/www.codingfest.fct.unl.pt/files/imagens/fctnova.jpeg',
+    'https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png',
   ];
 
   @override
@@ -360,7 +360,7 @@ class _PhotosSectionState extends State<PhotosSection> {
     super.dispose();
   }
 
-  Widget buildPhotoGrid(List<Image> photos) {
+  Widget buildPhotoGrid(List<String> photos) {
     return Expanded(
       child: PageView.builder(
         controller: _pageController,
@@ -368,7 +368,7 @@ class _PhotosSectionState extends State<PhotosSection> {
         itemBuilder: (context, pageIndex) {
           int startIndex = pageIndex * photosPerPage;
           int endIndex = startIndex + photosPerPage;
-          List<Image> pagePhotos = photos.sublist(startIndex, endIndex > photos.length ? photos.length : endIndex);
+          List<String> pagePhotos = photos.sublist(startIndex, endIndex > photos.length ? photos.length : endIndex);
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -378,7 +378,11 @@ class _PhotosSectionState extends State<PhotosSection> {
             itemBuilder: (context, index) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 5),
-                child: pagePhotos[index],
+                child: Image.network(
+                  pagePhotos[index],
+                  width:180,
+                  fit: BoxFit.cover
+                ),
               );
             },
           );
@@ -414,7 +418,7 @@ class _PhotosSectionState extends State<PhotosSection> {
 
   @override
   Widget build(BuildContext context) {
-    pageCount = (remoteImages.length / photosPerPage).ceil();
+    pageCount = (imageURLs.length / photosPerPage).ceil();
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -427,7 +431,7 @@ class _PhotosSectionState extends State<PhotosSection> {
             height: 220,
             child: Column(
               children: [
-                buildPhotoGrid(remoteImages),
+                buildPhotoGrid(imageURLs),
                 _buildPageIndicator()
               ],
             ),
@@ -438,45 +442,3 @@ class _PhotosSectionState extends State<PhotosSection> {
   }
 
 }
-
-/*
-class PhotosSection extends StatelessWidget {
-  final POI location;
-
-  PhotosSection({super.key, required this.location});
-
-  final remoteImages = [
-    Image.network('https://th.bing.com/th/id/R.838429a616c14ad6fafff1e0fd9c5c3c?rik=SyVM7WYDWduovQ&pid=ImgRaw&r=0', width:200, fit: BoxFit.cover),
-    Image.network('https://www.fct.unl.pt/sites/default/files/imagecache/l740/imagens/noticias/2021/02/campusfct.png', width:200, fit: BoxFit.cover),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Photos", style: GillMT.title(20),),
-          SizedBox(height: 10),
-
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 30),
-            child: SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: remoteImages.length,
-                itemBuilder: (context, index) {
-                  //return Text(index.toString());
-                  return remoteImages[index];
-                }
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-*/
