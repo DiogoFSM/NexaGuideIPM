@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:nexaguide_ipm/Review/Review.dart';
 import 'package:nexaguide_ipm/database/database_service.dart';
 import 'package:nexaguide_ipm/map/map.dart';
+import 'package:nexaguide_ipm/search/searchResultsPage.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'Menu.dart';
@@ -41,16 +44,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
 
       ),
-      home: const MyHomePage(title: 'NexaGuide Map'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+  const MyHomePage({super.key});
+  //final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -66,6 +67,15 @@ class _MyHomePageState extends State<MyHomePage> {
   static double initZoom = 15.0;
 
   late MapWidget map;
+
+  Map<String, dynamic> filters = {
+    'minPrice': 0,
+    'maxPrice': 200,
+    'minRating': 0,
+    'maxRating': 5,
+    'distance': 50.0,
+    'tags':[]
+  };
 
   @override
   void initState() {
@@ -96,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _navigateToReviewsPage() async {
+  void _navigateToReviewsPage() {
 
     Navigator.push(
       context,
@@ -104,21 +114,82 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _navigateToMenuPage() async {
-    List<Event> events = await database.fetchAllEvents();
+  void _navigateToMenuPage() {
+    //List<Event> events = await database.fetchAllEvents();
     Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MenuScreen(),
         ));
   }
+
+  void _navigateToSearchResultsPage(MapController m) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => SearchResultsPage(
+          initLat: m.camera.center.latitude,
+          initLng: m.camera.center.longitude,
+          initZoom: m.camera.zoom,
+          initRotation: m.camera.rotation,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, -2.0);
+          const end = Offset(0.0, 0.0);
+          final tween = Tween(begin: begin, end: end);
+          final offsetAnimation = animation.drive(tween);
+          return Stack(
+            children: [
+              SlideTransition(
+                position: offsetAnimation,
+              ),
+              FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void _applyFilters({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags}) {
+    print(filters);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
           children:[
-            NexaGuideAppBar(mapController: map.mapController),
+            NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _navigateToSearchResultsPage, onFiltersApply: _applyFilters,),
             Expanded(
-                child: map
+                child: Stack(
+                  children: [
+                    map,
+                    Positioned(
+                      bottom: 7,
+                      right: 7,
+                      child: ClipOval(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white38,
+                              shape: BoxShape.circle
+                            ),
+                            child: IconButton(
+                                icon: Icon(Icons.zoom_in_map_rounded, size: 28),
+                                onPressed: () {
+                                  _navigateToSearchResultsPage(map.mapController);
+                                }
+                            ),
+
+                          ),
+                        ),
+                      ),
+                    )
+                  ]
+                )
             ),
             // TODO This row just contains testing options, delete or hide later
             Row(

@@ -1,5 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:nexaguide_ipm/main.dart';
 
 import '../appBar.dart';
 import '../database/model/poi.dart';
@@ -25,8 +29,15 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  //POI p = POI(id: 1, name: 'FCT NOVA', lat: 38.66098, lng: -9.20443, tags: ['University'], cityName:'Almada', website: 'https://www.fct.unl.pt/', description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia") ; // TODO: Just for testing, Delete later
   List<POI> locations = [];
+  Map<String, dynamic> filters = {
+    'minPrice': 0,
+    'maxPrice': 200,
+    'minRating': 0,
+    'maxRating': 5,
+    'distance': 50.0,
+    'tags':List<String>.empty()
+  };
 
   @override
   void initState() {
@@ -42,7 +53,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
       }
     });
 
-    //locations = [p, p, p, p, p];
     getLocations();
   }
 
@@ -50,8 +60,30 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   
   Future<List<POI>> getLocations() async {
     //locations = await NexaGuideDB().fetchPOIByCoordinates(-90, 90, -180, 180);
-    locations = await NexaGuideDB().searchPOI();
+    locations = await NexaGuideDB().searchPOI(
+      minPrice: filters['minPrice'] as int,
+      maxPrice: filters['maxPrice'] as int,
+      tags: filters['tags'] as List<String>,
+    );
     return locations;
+  }
+
+  void _searchButtonPress(MapController m) {
+    // Do something
+  }
+
+  void _applyFilters({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags}) {
+    setState(() {
+      filters = {
+        'minPrice': minPrice,
+        'maxPrice': maxPrice,
+        'minRating': minRating,
+        'maxRating': maxRating,
+        'distance': distance >= 1 ? distance : 50.0,
+        'tags': tags,
+      };
+    });
+    print(filters);
   }
 
   @override
@@ -59,7 +91,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     return Scaffold(
       body: Column(
         children: [
-          NexaGuideAppBar(mapController: map.mapController),
+          NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _searchButtonPress, onFiltersApply: _applyFilters),
           FutureBuilder(
             future: getLocations(),
             builder: (context, snapshot) {
@@ -98,7 +130,39 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         flex:2,
                         child: Container(
                           padding: EdgeInsets.all(10),
-                          child: map
+                          child: Stack(
+                              children: [
+                                map,
+                                Positioned(
+                                  bottom: 7,
+                                  right: 7,
+                                  child: ClipOval(
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white38,
+                                            shape: BoxShape.circle
+                                        ),
+                                        child: IconButton(
+                                            icon: Icon(Icons.zoom_out_map_outlined, size: 28),
+                                            onPressed: () {
+                                              if(Navigator.of(context).canPop()) {
+                                                Navigator.of(context).pop();
+                                              }
+                                              else {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(builder: (context) => MyHomePage(),)
+                                                );
+                                              }
+                                            }
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ]
+                          )
                         ),
                       ),
 

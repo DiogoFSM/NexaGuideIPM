@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nexaguide_ipm/appBar.dart';
 
 class FilterPage extends StatefulWidget {
+  final ApplyFilterCallback onApply;
+
+  const FilterPage({super.key, required this.onApply});
+
   @override
   _FilterPageState createState() => _FilterPageState();
 }
@@ -116,6 +121,14 @@ class _FilterPageState extends State<FilterPage> {
 
                     ElevatedButton(
                       onPressed: () {
+                        widget.onApply(
+                          minPrice: 0,
+                          maxPrice: selectedPrice,
+                          minRating: selectedStars,
+                          maxRating: 5,
+                          distance: selectedDistance,
+                          tags: selectedCategories
+                        );
                         Navigator.of(context).pop();
                       },
                       child: Text('Apply'),

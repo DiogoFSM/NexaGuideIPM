@@ -10,13 +10,16 @@ import 'database/nexaguide_db.dart';
 import 'filterPage.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
+typedef ApplyFilterCallback = void Function({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags});
 
 class NexaGuideAppBar extends StatefulWidget {
   //final MoveMapCallback onSuggestionPress;
   final MapController mapController;
+  final void Function(MapController m) onSearchButtonPress;
+  final ApplyFilterCallback onFiltersApply;
 
   //const NexaGuideAppBar({super.key, required this.onSuggestionPress});
-  const NexaGuideAppBar({super.key, required this.mapController});
+  const NexaGuideAppBar({super.key, required this.mapController, required this.onSearchButtonPress, required this.onFiltersApply});
 
   @override
   State<StatefulWidget> createState() => _NexaGuideAppBarState();
@@ -153,12 +156,15 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                 suffixIcon: IconButton(
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
+                    widget.onSearchButtonPress(widget.mapController);
+                    /*
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
                       initLat: widget.mapController.camera.center.latitude,
                       initLng: widget.mapController.camera.center.longitude,
                       initZoom: widget.mapController.camera.zoom,
                       initRotation: widget.mapController.camera.rotation,
                     )));
+                     */
                   },
                   icon: Icon(Icons.search),
                 ),
@@ -182,7 +188,7 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
 
         Flexible(
             flex: 1,
-            child: FilterPage()
+            child: FilterPage(onApply: widget.onFiltersApply)
         ),
 
         Flexible(

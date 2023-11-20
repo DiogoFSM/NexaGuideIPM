@@ -93,7 +93,7 @@ class MenuScreen extends StatelessWidget {
   void _navigateToMapPage(BuildContext context) async {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) =>MyHomePage(title: 'Nexaguide')),
+      MaterialPageRoute(builder: (context) =>MyHomePage()),
     );
   }
 }

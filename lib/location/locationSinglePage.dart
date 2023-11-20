@@ -61,6 +61,13 @@ class LocationSinglePage extends StatelessWidget {
           ),
           actions: [
             IconButton(
+              icon: Icon(Icons.map_outlined),
+              onPressed: () {
+                // do something
+              },
+            ),
+
+            IconButton(
               icon: Icon(Icons.bookmark_add_outlined),
               onPressed: () {
                 _addToCollection(context, location.id);
@@ -108,7 +115,8 @@ class DetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String priceText = (location.price != null && location.price! >= 0) ? (location.price! == 0 ? "Free" : "${location.price!} €") : '???';
+    //String priceText = (location.price != null && location.price! >= 0) ? (location.price! == 0 ? "Free" : "${location.price!} €") : '???';
+    String priceText = (location.price != null && location.price! >= 0) ? location.price!.toString() : "Free";
 
     return Container(
       child: Column(
