@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:nexaguide_ipm/Review/Review.dart';
 import 'package:nexaguide_ipm/database/database_service.dart';
 import 'package:nexaguide_ipm/map/map.dart';
+import 'package:nexaguide_ipm/search/searchResultsPage.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'Menu.dart';
@@ -41,16 +44,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
 
       ),
-      home: const MyHomePage(title: 'NexaGuide Map'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+  const MyHomePage({super.key});
+  //final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -118,7 +119,37 @@ class _MyHomePageState extends State<MyHomePage> {
           children:[
             NexaGuideAppBar(mapController: map.mapController),
             Expanded(
-                child: map
+                child: Stack(
+                  children: [
+                    map,
+                    Positioned(
+                      bottom: 7,
+                      right: 7,
+                      child: ClipOval(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white38,
+                              shape: BoxShape.circle
+                            ),
+                            child: IconButton(
+                              icon: Icon(Icons.zoom_in_map_rounded, size: 28),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
+                                  initLat: map.mapController.camera.center.latitude,
+                                  initLng: map.mapController.camera.center.longitude,
+                                  initZoom: map.mapController.camera.zoom,
+                                  initRotation: map.mapController.camera.rotation,
+                                )));
+                              }
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ]
+                )
             ),
             // TODO This row just contains testing options, delete or hide later
             Row(

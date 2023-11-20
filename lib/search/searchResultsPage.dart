@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nexaguide_ipm/main.dart';
 
 import '../appBar.dart';
 import '../database/model/poi.dart';
@@ -98,7 +101,39 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         flex:2,
                         child: Container(
                           padding: EdgeInsets.all(10),
-                          child: map
+                          child: Stack(
+                              children: [
+                                map,
+                                Positioned(
+                                  bottom: 7,
+                                  right: 7,
+                                  child: ClipOval(
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white38,
+                                            shape: BoxShape.circle
+                                        ),
+                                        child: IconButton(
+                                            icon: Icon(Icons.zoom_out_map_outlined, size: 28),
+                                            onPressed: () {
+                                              if(Navigator.of(context).canPop()) {
+                                                Navigator.of(context).pop();
+                                              }
+                                              else {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(builder: (context) => MyHomePage(),)
+                                                );
+                                              }
+                                            }
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ]
+                          )
                         ),
                       ),
 
