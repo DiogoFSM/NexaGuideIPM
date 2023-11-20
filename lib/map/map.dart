@@ -41,7 +41,7 @@ class _MapWidgetState extends State<MapWidget> {
   // If the area visible on the map is too big, we don't want to load markers
   // TODO: Maybe "cluster" markers together instead of hiding
   // This parameter (in degrees of lat/lng) controls how big the area has to be to hide the markers
-  static double markerLoadThreshold = 0.3;
+  static double markerLoadThreshold = 0.35;
 
   Future<void> updateVisiblePOIs() async {
     List<POI> l = [];
