@@ -33,15 +33,19 @@ class _FilterPageState extends State<FilterPage> {
     'For Kids',
   ];
 
-  @override
-  void initState() {
-    super.initState();
+  void _initFilters() {
     selectedMinPrice = widget.initFilters['minPrice'] ?? 0;
     selectedMaxPrice = widget.initFilters['maxPrice'] ?? 200;
     selectedStarsMin = widget.initFilters['minRating'] ?? 0;
     selectedStarsMax = widget.initFilters['maxRating'] ?? 5;
     selectedDistance = widget.initFilters['distance'] ?? 0.0;
-    selectedCategories = List<String>.from(widget.initFilters['tags']) ?? [];
+    selectedCategories = List<String>.from(widget.initFilters['tags']);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initFilters();
   }
 
   void showFilters() {
