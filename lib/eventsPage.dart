@@ -3,6 +3,9 @@ import 'package:intl/intl.dart';
 import 'database/model/event.dart';
 import 'database/nexaguide_db.dart';
 import 'collectionsPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:nexaguide_ipm/Review/Review.dart';
+
 
 class eventsPage extends StatefulWidget {
   final List<Event> events;
@@ -18,6 +21,27 @@ class _EventsPageState extends State<eventsPage> {
   late final List<Event> events;
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  Future<void> _addReview(Event event) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? username = prefs.getString('username');
+
+    if (username != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReviewPage(placeName: event.name, userName: username, userPhotoUrl: "null"),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Not logged in'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -196,6 +220,7 @@ class _EventsPageState extends State<eventsPage> {
                           );
                         });
                       },
+                      onAddReview: () => _addReview(currentEvent),
                     );
                   },
                 );
@@ -264,8 +289,9 @@ class EventGridItem extends StatelessWidget {
   final DateFormat format = DateFormat('dd/MM/yyyy');
   final Event event;
   final Function(int eventId, int collectionId) onBookmark;
+  final VoidCallback onAddReview;  // New callback for review
 
-  EventGridItem({required this.event, required this.onBookmark});
+  EventGridItem({required this.event, required this.onBookmark, required this.onAddReview});
 
   void _showEventDetailsDialog(BuildContext context) {
     String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
@@ -326,8 +352,10 @@ class EventGridItem extends StatelessWidget {
                       },
                     ),
                     SizedBox(width: 15),
-                    Icon(Icons.star_outline_rounded, color: Colors.orange, size: 36),
-                    // Add more icons as needed
+                    IconButton(
+                      icon: Icon(Icons.star_outline_rounded, color: Colors.orange, size: 36),
+                      onPressed: onAddReview, // Call the provided callback function
+                    ),                // Add more icons as needed
                   ],
                 ),
                 SizedBox(height: 8),

@@ -266,6 +266,32 @@ class _EventsSectionState extends State<EventsSection> {
     });
   }
 
+  Future<void> addReview(Event event) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? username = prefs.getString('username');
+
+    if (username != null) {
+      // Close the popup dialog first
+      Navigator.pop(context);
+
+      // Then navigate to the review page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReviewPage(placeName: event.name, userName: username, userPhotoUrl: "null"),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Not logged in'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -303,6 +329,7 @@ class _EventsSectionState extends State<EventsSection> {
                       );
                     });
                   },
+                  onAddReview: () => addReview(pageEvents[index]),
                 );
               },
             );
