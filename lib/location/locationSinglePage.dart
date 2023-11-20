@@ -214,13 +214,26 @@ class DetailsSection extends StatelessWidget {
   }
   Future<void> _addReview(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    String? username= prefs.getString('username');
-      if(username!=null)
-   Navigator.push(context, MaterialPageRoute(
-        builder: (context) => ReviewPage(placeName: location.name, userName: username!, userPhotoUrl:"null"),
-      )
-    );
+    String? username = prefs.getString('username');
+
+    if (username != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReviewPage(placeName: location.name, userName: username, userPhotoUrl: "null"),
+        ),
+      );
+    } else {
+      // Show a SnackBar if not logged in
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Not logged in'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
+
 }
 
 class EventsSection extends StatefulWidget {
