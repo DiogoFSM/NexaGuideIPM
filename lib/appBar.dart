@@ -116,28 +116,6 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              /*
-              Flexible(
-                flex: 1,
-                child: InkWell(
-                  onTap: () {
-                    // do something
-                  },
-                  child: Ink.image(
-                    image: AssetImage('assets/nexaguide3.png'),
-                    fit: BoxFit.scaleDown,
-                    width: 40,
-                    height: 40,
-                    child: InkWell(
-                      splashColor: Colors.black.withOpacity(0.5),
-                      highlightColor: Colors.black.withOpacity(0.2),
-                    ),
-                  ),
-                ),
-              ),
-               */
-
-
               Flexible(
                 flex: 1,
                 child: IconButton(
@@ -162,7 +140,7 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                     //suffixIcon: Icon(Icons.search),
                     suffixIcon: IconButton(
                       onPressed: () {
-                        List<POI> l = [];
+                        FocusManager.instance.primaryFocus?.unfocus();
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
                           initLat: widget.mapController.camera.center.latitude,
                           initLng: widget.mapController.camera.center.longitude,
@@ -188,24 +166,6 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                   },
                 ),
               ),
-
-              /*
-              Flexible(
-                flex: 1,
-                child: IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return FilterPage();
-                      },
-                    );
-                  },
-                  icon: Icon(Icons.tune_rounded),
-                  iconSize: 28,
-                ),
-              ),
-               */
 
               Flexible(
                 flex: 1,
@@ -330,6 +290,7 @@ class LocationSearchDelegate extends SearchDelegate {
                     searchBarController.text = result.name;
                     hideOverlay();
                     onSuggestionPress(result.lat, result.lng, 13.0);
+                    FocusManager.instance.primaryFocus?.unfocus();
                   },
                 ),
               );
