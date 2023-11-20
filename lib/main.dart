@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:nexaguide_ipm/Menu.dart';
+import 'package:nexaguide_ipm/Review/Review.dart';
 import 'package:nexaguide_ipm/database/database_service.dart';
 import 'package:nexaguide_ipm/map/map.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'Menu.dart';
 import 'appBar.dart';
 import 'database/model/city.dart';
 import 'database/model/event.dart';
@@ -13,6 +14,7 @@ import 'database/nexaguide_db.dart';
 import 'map/locationMarker.dart';
 import 'map/locationPopup.dart';
 import 'eventsPage.dart';
+import 'collectionsPage.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 typedef MapBoundsCallback = Future<void> Function(LatLngBounds bounds);
@@ -73,21 +75,36 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _navigateToEventsPage() async {
-    database.createEvent(name: "Nos Alive", poiID: 1, dateStart: 0, dateEnd: 200, location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45);
+    database.createEvent(name: "Nos Alive", poiID: 1, dateStart: 0, dateEnd: 200, location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45, description: 'O melhor da música em Portugal');
     List<Event> events = await database.fetchAllEvents();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => eventsPage(events: events)),
     );
   }
+
+  void _navigateToCollectionsPage() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CollectionsPage()),
+    );
+  }
+
+  void _navigateToReviewsPage() async {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ReviewPage(placeName: "placeName", userName: "userName", userPhotoUrl:" userPhotoUrl")),
+    );
+  }
+
   void _navigateToMenuPage() async {
     List<Event> events = await database.fetchAllEvents();
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MenuScreen(),
-    ));
+        context,
+        MaterialPageRoute(builder: (context) => MenuScreen(),
+        ));
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,16 +128,41 @@ class _MyHomePageState extends State<MyHomePage> {
                               lng: -9.20443,
                               website: 'https://www.fct.unl.pt/',
                               description: "Universidade Nova de Lisboa - Faculdade de Ciências e Tecnologia",
-                              tags:['University']
+                              tags:['University'],
+                              cityID: 3595
                           );
-
                           database.createEventWithTags(name: "Semana do Caloiro", poiID: 1, dateStart: 1694563200000, dateEnd: 1694822400000, location: "Caparica", startTime: "20:00h", endTime: "04:00h", tags: ["Festival"]);
                         });
                       },
                       child: Text('Test POI')
                   ),
                 ),
-
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            _navigateToMenuPage();                          },
+                          child: Text('Menu Page')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            _navigateToReviewsPage();                          },
+                          child: Text('Review Page')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
                 Flexible(
                   child: FutureBuilder<List<Event>> (
                     future: _getPOIEvents(1),
@@ -155,34 +197,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       return snapshot.hasData ?
                       ElevatedButton(
                           onPressed: () {
-                            _navigateToMenuPage();                          },
-                          child: Text('Events Page')
+                            _navigateToCollectionsPage();                          },
+                          child: Text('Collections Page')
                       ) : Center(child: CircularProgressIndicator());
                     },
                   ),
                 ),
-                /*
-                Flexible(
-                  child: FutureBuilder<List<POI>> (
-                    future: _getVisiblePOIs(),
-                    builder: (context, snapshot) {
-                      return snapshot.hasData ?
-                      ElevatedButton(
-                          onPressed: () {
-                            snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
-                            /*
-                            setState(() {
-                              //snapshot.data?.forEach((city) {print(city);});
-                              snapshot.data?.forEach((poi) {print("$poi ${poi.tags}");});
-                            });
-                             */
-                          },
-                          child: Text('Print visible POI')
-                      ) : Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                ),
-                */
                 // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi list
                 // TODO We need to make sure the database is always initialized when the user opens the app for the first time
                 Flexible(
@@ -201,6 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
+
               ],
             )
           ]
