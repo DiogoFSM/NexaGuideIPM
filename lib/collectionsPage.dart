@@ -65,6 +65,33 @@ class _CollectionsPageState extends State<CollectionsPage> {
     );
   }
 
+  void _deleteCollection(int collectionId) async {
+    // Confirm deletion
+    bool confirm = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete Collection"),
+        content: Text("Are you sure you want to delete this collection?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text("Delete"),
+          ),
+        ],
+      ),
+    );
+
+    // If confirmed, delete the collection
+    if (confirm) {
+      await NexaGuideDB().deleteCollection(collectionId);
+      _loadCollections(); // Refresh the list of collections
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,6 +129,10 @@ class _CollectionsPageState extends State<CollectionsPage> {
                   );
                 }
               },
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () => _deleteCollection(collection.id),
+              ),
             ),
           );
         },

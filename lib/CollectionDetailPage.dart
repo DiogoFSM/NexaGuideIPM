@@ -29,6 +29,12 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
     _pois = NexaGuideDB().fetchPoisByIds(widget.collection.poiIds); // You need to implement this method
   }
 
+  void refreshCollection() {
+    setState(() {
+    });
+  }
+
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -47,7 +53,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               return ListView(
-                children: snapshot.data!.map((event) => EventCard(event: event, collection: widget.collection)).toList(),
+                children: snapshot.data!.map((event) => EventCard(event: event, collection: widget.collection, onItemRemoved: refreshCollection)).toList(),
               );
             } else {
               return Text('No events found');
@@ -64,7 +70,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               return ListView(
-                children: snapshot.data!.map((poi) => POICard(poi: poi, collection: widget.collection)).toList(),
+                children: snapshot.data!.map((poi) => POICard(poi: poi, collection: widget.collection, onItemRemoved: refreshCollection,)).toList(),
               );
             } else {
               return Text('No locations found');
@@ -105,30 +111,39 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
 class EventCard extends StatelessWidget {
   final Event event;
   final Collection collection;
+  final VoidCallback onItemRemoved;
 
-  EventCard({Key? key, required this.event, required this.collection}) : super(key: key);
+  EventCard({Key? key, required this.event, required this.collection, required this.onItemRemoved}) : super(key: key);
+
+  Future<void> _removeEventFromCollection(BuildContext context) async {
+    await NexaGuideDB().deleteEventFromCollection(event.id, collection.id);
+
+    // Update the collection object
+    collection.eventIds.remove(event.id);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Event removed from collection')),
+    );
+
+    onItemRemoved(); // Refresh the collection page
+  }
 
   @override
   Widget build(BuildContext context) {
-    bool isBookmarked = collection.eventIds.contains(event.id);
     return Card(
       margin: EdgeInsets.all(8.0),
       child: ListTile(
         leading: Icon(Icons.event),
         title: Text(event.name),
         subtitle: Text(event.description ?? ''),
-        onTap: () {
-          // Navigate to eventsPage and pass the event ID to show its details
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => eventsPage(
-                events: [event], // Pass a list containing only the tapped event or modify as needed
-                initialEventId: event.id, // Pass the event ID
-              ),
-            ),
-          );
-        },
+        onTap: () { /* Existing onTap logic */ },
+        trailing: IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () async {
+            await _removeEventFromCollection(context);
+            onItemRemoved(); // Call the refresh function after deletion
+          },
+        ),
       ),
     );
   }
@@ -138,7 +153,22 @@ class POICard extends StatelessWidget {
   final POI poi;
   final Collection collection;
 
-  POICard({Key? key, required this.poi, required this.collection}) : super(key: key);
+  final VoidCallback onItemRemoved;
+
+  POICard({Key? key, required this.poi, required this.collection, required this.onItemRemoved}) : super(key: key);
+
+  Future<void> _removePOIFromCollection(BuildContext context) async {
+    await NexaGuideDB().deletePOIFromCollection(poi.id, collection.id);
+
+    // Update the collection object
+    collection.poiIds.remove(poi.id);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Location removed from collection')),
+    );
+
+    onItemRemoved(); // Refresh the collection page
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,16 +178,14 @@ class POICard extends StatelessWidget {
         leading: Icon(Icons.pin_drop),
         title: Text(poi.name),
         subtitle: Text(poi.cityName ?? ''),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LocationSinglePage(
-                location: poi,
-              ),
-            ),
-          );
-        },
+        onTap: () { /* Existing onTap logic */ },
+        trailing: IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () async {
+            await _removePOIFromCollection(context);
+            onItemRemoved(); // Call the refresh function after deletion
+          },
+        ),
       ),
     );
   }

@@ -577,6 +577,35 @@ class NexaGuideDB {
     return collectionId;
   }
 
+  Future<void> deleteCollection(int collectionId) async {
+    final database = await DatabaseService().database;
+
+    // Begin a transaction to ensure all deletions are successful
+    await database.transaction((txn) async {
+      // Delete all events associated with the collection
+      await txn.delete(
+        'collection_events',
+        where: 'collection_id = ?',
+        whereArgs: [collectionId],
+      );
+
+      // Delete all POIs associated with the collection
+      await txn.delete(
+        'collection_poi',
+        where: 'collection_id = ?',
+        whereArgs: [collectionId],
+      );
+
+      // Finally, delete the collection itself
+      await txn.delete(
+        'collections',
+        where: 'id = ?',
+        whereArgs: [collectionId],
+      );
+    });
+  }
+
+
   Future<void> addEventToCollection(int eventId, int collectionId) async {
     final database = await DatabaseService().database;
 
