@@ -164,8 +164,21 @@ class EventCard extends StatelessWidget {
         leading: Icon(Icons.event),
         title: Text(event.name),
         subtitle: Text(event.description ?? ''),
-        onTap: () { /* Existing onTap logic */ },
-        trailing: IconButton(
+        onTap: () {
+          // Navigate to eventsPage and pass the event ID to show its details
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  eventsPage(
+                    events: [event],
+                    // Pass a list containing only the tapped event or modify as needed
+                    initialEventId: event.id, // Pass the event ID
+                  ),
+            ),
+          );
+        },
+    trailing: IconButton(
           icon: Icon(Icons.delete),
           onPressed: () => _showDeleteConfirmation(context),
         ),
@@ -230,7 +243,16 @@ class POICard extends StatelessWidget {
         leading: Icon(Icons.pin_drop),
         title: Text(poi.name),
         subtitle: Text(poi.cityName ?? ''),
-        onTap: () { /* Existing onTap logic */ },
+        onTap: () {
+            Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (context) => LocationSinglePage(
+            location: poi,
+          ),
+          ),
+            );
+        },
         trailing: IconButton(
           icon: Icon(Icons.delete),
           onPressed: () => _showDeleteConfirmation(context),
