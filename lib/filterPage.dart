@@ -18,13 +18,13 @@ class _FilterPageState extends State<FilterPage> {
   TimeOfDay? selectedTime;
   List<String> selectedCategories = [];
   List<String> allCategories = [
-    'Music',
     'Historical',
-    'Event',
     'Cultural',
+    'Restaurant',
+    'Shopping',
+    'Adventure',
+    'Outdoors',
     'For Kids',
-    'Open Space',
-    'Adventure'
   ];
 
   void showFilters() {
@@ -67,6 +67,7 @@ class _FilterPageState extends State<FilterPage> {
                     ),
                     SizedBox(height: 20),
 
+                    /*
                     Text('Days of the Week:'),
                     Wrap(
                       spacing: 8.0,
@@ -83,6 +84,7 @@ class _FilterPageState extends State<FilterPage> {
                       }),
                     ),
                     SizedBox(height: 20),
+                     */
 
                     Text('Distance: ${selectedDistance.toStringAsFixed(2)} km'),
                     Slider(
@@ -94,10 +96,11 @@ class _FilterPageState extends State<FilterPage> {
                       },
                       min: 0.0,
                       max: 50.0,
+                      divisions: 50,
                     ),
                     SizedBox(height: 20),
 
-                    Text('Categories:'),
+                    Text('Tags:'),
                     Wrap(
                       spacing: 8.0,
                       children: List<Widget>.generate(allCategories.length, (int index) {
