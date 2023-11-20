@@ -5,6 +5,7 @@ import 'model/city.dart';
 import 'model/event.dart';
 import 'model/poi.dart';
 import 'model/collection.dart';
+import 'model/review.dart';
 
 class NexaGuideDB {
 
@@ -814,6 +815,35 @@ class NexaGuideDB {
         [username, placeName]
     );
   }
+
+  Future<List<Review>> fetchReviewsByPlace(String placeName) async {
+    final database = await DatabaseService().database;
+    final reviews = await database.rawQuery(
+        '''SELECT * FROM $reviewsTableName WHERE placeName=?''',
+        [placeName]
+    );
+
+    List<Review> result = [];
+    for (var r in reviews) {
+      Review rev = Review.fromSqfliteDatabase(r);
+      result.add(rev);
+    }
+    return result;
+  }
+
+  Future<double> fetchAverageReviews(int placeID) async {
+    final database = await DatabaseService().database;
+    final reviews = await database.rawQuery(
+        '''SELECT $poiTableName.name, AVG(rating) as avg_rating
+        FROM $poiTableName INNER JOIN $reviewsTableName
+        ON $poiTableName.name = $reviewsTableName.placeName
+        WHERE $poiTableName.id = ? 
+        GROUP BY $poiTableName.name''',
+        [placeID]
+    );
+    return reviews.first['avg_rating'] as double;
+  }
+
 
   Future<int> updateReview({required String username, required String placeName, double? rating, String? reviewText, List<String>? images}) async {
     final database = await DatabaseService().database;
