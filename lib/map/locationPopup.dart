@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../database/model/poi.dart';
+import '../location/locationSinglePage.dart';
 
 class LocationPopup extends StatefulWidget {
   final POI location;
@@ -139,7 +140,8 @@ class _LocationPopupState extends State<LocationPopup> {
                           flex: 1,
                           child: ElevatedButton(
                             onPressed: () {
-                              // TODO: Go to POI detailed page
+                              widget.closePopup();
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => LocationSinglePage (location: widget.location)));
                             },
                             child: const Text('View +', style: TextStyle(fontFamily: 'GillSansMT')),
                           ),
