@@ -376,12 +376,29 @@ class _PhotosSectionState extends State<PhotosSection> {
             ),
             itemCount: pagePhotos.length,
             itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.symmetric(horizontal: 5),
-                child: Image.network(
-                  pagePhotos[index],
-                  width:180,
-                  fit: BoxFit.cover
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: Colors.orange,
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () {
+                    SwipeImageGallery(
+                      context: context,
+                      itemBuilder: (context, index) {
+                        return Image.network(imageURLs[index]);
+                      },
+                      itemCount: imageURLs.length,
+                      initialIndex: startIndex+index,
+                    ).show();
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    child: Image.network(
+                        pagePhotos[index],
+                        width:180,
+                        fit: BoxFit.cover
+                    ),
+                  ),
                 ),
               );
             },
