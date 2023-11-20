@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:nexaguide_ipm/Review/Review.dart';
 import 'package:nexaguide_ipm/database/database_service.dart';
+import 'package:nexaguide_ipm/database/initialize_poi.dart';
 import 'package:nexaguide_ipm/login.dart';
 import 'package:nexaguide_ipm/map/map.dart';
 import 'package:nexaguide_ipm/search/searchResultsPage.dart';
@@ -223,9 +224,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
             ),
             // TODO This row just contains testing options, delete or hide later
-            /*Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                /*
                 Flexible(
                   child: ElevatedButton(
                       onPressed: () {
@@ -316,6 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
+                */
                 // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi list
                 // TODO We need to make sure the database is always initialized when the user opens the app for the first time
                 Flexible(
@@ -326,7 +329,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              deleteDatabase(snapshot.data!);
+                              //deleteDatabase(snapshot.data!);
+                              DatabaseService().deleteDB();
                             });
                           },
                           child: Text('Delete Database!!!')
@@ -335,8 +339,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
 
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              InitializePOIandEvents.initPOI();
+                              InitializePOIandEvents.initEvents();
+                            });
+                          },
+                          child: Text('Init POI and Events')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+
               ],
-            )*/
+            )
           ]
       ),
     );

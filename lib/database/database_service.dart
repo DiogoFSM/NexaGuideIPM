@@ -1,5 +1,6 @@
 import 'package:csv/csv.dart';
 import 'package:flutter/services.dart';
+import 'package:nexaguide_ipm/database/initialize_poi.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -65,7 +66,20 @@ class DatabaseService {
     await NexaGuideDB().createCollectionEventsTable(database);
     await NexaGuideDB().createCollectionPOITable(database);
     await _loadCitiesFromCSV();
+    print("Initializing POI and events...");
+    //await InitializePOIandEvents.initPOI();
+    print("POI and events successfully initialized.");
   }
 
   Future<void> create(Database database, int version) async => await createDB(database);
+
+  Future<void> deleteDB() async {
+    print("Deleting current database, please wait");
+    String path = await fullPath;
+    deleteDatabase(path);
+    print("Deleted database");
+    print("Re-initializing database, can take a few seconds.");
+    await _initialize();
+    print("Database initialized");
+  }
 }

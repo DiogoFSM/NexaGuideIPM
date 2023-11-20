@@ -259,7 +259,7 @@ class POIGridItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible (
-                flex: 1,
+                flex: 2,
                 child: Text(
                   poi.name,
                   style: const TextStyle(
@@ -326,7 +326,7 @@ class POIGridItem extends StatelessWidget {
 
                                 const Flexible(
                                   flex: 2,
-                                  child: Icon(Icons.star_outline_rounded, size: 40, color: Colors.orange,)
+                                  child: Icon(Icons.star_outline_rounded, size: 36, color: Colors.orange,)
                                 ),
 
                                 Flexible(

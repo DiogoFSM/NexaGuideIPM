@@ -52,7 +52,7 @@ class _MapWidgetState extends State<MapWidget> {
     List<POI> l = [];
     var mapBounds = widget.mapController.camera.visibleBounds;
     if (!visibleAreaTooBig()) {
-      print(filters);
+      //print(filters);
       l = await MapWidget.database.searchPOI(
         latMin: mapBounds.south,
         latMax: mapBounds.north,

@@ -118,7 +118,7 @@ class DetailsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //String priceText = (location.price != null && location.price! >= 0) ? (location.price! == 0 ? "Free" : "${location.price!} €") : '???';
-    String priceText = (location.price != null && location.price! >= 0) ? location.price!.toString() : "Free";
+    String priceText = (location.price != null && location.price! >= 0) ? "${location.price!.toString()} €" : "Free";
 
     return Container(
       child: Column(
