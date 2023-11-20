@@ -56,18 +56,23 @@ class LocationSinglePage extends StatelessWidget {
                 padding: const EdgeInsets.all(14),
                 child: DetailsSection(location: location)
               ),
-              Divider(thickness: 2, color: Colors.black, indent: 6, endIndent: 6,),
+              const Divider(thickness: 2, color: Colors.black, indent: 6, endIndent: 6,),
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
                 child: EventsSection(location: location)
               ),
-              Divider(thickness: 2, color: Colors.black, indent: 6, endIndent: 6,),
+              const Divider(thickness: 2, color: Colors.black, indent: 6, endIndent: 6,),
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
                 child: PhotosSection()
               ),
+
+              SizedBox(height:10),
+              const Divider(color: Colors.black87, thickness: 0.2),
+              Text("POI ID: ${location.id}", style: GillMT.lighter(16),),
+              const Divider(color: Colors.black87, thickness: 0.2),
             ],
           ),
         ),
@@ -83,7 +88,7 @@ class DetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String priceText = (location.price != null) ? (location.price! > 0 ? "${location.price!} €" : "Free") : '???';
+    String priceText = (location.price != null && location.price! >= 0) ? (location.price! == 0 ? "Free" : "${location.price!} €") : '???';
 
     return Container(
       child: Column(
@@ -172,6 +177,7 @@ class DetailsSection extends StatelessWidget {
 
           SizedBox(height: 10),
           Text(location.description ?? '(No description available)' , style: GillMT.normal(18).copyWith(height: 1.3), textAlign: TextAlign.justify,),
+
         ],
       )
     );
@@ -380,7 +386,6 @@ class _PhotosSectionState extends State<PhotosSection> {
                 color: Colors.transparent,
                 child: InkWell(
                   splashColor: Colors.orange,
-                  borderRadius: BorderRadius.circular(10),
                   onTap: () {
                     SwipeImageGallery(
                       context: context,

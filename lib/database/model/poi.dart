@@ -32,11 +32,11 @@ class POI {
     lng: map['lng']?.toDouble() ?? 0.0,
     cityID: map['cityID']?.toInt() ?? -1,
     tags: tags ?? [],
-    address: map['address'] ?? '',
-    website: map['website'] ?? '',
+    address: map['address'] ?? '???',
+    website: map['website'] ?? '???',
     price: map['price'] ?? -1,
     description: map['description'] ?? '',
-    cityName: map['cityName'] ?? '(Unknown)'
+    cityName: map['cityName'] ?? '???'
   );
 
   @override

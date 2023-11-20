@@ -21,4 +21,10 @@ class GillMT {
     );
   }
 
+  static TextStyle lighter(double fontSize) {
+    return TextStyle(
+        fontFamily: 'GillSansMT', fontSize: fontSize, fontWeight: FontWeight.bold, color: Colors.black38
+    );
+  }
+
 }
