@@ -4,6 +4,8 @@ import 'package:nexaguide_ipm/database/model/collection.dart';
 import 'package:nexaguide_ipm/database/model/event.dart';
 import 'package:nexaguide_ipm/database/model/poi.dart';
 import 'package:nexaguide_ipm/CollectionItemDetailPage.dart';
+import 'package:nexaguide_ipm/eventsPage.dart';
+import 'package:nexaguide_ipm/location/locationSinglePage.dart';
 
 
 class CollectionDetailPage extends StatefulWidget {
@@ -116,13 +118,13 @@ class EventCard extends StatelessWidget {
         title: Text(event.name),
         subtitle: Text(event.description ?? ''),
         onTap: () {
+          // Navigate to eventsPage and pass the event ID to show its details
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CollectionItemDetailPage(
-                item: event,
-                collectionId: collection.id,
-                isBookmarked: isBookmarked,
+              builder: (context) => eventsPage(
+                events: [event], // Pass a list containing only the tapped event or modify as needed
+                initialEventId: event.id, // Pass the event ID
               ),
             ),
           );
@@ -140,7 +142,6 @@ class POICard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isBookmarked = collection.poiIds.contains(poi.id);
     return Card(
       margin: EdgeInsets.all(8.0),
       child: ListTile(
@@ -151,10 +152,8 @@ class POICard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CollectionItemDetailPage(
-                item: poi,
-                collectionId: collection.id,
-                isBookmarked: isBookmarked,
+              builder: (context) => LocationSinglePage(
+                location: poi,
               ),
             ),
           );

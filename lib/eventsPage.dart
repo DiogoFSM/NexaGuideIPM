@@ -6,8 +6,9 @@ import 'collectionsPage.dart';
 
 class eventsPage extends StatefulWidget {
   final List<Event> events;
+  final int? initialEventId;
 
-  eventsPage({Key? key, required this.events}) : super(key: key);
+  eventsPage({Key? key, required this.events, this.initialEventId}) : super(key: key);
 
   @override
   _EventsPageState createState() => _EventsPageState();
@@ -22,6 +23,90 @@ class _EventsPageState extends State<eventsPage> {
   void initState() {
     super.initState();
     events = widget.events;
+
+    void _showEventDetailsDialog(BuildContext context, int eventId) {
+      final event = events.firstWhere((event) => event.id == eventId);
+      final DateFormat format = DateFormat('dd/MM/yyyy');
+
+      if (event != null) {    String dateStart = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateStart).toLocal());
+      String dateEnd = format.format(DateTime.fromMillisecondsSinceEpoch(event.dateEnd).toLocal());
+      String dateText = dateStart == dateEnd ? dateStart : '$dateStart - $dateEnd';
+      String priceText = (event.price != null && event.price! > 0) ? "${event.price!} €" : "Free";
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView( // To ensure the dialog is scrollable if content is too long
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    event.name,
+                    style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'GillSansMT'
+                    ),
+                  ),
+                  const Divider(
+                    color: Colors.black26,
+                    thickness: 2,
+                  ),
+                  Text('• Location:  ${event.location}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                  // TODO: Talvez meter o sitio (POI) onde o evento decorre??
+                  SizedBox(height: 8),
+                  Text('• Time:  ${event.startTime} - ${event.endTime}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                  SizedBox(height: 8),
+                  //Text('Data: ${event.dateStart} - ${event.dateEnd}'),
+                  Text('• Date:  $dateText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                  SizedBox(height: 8),
+                  Text('• Price:  $priceText', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                  SizedBox(height: 8),
+                  Text('• Website:  ${event.website}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                  SizedBox(height: 8),
+                  Row(
+                    children: <Widget>[
+                      // TODO: Trocar para iconButton
+                      Icon(Icons.pin_drop_rounded, color: Colors.orange, size: 36),
+                      SizedBox(width: 15),
+                      IconButton(
+                        icon: Icon(Icons.bookmark_add_outlined, color: Colors.orange, size: 36),
+                        onPressed: () {
+                        },
+                      ),
+                      SizedBox(width: 15),
+                      Icon(Icons.star_outline_rounded, color: Colors.orange, size: 36),
+                      // Add more icons as needed
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  // TODO: Adicionar tags
+                  Text('${event.description}', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)), // Replace with actual description
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Close', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17, color: Colors.orange)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      }
+    }
+
+
+    if (widget.initialEventId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showEventDetailsDialog(context, widget.initialEventId!);
+      });
+    }
+
+
 
     _pageController.addListener(() {
       int next = _pageController.page!.round();
