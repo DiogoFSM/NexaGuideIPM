@@ -525,6 +525,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  swipe_image_gallery:
+    dependency: "direct main"
+    description:
+      name: swipe_image_gallery
+      sha256: "5b3becd8ed794d0e8f1257dff06f08e3bca7509b44c5166535cc387690597304"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.3"
   synchronized:
     dependency: transitive
     description:

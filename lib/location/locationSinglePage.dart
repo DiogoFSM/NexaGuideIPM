@@ -7,15 +7,35 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../database/model/event.dart';
 import '../database/model/poi.dart';
+import 'package:nexaguide_ipm/collectionsPage.dart';
 import '../text_styles/TextStyleGillMT.dart';
 
 
 
 class LocationSinglePage extends StatelessWidget {
   final POI location;
-
   const LocationSinglePage({super.key, required this.location});
 
+  Future<void> _addToCollection(BuildContext context, int poiId) async {
+    final selectedCollectionId = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CollectionsPage(selectMode: true),
+      ),
+    );
+    if (selectedCollectionId != null) {
+      try {
+        await NexaGuideDB().addPOIToCollection(poiId, selectedCollectionId);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Location added to collection')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add location to collection')),
+        );
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,7 +70,7 @@ class LocationSinglePage extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.bookmark_add_outlined),
               onPressed: () {
-                // do something
+                _addToCollection(context, location.id);
               },
             ),
           ],

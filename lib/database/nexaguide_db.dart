@@ -465,6 +465,27 @@ class NexaGuideDB {
     return buildEventWithTags(events.first);
   }
 
+  Future<List<Event>> fetchEventsByIds(List<int> ids) async {
+    List<Event> events = [];
+
+    for (var id in ids) {
+      final event = await fetchEventById(id);
+      events.add(event);
+    }
+
+    return events;
+  }
+
+  Future<List<POI>> fetchPoisByIds(List<int> ids) async {
+    List<POI> pois = [];
+
+    for (var id in ids) {
+      final poi = await fetchPOIById(id);
+      pois.add(poi);
+    }
+
+    return pois;
+  }
   Future<List<Event>> fetchEventsByPOI(int poiID) async {
     final database = await DatabaseService().database;
     final events = await database.rawQuery(
@@ -576,6 +597,51 @@ class NexaGuideDB {
         },
       );
     }
+  }
+
+  Future<void> deleteEventFromCollection(int eventId, int collectionId) async {
+    final database = await DatabaseService().database;
+
+    // Delete the POI from the collection
+    await database.delete(
+      'collection_events',
+      where: 'collection_id = ? AND event_id = ?',
+      whereArgs: [collectionId, eventId],
+    );
+  }
+
+
+  Future<void> addPOIToCollection(int poiId, int collectionId) async {
+    final database = await DatabaseService().database;
+
+    // Check if the event is already in the collection
+    final existing = await database.query(
+      'collection_poi',
+      where: 'collection_id = ? AND poi_id = ?',
+      whereArgs: [collectionId, poiId],
+    );
+
+    // If not, add the event to the collection
+    if (existing.isEmpty) {
+      await database.insert(
+        'collection_poi',
+        {
+          'collection_id': collectionId,
+          'poi_id': poiId,
+        },
+      );
+    }
+  }
+
+  Future<void> deletePOIFromCollection(int poiId, int collectionId) async {
+    final database = await DatabaseService().database;
+
+    // Delete the POI from the collection
+    await database.delete(
+      'collection_poi',
+      where: 'collection_id = ? AND poi_id = ?',
+      whereArgs: [collectionId, poiId],
+    );
   }
 
 
