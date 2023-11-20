@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:nexaguide_ipm/Menu.dart';
 import 'package:nexaguide_ipm/database/database_service.dart';
 import 'package:nexaguide_ipm/map/map.dart';
 import 'package:sqflite/sqflite.dart';
@@ -79,6 +80,13 @@ class _MyHomePageState extends State<MyHomePage> {
       MaterialPageRoute(builder: (context) => eventsPage(events: events)),
     );
   }
+  void _navigateToMenuPage() async {
+    List<Event> events = await database.fetchAllEvents();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MenuScreen(),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +143,19 @@ class _MyHomePageState extends State<MyHomePage> {
                       ElevatedButton(
                           onPressed: () {
                             _navigateToEventsPage();                          },
+                          child: Text('Events Page')
+                      ) : Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+                Flexible(
+                  child: FutureBuilder<String>(
+                    future: DatabaseService().fullPath,
+                    builder: (context, snapshot) {
+                      return snapshot.hasData ?
+                      ElevatedButton(
+                          onPressed: () {
+                            _navigateToMenuPage();                          },
                           child: Text('Events Page')
                       ) : Center(child: CircularProgressIndicator());
                     },
