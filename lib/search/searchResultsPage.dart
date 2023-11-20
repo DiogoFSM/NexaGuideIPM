@@ -12,6 +12,7 @@ import '../location/locationSinglePage.dart';
 import '../map/map.dart';
 
 class SearchResultsPage extends StatefulWidget {
+
   final double initLat;
   final double initLng;
   final double initZoom;
@@ -86,12 +87,13 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     print(filters);
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _searchButtonPress, onFiltersApply: _applyFilters),
+          NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _searchButtonPress, onFiltersApply: _applyFilters, onMenuButtonPressed: () {  }, ),
           FutureBuilder(
             future: getLocations(),
             builder: (context, snapshot) {

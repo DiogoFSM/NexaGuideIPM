@@ -17,9 +17,9 @@ class NexaGuideAppBar extends StatefulWidget {
   final MapController mapController;
   final void Function(MapController m) onSearchButtonPress;
   final ApplyFilterCallback onFiltersApply;
-
+  final VoidCallback onMenuButtonPressed;
   //const NexaGuideAppBar({super.key, required this.onSuggestionPress});
-  const NexaGuideAppBar({super.key, required this.mapController, required this.onSearchButtonPress, required this.onFiltersApply});
+  const NexaGuideAppBar({super.key, required this.mapController, required this.onSearchButtonPress, required this.onFiltersApply, required this.onMenuButtonPressed});
 
   @override
   State<StatefulWidget> createState() => _NexaGuideAppBarState();
@@ -195,7 +195,8 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
           flex: 1,
           child: IconButton(
             onPressed: () {
-
+              print("IconButton pressed");
+              widget.onMenuButtonPressed();
             },
             icon: Icon(Icons.account_circle),
             iconSize: 28,
