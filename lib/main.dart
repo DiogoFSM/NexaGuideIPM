@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _navigateToReviewsPage() async {
+  void _navigateToReviewsPage() {
 
     Navigator.push(
       context,
@@ -105,19 +105,50 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _navigateToMenuPage() async {
-    List<Event> events = await database.fetchAllEvents();
+  void _navigateToMenuPage() {
+    //List<Event> events = await database.fetchAllEvents();
     Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MenuScreen(),
         ));
   }
+
+  void _navigateToSearchResultsPage(MapController m) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => SearchResultsPage(
+          initLat: m.camera.center.latitude,
+          initLng: m.camera.center.longitude,
+          initZoom: m.camera.zoom,
+          initRotation: m.camera.rotation,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, -2.0);
+          const end = Offset(0.0, 0.0);
+          final tween = Tween(begin: begin, end: end);
+          final offsetAnimation = animation.drive(tween);
+          return Stack(
+            children: [
+              SlideTransition(
+                position: offsetAnimation,
+              ),
+              FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
           children:[
-            NexaGuideAppBar(mapController: map.mapController),
+            NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _navigateToSearchResultsPage,),
             Expanded(
                 child: Stack(
                   children: [
@@ -134,16 +165,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               shape: BoxShape.circle
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.zoom_in_map_rounded, size: 28),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
-                                  initLat: map.mapController.camera.center.latitude,
-                                  initLng: map.mapController.camera.center.longitude,
-                                  initZoom: map.mapController.camera.zoom,
-                                  initRotation: map.mapController.camera.rotation,
-                                )));
-                              }
+                                icon: Icon(Icons.zoom_in_map_rounded, size: 28),
+                                onPressed: () {
+                                  _navigateToSearchResultsPage(map.mapController);
+                                }
                             ),
+
                           ),
                         ),
                       ),

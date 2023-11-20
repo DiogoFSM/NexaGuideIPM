@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:nexaguide_ipm/main.dart';
 
 import '../appBar.dart';
@@ -57,12 +58,16 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     return locations;
   }
 
+  void _searchButtonPress(MapController m) {
+    // Do something
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          NexaGuideAppBar(mapController: map.mapController),
+          NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _searchButtonPress),
           FutureBuilder(
             future: getLocations(),
             builder: (context, snapshot) {

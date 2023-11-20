@@ -14,9 +14,10 @@ typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 class NexaGuideAppBar extends StatefulWidget {
   //final MoveMapCallback onSuggestionPress;
   final MapController mapController;
+  final void Function(MapController m) onSearchButtonPress;
 
   //const NexaGuideAppBar({super.key, required this.onSuggestionPress});
-  const NexaGuideAppBar({super.key, required this.mapController});
+  const NexaGuideAppBar({super.key, required this.mapController, required this.onSearchButtonPress});
 
   @override
   State<StatefulWidget> createState() => _NexaGuideAppBarState();
@@ -153,12 +154,15 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                 suffixIcon: IconButton(
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
+                    widget.onSearchButtonPress(widget.mapController);
+                    /*
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
                       initLat: widget.mapController.camera.center.latitude,
                       initLng: widget.mapController.camera.center.longitude,
                       initZoom: widget.mapController.camera.zoom,
                       initRotation: widget.mapController.camera.rotation,
                     )));
+                     */
                   },
                   icon: Icon(Icons.search),
                 ),
