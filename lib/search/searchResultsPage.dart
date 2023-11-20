@@ -60,8 +60,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   
   Future<List<POI>> getLocations() async {
     //locations = await NexaGuideDB().fetchPOIByCoordinates(-90, 90, -180, 180);
+    //print(filters);
+
     locations = await NexaGuideDB().searchPOI(
-      minPrice: filters['minPrice'] as int,
+      minPrice: filters['minPrice'] >= 1 ? filters['minPrice'] as int : null,
       maxPrice: filters['maxPrice'] as int,
       tags: filters['tags'] as List<String>,
     );
@@ -83,7 +85,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         'tags': tags,
       };
     });
-    print(filters);
+    //print(filters);
   }
 
   @override
