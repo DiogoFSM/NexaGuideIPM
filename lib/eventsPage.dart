@@ -274,6 +274,7 @@ class _EventsPageState extends State<eventsPage> {
         double tempSelectedDistance = selectedDistance;
         int tempMinRating = minRating;
         int tempMaxRating = maxRating;
+        List<String> tempSelectedTags = []; // Temporary list for selected tags
 
         return StatefulBuilder(
           builder: (context, setState) {
@@ -322,10 +323,33 @@ class _EventsPageState extends State<eventsPage> {
                       divisions: 50,
                       label: "${tempSelectedDistance.toStringAsFixed(1)} km",
                     ),
+                    Text('Tags:', style: TextStyle(fontFamily: 'GillSansMT', fontSize: 17)),
+                    Wrap(
+                      spacing: 8.0,
+                      children: [
+                        "Music", "Theater", "Sports", "Art", "For Kids",
+                        "Open Space", "Outdoor", "Most Popular",
+                        "Best Rated", "Adventure"
+                      ].map((String tag) {
+                        return FilterChip(
+                          label: Text(tag),
+                          selected: tempSelectedTags.contains(tag),
+                          onSelected: (bool selected) {
+                            setState(() {
+                              if (selected) {
+                                tempSelectedTags.add(tag);
+                              } else {
+                                tempSelectedTags.removeWhere((String name) => name == tag);
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
                   ],
                 ),
               ),
-              actions: <Widget>[
+            actions: <Widget>[
                 TextButton(
                   child: Text('Close'),
                   onPressed: () {
