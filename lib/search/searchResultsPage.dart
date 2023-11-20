@@ -43,7 +43,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   @override
   void initState() {
     super.initState();
-    map = MapWidget(initLat: widget.initLat, initLng: widget.initLng, initZoom: widget.initZoom, initRotation: widget.initRotation,);
+    map = MapWidget(initLat: widget.initLat, initLng: widget.initLng, initZoom: widget.initZoom, initRotation: widget.initRotation, getFilters: () {return filters;});
 
     _pageController.addListener(() {
       int next = _pageController.page!.round();
@@ -76,7 +76,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     // Do something
   }
 
-  void _applyFilters({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags}) {
+  Map<String, dynamic> _applyFilters({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags}) {
     setState(() {
       filters = {
         'minPrice': minPrice,
@@ -87,7 +87,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         'tags': tags,
       };
     });
+
     //print(filters);
+    return filters;
   }
 
 

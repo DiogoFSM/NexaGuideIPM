@@ -10,7 +10,8 @@ import 'database/nexaguide_db.dart';
 import 'filterPage.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
-typedef ApplyFilterCallback = void Function({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags});
+typedef ApplyFilterCallback = Map<String, dynamic> Function({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags});
+typedef GetFiltersCallback = Map<String, dynamic> Function();
 
 class NexaGuideAppBar extends StatefulWidget {
   //final MoveMapCallback onSuggestionPress;
@@ -158,14 +159,6 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
                     widget.onSearchButtonPress(widget.mapController);
-                    /*
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchResultsPage(
-                      initLat: widget.mapController.camera.center.latitude,
-                      initLng: widget.mapController.camera.center.longitude,
-                      initZoom: widget.mapController.camera.zoom,
-                      initRotation: widget.mapController.camera.rotation,
-                    )));
-                     */
                   },
                   icon: Icon(Icons.search),
                 ),

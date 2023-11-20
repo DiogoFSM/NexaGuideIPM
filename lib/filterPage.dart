@@ -60,20 +60,6 @@ class _FilterPageState extends State<FilterPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /*
-                    Text('Price: $selectedPrice €'),
-                    Slider(
-                      value: selectedPrice.toDouble(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedPrice = newValue.toInt();
-                        });
-                      },
-                      min: 0.0,
-                      max: 100.0,
-                    ),
-                     */
-
                     Text('Price range: $selectedMinPrice - $selectedMaxPrice €', style: GillMT.normal(18)),
                     RangeSlider(
                       values: RangeValues(selectedMinPrice.toDouble(), selectedMaxPrice.toDouble()),
@@ -88,22 +74,6 @@ class _FilterPageState extends State<FilterPage> {
                       divisions: 40,
                     ),
                     SizedBox(height: 20),
-
-                    /*
-                    Text('Stars: $selectedStars'),
-                    Slider(
-                      value: selectedStars.toDouble(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedStars = newValue.toInt();
-                        });
-                      },
-                      min: 0,
-                      max: 5,
-                      divisions: 5,
-                      label: '$selectedStars',
-                    ),
-                     */
 
                     Text('Rating:  $selectedStarsMin - $selectedStarsMax ★', style: GillMT.normal(18),),
                     RangeSlider(

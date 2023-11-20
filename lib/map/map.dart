@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nexaguide_ipm/appBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/model/poi.dart';
@@ -13,9 +14,10 @@ class MapWidget extends StatefulWidget {
   final double initZoom;
   final double initRotation;
   final MapController mapController = MapController();
+  final GetFiltersCallback getFilters;
   static final NexaGuideDB database = NexaGuideDB();
 
-  MapWidget({Key? key, required this.initLat, required this.initLng, required this.initZoom, required this.initRotation}) : super(key: key);
+  MapWidget({Key? key, required this.initLat, required this.initLng, required this.initZoom, required this.initRotation, required this.getFilters}) : super(key: key);
 
   @override
   State<MapWidget> createState() => _MapWidgetState();
@@ -37,6 +39,7 @@ class MapWidget extends StatefulWidget {
 class _MapWidgetState extends State<MapWidget> {
   List<Marker> markers = [];
   List<POI> visiblePOIs = [];
+  Map<String, dynamic> filters = {};
 
   // We don't want to load too many markers on the map at the same time.
   // If the area visible on the map is too big, we don't want to load markers
@@ -45,10 +48,23 @@ class _MapWidgetState extends State<MapWidget> {
   static double markerLoadThreshold = 0.35;
 
   Future<void> updateVisiblePOIs() async {
+    filters = widget.getFilters();
     List<POI> l = [];
     var mapBounds = widget.mapController.camera.visibleBounds;
     if (!visibleAreaTooBig()) {
-      l = await MapWidget.database.fetchPOIByCoordinates(mapBounds.south, mapBounds.north, mapBounds.west, mapBounds.east);
+      print(filters);
+      l = await MapWidget.database.searchPOI(
+        latMin: mapBounds.south,
+        latMax: mapBounds.north,
+        lngMin: mapBounds.west,
+        lngMax: mapBounds.east,
+        minPrice: filters['minPrice'] >= 1 ? filters['minPrice'] as int : null,
+        maxPrice: filters['maxPrice'] as int,
+        minRating: filters['minRating'] as int,
+        maxRating: filters['maxRating'] as int,
+        tags: filters['tags'] as List<String>
+      );
+      //l = await MapWidget.database.fetchPOIByCoordinates(mapBounds.south, mapBounds.north, mapBounds.west, mapBounds.east);
     }
     visiblePOIs = l;
   }

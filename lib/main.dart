@@ -87,13 +87,14 @@ class _MyHomePageState extends State<MyHomePage> {
     'minRating': 0,
     'maxRating': 5,
     'distance': 0.0,
-    'tags':[]
+    'tags':List<String>.empty()
   };
 
   @override
   void initState() {
     super.initState();
-    map = MapWidget(initLat: initLat, initLng: initLng, initZoom: initZoom, initRotation: 0.0,);
+
+    map = MapWidget(initLat: initLat, initLng: initLng, initZoom: initZoom, initRotation: 0.0, getFilters: () {return filters;},);
   }
 
   // TODO: just for testing, remove later
@@ -171,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _applyFilters({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags}) {
+  Map<String, dynamic> _applyFilters({required int minPrice, required int maxPrice, required int minRating, required int maxRating, required double distance, required List<String> tags}) {
     setState(() {
       filters = {
         'minPrice': minPrice,
@@ -183,6 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
       };
     });
     //print(filters);
+    return filters;
   }
 
   @override
