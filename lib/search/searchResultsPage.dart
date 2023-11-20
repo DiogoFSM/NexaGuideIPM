@@ -49,7 +49,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   int get pageCount => (locations.length / locationsPerPage).ceil();
   
   Future<List<POI>> getLocations() async {
-    locations = await NexaGuideDB().fetchPOIByCoordinates(-90, 90, -180, 180);
+    //locations = await NexaGuideDB().fetchPOIByCoordinates(-90, 90, -180, 180);
+    locations = await NexaGuideDB().searchPOI();
     return locations;
   }
 

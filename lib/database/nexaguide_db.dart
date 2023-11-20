@@ -253,13 +253,47 @@ class NexaGuideDB {
     return result;
   }
 
+  // TODO: Search POI by rating
+  Future<List<POI>> searchPOI({
+    String? nameQuery, int? cityID, int? minPrice, int? maxPrice,
+    double? latMin, double? latMax, double? lngMin, double? lngMax, List<String>? tags,
+  }) async {
+    final database = await DatabaseService().database;
+
+    String query =  '''SELECT $poiTableName.*, $citiesTableName.name as cityName FROM $poiTableName 
+        INNER JOIN $citiesTableName ON cityID = $citiesTableName.id
+        WHERE $poiTableName.id NOT NULL ''';
+
+    if (cityID != null) query += "AND $citiesTableName.id = $cityID ";
+    if (minPrice != null) query += "AND $poiTableName.price >= $minPrice ";
+    if (maxPrice != null) query += "AND $poiTableName.price <= $maxPrice ";
+    if (latMin != null) query += "AND $poiTableName.lat >= $latMin ";
+    if (latMax != null) query += "AND $poiTableName.lat <= $latMax ";
+    if (lngMin != null) query += "AND $poiTableName.lng >= $lngMin ";
+    if (lngMax != null) query += "AND $poiTableName.lng <= $lngMax ";
+    if (nameQuery != null) query += "AND $poiTableName.name LIKE '%$nameQuery%' ";
+    //print (query);
+
+    final poi = await database.rawQuery(query);
+    List<POI> result = [];
+    for (var p in poi) {
+      int id = p['id'] as int;
+      List<String> poiTags = await fetchPOITags(id);
+
+      bool containsAllTags = tags != null && tags.every((tag) => poiTags.contains(tag));
+      if (tags == null || tags.isEmpty || containsAllTags) {
+          var poi = POI.fromSqfliteDatabase(map: p, tags: poiTags);
+          result.add(poi);
+      }
+    }
+    return result;
+  }
+
   Future<POI> buildPOIWithTags(Map<String, Object?> poi) async {
     int id = poi['id'] as int;
     List<String> tags = await fetchPOITags(id);
     return POI.fromSqfliteDatabase(map: poi, tags: tags);
   }
-
-  // TODO: Search POI based on multiple filters and tags
 
   Future<void> createPOITagsTable(Database database) async {
     await database.execute("""
