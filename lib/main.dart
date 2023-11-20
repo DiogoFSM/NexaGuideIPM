@@ -12,7 +12,6 @@ import 'database/nexaguide_db.dart';
 import 'map/locationMarker.dart';
 import 'map/locationPopup.dart';
 import 'eventsPage.dart';
-import 'filterPage.dart';
 
 typedef MoveMapCallback = void Function(double lat, double lng, double zoom);
 typedef MapBoundsCallback = Future<void> Function(LatLngBounds bounds);

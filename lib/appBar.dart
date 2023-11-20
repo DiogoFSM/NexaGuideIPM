@@ -325,6 +325,7 @@ class LocationSearchDelegate extends SearchDelegate {
                 child: ListTile(
                   title: Text(result.name, style: TextStyle(fontFamily: 'GillSansMT', fontSize: 19)),
                   subtitle: Text(result.country, style: TextStyle(fontFamily: 'GillSansMT', fontSize: 15)),
+                  trailing: Text("(id: ${result.id})", style: TextStyle(fontFamily: 'GillSansMT', fontSize: 15)),
                   onTap: () {
                     searchBarController.text = result.name;
                     hideOverlay();
