@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
 
       ),
-      home: const MyHomePage(),
+      home:  MenuScreen(),
     );
   }
 }
@@ -105,7 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _navigateToEventsPage() async {
-    database.createEvent(name: "Nos Alive", poiID: 1, dateStart: 0, dateEnd: 200, location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45, description: 'O melhor da música em Portugal');
     List<Event> events = await database.fetchAllEvents();
     Navigator.push(
       context,
@@ -224,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
             ),
             // TODO This row just contains testing options, delete or hide later
-            Row(
+            /*Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Flexible(
@@ -337,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
 
               ],
-            )
+            )*/
           ]
       ),
     );
