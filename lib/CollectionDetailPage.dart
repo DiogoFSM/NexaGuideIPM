@@ -116,16 +116,44 @@ class EventCard extends StatelessWidget {
   EventCard({Key? key, required this.event, required this.collection, required this.onItemRemoved}) : super(key: key);
 
   Future<void> _removeEventFromCollection(BuildContext context) async {
+    // Call your method to remove the event from the collection
     await NexaGuideDB().deleteEventFromCollection(event.id, collection.id);
-
-    // Update the collection object
-    collection.eventIds.remove(event.id);
-
+    collection.eventIds.remove(event.id); // Update the collection object
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Event removed from collection')),
     );
-
     onItemRemoved(); // Refresh the collection page
+  }
+
+  Future<void> _showDeleteConfirmation(BuildContext context) async {
+    // Show a confirmation dialog before deletion
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to remove this event from the collection?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(false); // User cancels the operation
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirms the deletion
+              },
+            ),
+          ],
+        );
+      },
+    ) ?? false; // Handle null (when dialog is dismissed)
+
+    if (confirm) {
+      await _removeEventFromCollection(context);
+    }
   }
 
   @override
@@ -139,10 +167,7 @@ class EventCard extends StatelessWidget {
         onTap: () { /* Existing onTap logic */ },
         trailing: IconButton(
           icon: Icon(Icons.delete),
-          onPressed: () async {
-            await _removeEventFromCollection(context);
-            onItemRemoved(); // Call the refresh function after deletion
-          },
+          onPressed: () => _showDeleteConfirmation(context),
         ),
       ),
     );
@@ -152,22 +177,49 @@ class EventCard extends StatelessWidget {
 class POICard extends StatelessWidget {
   final POI poi;
   final Collection collection;
-
   final VoidCallback onItemRemoved;
 
   POICard({Key? key, required this.poi, required this.collection, required this.onItemRemoved}) : super(key: key);
 
   Future<void> _removePOIFromCollection(BuildContext context) async {
+    // Call your method to remove the POI from the collection
     await NexaGuideDB().deletePOIFromCollection(poi.id, collection.id);
-
-    // Update the collection object
-    collection.poiIds.remove(poi.id);
-
+    collection.poiIds.remove(poi.id); // Update the collection object
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Location removed from collection')),
     );
-
     onItemRemoved(); // Refresh the collection page
+  }
+
+  Future<void> _showDeleteConfirmation(BuildContext context) async {
+    // Show a confirmation dialog before deletion
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to remove this location from the collection?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(false); // User cancels the operation
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirms the deletion
+              },
+            ),
+          ],
+        );
+      },
+    ) ?? false; // Handle null (when dialog is dismissed)
+
+    if (confirm) {
+      await _removePOIFromCollection(context);
+    }
   }
 
   @override
@@ -181,10 +233,7 @@ class POICard extends StatelessWidget {
         onTap: () { /* Existing onTap logic */ },
         trailing: IconButton(
           icon: Icon(Icons.delete),
-          onPressed: () async {
-            await _removePOIFromCollection(context);
-            onItemRemoved(); // Call the refresh function after deletion
-          },
+          onPressed: () => _showDeleteConfirmation(context),
         ),
       ),
     );
