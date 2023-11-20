@@ -7,7 +7,7 @@ import 'login.dart';
 import 'main.dart';
 
 class MenuScreen extends StatelessWidget {
-  final database = NexaGuideDB();
+  final NexaGuideDB database = NexaGuideDB();
 
   @override
   Widget build(BuildContext context) {
@@ -17,73 +17,59 @@ class MenuScreen extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(
-            child: InkWell(
-              onTap: () {
-              _navigateToMapPage(context);
-                // Navigate to Maps screen or handle the action
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.map, size: 80), // Use the appropriate icon
-                  Text('Maps'),
-                ],
-              ),
-            ),
+          _buildMenuButton(
+            context,
+            iconData: Icons.map,
+            label: 'Maps',
+            onTap: () => _navigateToMapPage(context),
           ),
           Divider(height: 1),
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                _navigateToEventsPage(context);
-                // Navigate to Events screen or handle the action
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.event, size: 80), // Use the appropriate icon
-                  Text('Events'),
-                ],
-              ),
-            ),
+          _buildMenuButton(
+            context,
+            iconData: Icons.event,
+            label: 'Events',
+            onTap: () => _navigateToEventsPage(context),
           ),
           Divider(height: 1),
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                _navigateToCollectionsPage(context);
-                // Navigate to Collections screen or handle the action
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.collections, size: 80), // Use the appropriate icon
-                  Text('Collections'),
-                ],
-              ),
-            ),
+          _buildMenuButton(
+            context,
+            iconData: Icons.collections,
+            label: 'Collections',
+            onTap: () => _navigateToCollectionsPage(context),
           ),
           Divider(height: 1),
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                // Navigate to Login screen or handle the action
-                _navigateToLoginPage(context);
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.login, size: 80), // Use the appropriate icon
-                  Text('Login'),
-                ],
-              ),
-            ),
+          _buildMenuButton(
+            context,
+            iconData: Icons.login,
+            label: 'Login',
+            onTap: () => _navigateToLoginPage(context),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildMenuButton(BuildContext context, {required IconData iconData, required String label, required VoidCallback onTap}) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Container( // Use Container to ensure it fills the area
+          width: double.infinity,
+          height: double.infinity,
+          alignment: Alignment.center, // Center the column inside the container
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Use min to wrap content in the column
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(iconData, size: 80), // Icon for the button
+              Text(label), // Text label for the button
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _navigateToEventsPage(BuildContext context) async {
     database.createEvent(name: "Nos Alive", poiID: 1, dateStart: 0, dateEnd: 200, location: "Algés", endTime: "04:00h", startTime: "18:00h", price: 45);
     List<Event> events = await database.fetchAllEvents();
