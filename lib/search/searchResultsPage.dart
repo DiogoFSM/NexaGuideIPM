@@ -326,6 +326,18 @@ class POIGridItem extends StatelessWidget {
                                   flex: 2,
                                   child: Icon(Icons.star_outline_rounded, size: 40, color: Colors.orange,)
                                 ),
+
+                                Flexible(
+                                  flex: 1,
+                                  child: Text(
+                                    "(${poi.reviewCount})",
+                                    style: const TextStyle(
+                                      fontFamily: 'GillSansMT',
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+
                               ],
                             )
                         )

@@ -214,8 +214,10 @@ class NexaGuideDB {
         [id]
     );
     final tags = await fetchPOITags(id);
-    final rating = await fetchAverageRating(id);
-    return POI.fromSqfliteDatabase(map: poi.first, tags: tags, rating: rating);
+    List<num> ratingAndCount = await fetchAverageRatingAndCount(id);
+    double avgRating = ratingAndCount[0] as double;
+    int count = ratingAndCount[1] as int;
+    return POI.fromSqfliteDatabase(map: poi.first, tags: tags, rating: avgRating, revCount: count);
   }
 
   Future<List<POI>> fetchPOIByCity(int cityID) async {
@@ -280,7 +282,9 @@ class NexaGuideDB {
     for (var p in poi) {
       int id = p['id'] as int;
       List<String> poiTags = await fetchPOITags(id);
-      double avgRating = await fetchAverageRating(id);
+      List<num> ratingAndCount = await fetchAverageRatingAndCount(id);
+      double avgRating = ratingAndCount[0] as double;
+      int count = ratingAndCount[1] as int;
 
       bool containsAllTags = tags != null && tags.every((tag) => poiTags.contains(tag));
       bool tagsFilter = tags == null || tags.isEmpty || containsAllTags;
@@ -290,7 +294,7 @@ class NexaGuideDB {
       bool ratingFilter = ratingBiggerThanMin && ratingLowerThanMax;
 
       if (tagsFilter && ratingFilter) {
-          var poi = POI.fromSqfliteDatabase(map: p, tags: poiTags, rating: avgRating);
+          var poi = POI.fromSqfliteDatabase(map: p, tags: poiTags, rating: avgRating, revCount: count);
           result.add(poi);
       }
     }
@@ -300,8 +304,10 @@ class NexaGuideDB {
   Future<POI> buildPOIWithTags(Map<String, Object?> poi) async {
     int id = poi['id'] as int;
     List<String> tags = await fetchPOITags(id);
-    double rating = await fetchAverageRating(id);
-    return POI.fromSqfliteDatabase(map: poi, tags: tags, rating: rating);
+    List<num> ratingAndCount = await fetchAverageRatingAndCount(id);
+    double avgRating = ratingAndCount[0] as double;
+    int count = ratingAndCount[1] as int;
+    return POI.fromSqfliteDatabase(map: poi, tags: tags, rating: avgRating, revCount: count);
   }
 
   Future<void> createPOITagsTable(Database database) async {
@@ -839,10 +845,10 @@ class NexaGuideDB {
     return result;
   }
 
-  Future<double> fetchAverageRating(int placeID) async {
+  Future<List<num>> fetchAverageRatingAndCount(int placeID) async {
     final database = await DatabaseService().database;
     final reviews = await database.rawQuery(
-        '''SELECT $poiTableName.name, AVG(rating) as avg_rating
+        '''SELECT $poiTableName.name, AVG(rating) as avg_rating, COUNT(rating) as review_count
         FROM $poiTableName INNER JOIN $reviewsTableName
         ON $poiTableName.name = $reviewsTableName.placeName
         WHERE $poiTableName.id = ? 
@@ -851,10 +857,12 @@ class NexaGuideDB {
     );
 
     double avgRating = 0.0;
+    int reviewCount = 0;
     if (reviews.isNotEmpty) {
       avgRating = reviews.first['avg_rating'] as double;
+      reviewCount = reviews.first['review_count'] as int;
     }
-    return avgRating;
+    return [avgRating, reviewCount];
   }
 
 

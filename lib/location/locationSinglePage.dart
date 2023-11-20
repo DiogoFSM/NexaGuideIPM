@@ -134,7 +134,7 @@ class DetailsSection extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // TODO: Melhorar as tags
+                    // TODO: Melhorar a parte das tags
                     Text("Tags:  ${location.tags}" , style: GillMT.normal(18),),
                     Text("• City:  ${location.cityName ?? '???'}", style: GillMT.normal(18).copyWith(height: 1.3),),
                     Text("• Address:  ${location.address ?? '???'}" , style: GillMT.normal(18).copyWith(height: 1.3),),
@@ -175,9 +175,8 @@ class DetailsSection extends StatelessWidget {
                             children: [
 
                               Icon(Icons.star_border_rounded, color: Colors.black,),
-                              // TODO: Replace with reviews average and count
                               Flexible(
-                                child: Text("4.5 (543)" , style: GillMT.normal(15).copyWith(color: Colors.black),)
+                                child: Text("${location.avgRating} (${location.reviewCount})" , style: GillMT.normal(15).copyWith(color: Colors.black),)
                               )
 
                             ],
