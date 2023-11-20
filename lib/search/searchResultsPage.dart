@@ -60,12 +60,13 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   int get pageCount => (locations.length / locationsPerPage).ceil();
   
   Future<List<POI>> getLocations() async {
-    //locations = await NexaGuideDB().fetchPOIByCoordinates(-90, 90, -180, 180);
     //print(filters);
 
     locations = await NexaGuideDB().searchPOI(
       minPrice: filters['minPrice'] >= 1 ? filters['minPrice'] as int : null,
       maxPrice: filters['maxPrice'] as int,
+      minRating: filters['minRating'] as int,
+      maxRating: filters['maxRating'] as int,
       tags: filters['tags'] as List<String>,
     );
     return locations;
@@ -313,7 +314,7 @@ class POIGridItem extends StatelessWidget {
                                 Flexible(
                                     flex: 1,
                                     child: Text(
-                                      "4.5", // TODO Replace with actual average value of reviews
+                                      poi.avgRating.toString(),
                                       style: const TextStyle(
                                         fontFamily: 'GillSansMT',
                                         fontSize: 16,

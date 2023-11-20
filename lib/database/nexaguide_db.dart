@@ -214,7 +214,8 @@ class NexaGuideDB {
         [id]
     );
     final tags = await fetchPOITags(id);
-    return POI.fromSqfliteDatabase(map: poi.first, tags: tags);
+    final rating = await fetchAverageRating(id);
+    return POI.fromSqfliteDatabase(map: poi.first, tags: tags, rating: rating);
   }
 
   Future<List<POI>> fetchPOIByCity(int cityID) async {
@@ -254,9 +255,8 @@ class NexaGuideDB {
     return result;
   }
 
-  // TODO: Search POI by rating
   Future<List<POI>> searchPOI({
-    String? nameQuery, int? cityID, int? minPrice, int? maxPrice,
+    String? nameQuery, int? cityID, int? minPrice, int? maxPrice, int? minRating, int? maxRating,
     double? latMin, double? latMax, double? lngMin, double? lngMax, List<String>? tags,
   }) async {
     final database = await DatabaseService().database;
@@ -280,10 +280,17 @@ class NexaGuideDB {
     for (var p in poi) {
       int id = p['id'] as int;
       List<String> poiTags = await fetchPOITags(id);
+      double avgRating = await fetchAverageRating(id);
 
       bool containsAllTags = tags != null && tags.every((tag) => poiTags.contains(tag));
-      if (tags == null || tags.isEmpty || containsAllTags) {
-          var poi = POI.fromSqfliteDatabase(map: p, tags: poiTags);
+      bool tagsFilter = tags == null || tags.isEmpty || containsAllTags;
+
+      bool ratingBiggerThanMin = minRating == null || avgRating >= minRating;
+      bool ratingLowerThanMax = maxRating == null || avgRating  <= maxRating;
+      bool ratingFilter = ratingBiggerThanMin && ratingLowerThanMax;
+
+      if (tagsFilter && ratingFilter) {
+          var poi = POI.fromSqfliteDatabase(map: p, tags: poiTags, rating: avgRating);
           result.add(poi);
       }
     }
@@ -293,7 +300,8 @@ class NexaGuideDB {
   Future<POI> buildPOIWithTags(Map<String, Object?> poi) async {
     int id = poi['id'] as int;
     List<String> tags = await fetchPOITags(id);
-    return POI.fromSqfliteDatabase(map: poi, tags: tags);
+    double rating = await fetchAverageRating(id);
+    return POI.fromSqfliteDatabase(map: poi, tags: tags, rating: rating);
   }
 
   Future<void> createPOITagsTable(Database database) async {
@@ -831,7 +839,7 @@ class NexaGuideDB {
     return result;
   }
 
-  Future<double> fetchAverageReviews(int placeID) async {
+  Future<double> fetchAverageRating(int placeID) async {
     final database = await DatabaseService().database;
     final reviews = await database.rawQuery(
         '''SELECT $poiTableName.name, AVG(rating) as avg_rating
@@ -841,7 +849,12 @@ class NexaGuideDB {
         GROUP BY $poiTableName.name''',
         [placeID]
     );
-    return reviews.first['avg_rating'] as double;
+
+    double avgRating = 0.0;
+    if (reviews.isNotEmpty) {
+      avgRating = reviews.first['avg_rating'] as double;
+    }
+    return avgRating;
   }
 
 
