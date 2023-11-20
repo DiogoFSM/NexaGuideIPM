@@ -258,21 +258,83 @@ class _EventsPageState extends State<eventsPage> {
     );
   }
 
+  int minPrice = 0;
+  int maxPrice = 200;
+  double selectedDistance = 0.0;
+  int minRating = 0;
+  int maxRating = 5;
+
   void showFiltersDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Filters'),
-          content: Text('Filters options go here'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+        // Temporary variables to hold slider values
+        int tempMinPrice = minPrice;
+        int tempMaxPrice = maxPrice;
+        double tempSelectedDistance = selectedDistance;
+        int tempMinRating = minRating;
+        int tempMaxRating = maxRating;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Filters'),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Price range: \$${tempMinPrice} - \$${tempMaxPrice}'),
+                    RangeSlider(
+                      values: RangeValues(tempMinPrice.toDouble(), tempMaxPrice.toDouble()),
+                      min: 0,
+                      max: 200,
+                      divisions: 40,
+                      onChanged: (RangeValues values) {
+                        setState(() {
+                          tempMinPrice = values.start.round();
+                          tempMaxPrice = values.end.round();
+                        });
+                      },
+                    ),
+                    Text('Rating: $tempMinRating - $tempMaxRating'),
+                    RangeSlider(
+                      values: RangeValues(tempMinRating.toDouble(), tempMaxRating.toDouble()),
+                      min: 0,
+                      max: 5,
+                      divisions: 5,
+                      onChanged: (RangeValues values) {
+                        setState(() {
+                          tempMinRating = values.start.round();
+                          tempMaxRating = values.end.round();
+                        });
+                      },
+                    ),
+                    Text('Distance: ${tempSelectedDistance.toStringAsFixed(1)} km'),
+                    Slider(
+                      value: tempSelectedDistance,
+                      onChanged: (newValue) {
+                        setState(() {
+                          tempSelectedDistance = newValue;
+                        });
+                      },
+                      min: 0,
+                      max: 50,
+                      divisions: 50,
+                      label: "${tempSelectedDistance.toStringAsFixed(1)} km",
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Close'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
