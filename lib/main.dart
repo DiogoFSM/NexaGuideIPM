@@ -224,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
             ),
             // TODO This row just contains testing options, delete or hide later
-            Row(
+            /*Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Flexible(
@@ -337,7 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
 
               ],
-            )
+            )*/
           ]
       ),
     );
