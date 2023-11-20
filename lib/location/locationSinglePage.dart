@@ -247,8 +247,6 @@ class _EventsSectionState extends State<EventsSection> {
     );
   }
 
-
-
   Widget _buildPageIndicator() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
