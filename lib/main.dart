@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:nexaguide_ipm/Review/Review.dart';
 import 'package:nexaguide_ipm/database/database_service.dart';
+import 'package:nexaguide_ipm/login.dart';
 import 'package:nexaguide_ipm/map/map.dart';
 import 'package:nexaguide_ipm/search/searchResultsPage.dart';
 import 'package:sqflite/sqflite.dart';
@@ -65,7 +66,19 @@ class _MyHomePageState extends State<MyHomePage> {
   static double initLat = 38.66098;
   static double initLng = -9.20443;
   static double initZoom = 15.0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isSidebarVisible = false;
 
+  void openDrawer() {
+    print("openDrawer called");
+    _scaffoldKey.currentState?.openDrawer();
+  }
+
+  void toggleSidebar() {
+    setState(() {
+      isSidebarVisible = !isSidebarVisible;
+    });
+  }
   late MapWidget map;
 
   Map<String, dynamic> filters = {
@@ -113,7 +126,13 @@ class _MyHomePageState extends State<MyHomePage> {
       MaterialPageRoute(builder: (context) => ReviewPage(placeName: "placeName", userName: "userName", userPhotoUrl:" userPhotoUrl")),
     );
   }
+  void _navigateToLoginPage() {
 
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
   void _navigateToMenuPage() {
     //List<Event> events = await database.fetchAllEvents();
     Navigator.push(
@@ -161,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Column(
           children:[
-            NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _navigateToSearchResultsPage, onFiltersApply: _applyFilters,),
+            NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _navigateToSearchResultsPage, onFiltersApply: _applyFilters, onMenuButtonPressed: toggleSidebar,),
             Expanded(
                 child: Stack(
                   children: [
@@ -187,7 +206,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       ),
-                    )
+                    ),
+                    if (isSidebarVisible) _buildCustomSidebar(),
                   ]
                 )
             ),
@@ -302,6 +322,56 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             )
           ]
+      ),
+    );
+  }
+
+  Widget _buildCustomSidebar() {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: Container(
+        width: 250, // Adjust the width as needed
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white,
+        // Add your menu items here
+        child: ListView(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.menu),
+              title: Text('Menu'),
+              onTap: () {
+                _navigateToMenuPage();
+                // Handle Map navigation
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.mic),
+              title: Text('Events'),
+              onTap: () {
+                _navigateToEventsPage();
+                // Handle Map navigation
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.collections),
+              title: Text('Collections'),
+              onTap: () {
+                _navigateToCollectionsPage();
+                // Handle Map navigation
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.verified_user),
+              title: Text('Login'),
+              onTap: () {
+                _navigateToLoginPage();
+                // Handle Map navigation
+              },
+            ),
+            // ... other ListTile items ...
+          ],
+        ),
       ),
     );
   }

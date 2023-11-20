@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexaguide_ipm/appBar.dart';
+import 'package:nexaguide_ipm/text_styles/TextStyleGillMT.dart';
 
 class FilterPage extends StatefulWidget {
   final ApplyFilterCallback onApply;
@@ -11,20 +12,24 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
-  int selectedPrice = 0;
-  int selectedStars = 0;
+  //int selectedPrice = 0;
+  int selectedMinPrice = 0;
+  int selectedMaxPrice = 200;
+  //int selectedStars = 0;
+  int selectedStarsMin = 0;
+  int selectedStarsMax = 5;
   List<bool> selectedDays = [false, false, false, false, false, false, false];
   double selectedDistance = 0.0;
   TimeOfDay? selectedTime;
   List<String> selectedCategories = [];
   List<String> allCategories = [
-    'Music',
     'Historical',
-    'Event',
     'Cultural',
+    'Restaurant',
+    'Shopping',
+    'Adventure',
+    'Outdoors',
     'For Kids',
-    'Open Space',
-    'Adventure'
   ];
 
   void showFilters() {
@@ -34,11 +39,12 @@ class _FilterPageState extends State<FilterPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Filters'),
+              title: Text('Filters', style: GillMT.title(20)),
               content: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    /*
                     Text('Price: $selectedPrice €'),
                     Slider(
                       value: selectedPrice.toDouble(),
@@ -50,8 +56,24 @@ class _FilterPageState extends State<FilterPage> {
                       min: 0.0,
                       max: 100.0,
                     ),
+                     */
+
+                    Text('Price range: $selectedMinPrice - $selectedMaxPrice €', style: GillMT.normal(18)),
+                    RangeSlider(
+                      values: RangeValues(selectedMinPrice.toDouble(), selectedMaxPrice.toDouble()),
+                      onChanged: (newValues) {
+                        setState(() {
+                          selectedMinPrice = newValues.start.toInt();
+                          selectedMaxPrice = newValues.end.toInt();
+                        });
+                      },
+                      min: 0.0,
+                      max: 200.0,
+                      divisions: 40,
+                    ),
                     SizedBox(height: 20),
 
+                    /*
                     Text('Stars: $selectedStars'),
                     Slider(
                       value: selectedStars.toDouble(),
@@ -65,8 +87,23 @@ class _FilterPageState extends State<FilterPage> {
                       divisions: 5,
                       label: '$selectedStars',
                     ),
+                     */
+
+                    Text('Rating:  $selectedStarsMin - $selectedStarsMax ★', style: GillMT.normal(18),),
+                    RangeSlider(
+                      values: RangeValues(selectedStarsMin.toDouble(), selectedStarsMax.toDouble()),
+                      onChanged: (newValues) {
+                        setState(() {
+                          selectedStarsMin = newValues.start.toInt();
+                          selectedStarsMax = newValues.end.toInt();
+                        });
+                      },
+                      min: 0.0,
+                      max: 5.0,
+                    ),
                     SizedBox(height: 20),
 
+                    /*
                     Text('Days of the Week:'),
                     Wrap(
                       spacing: 8.0,
@@ -83,8 +120,9 @@ class _FilterPageState extends State<FilterPage> {
                       }),
                     ),
                     SizedBox(height: 20),
+                     */
 
-                    Text('Distance: ${selectedDistance.toStringAsFixed(2)} km'),
+                    Text('Distance: ${selectedDistance.toStringAsFixed(2)} km', style: GillMT.normal(18)),
                     Slider(
                       value: selectedDistance,
                       onChanged: (newValue) {
@@ -94,16 +132,18 @@ class _FilterPageState extends State<FilterPage> {
                       },
                       min: 0.0,
                       max: 50.0,
+                      divisions: 50,
                     ),
                     SizedBox(height: 20),
 
-                    Text('Categories:'),
+                    Text('Tags:', style: GillMT.normal(18)),
                     Wrap(
                       spacing: 8.0,
                       children: List<Widget>.generate(allCategories.length, (int index) {
                         return FilterChip(
-                          label: Text(allCategories[index]),
+                          label: Text(allCategories[index], style: GillMT.normal(16)),
                           selected: selectedCategories.contains(allCategories[index]),
+                          selectedColor: Colors.orange,
                           onSelected: (bool value) {
                             setState(() {
                               if (value) {
@@ -119,19 +159,24 @@ class _FilterPageState extends State<FilterPage> {
 
                     SizedBox(height: 20),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        widget.onApply(
-                          minPrice: 0,
-                          maxPrice: selectedPrice,
-                          minRating: selectedStars,
-                          maxRating: 5,
-                          distance: selectedDistance,
-                          tags: selectedCategories
-                        );
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Apply'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            widget.onApply(
+                              minPrice: selectedMinPrice,
+                              maxPrice: selectedMaxPrice,
+                              minRating: selectedStarsMin,
+                              maxRating: selectedStarsMax,
+                              distance: selectedDistance,
+                              tags: selectedCategories
+                            );
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Apply', style: GillMT.normal(18)),
+                        ),
+                      ],
                     ),
                   ],
                 ),

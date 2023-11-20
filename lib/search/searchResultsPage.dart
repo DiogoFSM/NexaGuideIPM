@@ -12,6 +12,7 @@ import '../location/locationSinglePage.dart';
 import '../map/map.dart';
 
 class SearchResultsPage extends StatefulWidget {
+
   final double initLat;
   final double initLng;
   final double initZoom;
@@ -60,8 +61,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   
   Future<List<POI>> getLocations() async {
     //locations = await NexaGuideDB().fetchPOIByCoordinates(-90, 90, -180, 180);
+    //print(filters);
+
     locations = await NexaGuideDB().searchPOI(
-      minPrice: filters['minPrice'] as int,
+      minPrice: filters['minPrice'] >= 1 ? filters['minPrice'] as int : null,
       maxPrice: filters['maxPrice'] as int,
       tags: filters['tags'] as List<String>,
     );
@@ -83,15 +86,16 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         'tags': tags,
       };
     });
-    print(filters);
+    //print(filters);
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _searchButtonPress, onFiltersApply: _applyFilters),
+          NexaGuideAppBar(mapController: map.mapController, onSearchButtonPress: _searchButtonPress, onFiltersApply: _applyFilters, onMenuButtonPressed: () {  }, ),
           FutureBuilder(
             future: getLocations(),
             builder: (context, snapshot) {
