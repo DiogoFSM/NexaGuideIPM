@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexaguide_ipm/collectionsPage.dart';
+import 'database/initialize_poi.dart';
 import 'database/model/event.dart';
 import 'database/nexaguide_db.dart';
 import 'eventsPage.dart';
@@ -15,36 +16,52 @@ class MenuScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Menu'),
       ),
-      body: Column(
-        children: <Widget>[
-          _buildMenuButton(
-            context,
-            iconData: Icons.map,
-            label: 'Maps',
-            onTap: () => _navigateToMapPage(context),
-          ),
-          Divider(height: 1),
-          _buildMenuButton(
-            context,
-            iconData: Icons.event,
-            label: 'Events',
-            onTap: () => _navigateToEventsPage(context),
-          ),
-          Divider(height: 1),
-          _buildMenuButton(
-            context,
-            iconData: Icons.collections,
-            label: 'Collections',
-            onTap: () => _navigateToCollectionsPage(context),
-          ),
-          Divider(height: 1),
-          _buildMenuButton(
-            context,
-            iconData: Icons.login,
-            label: 'Login',
-            onTap: () => _navigateToLoginPage(context),
-          ),
-        ],
+      body: FutureBuilder(
+        future: database.fetchAllEvents(), // Isto e so para forçar a inicialização da base de dados, precisava de mais tempo para arranjar uma forma melhor
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Event>? events = snapshot.data;
+            if (events!.isEmpty) {
+              InitializePOIandEvents.initPOI();
+              InitializePOIandEvents.initEvents();
+            }
+          }
+
+          return snapshot.hasData ?
+          Column(
+            children: <Widget>[
+              _buildMenuButton(
+                context,
+                iconData: Icons.map,
+                label: 'Maps',
+                onTap: () => _navigateToMapPage(context),
+              ),
+              Divider(height: 1),
+              _buildMenuButton(
+                context,
+                iconData: Icons.event,
+                label: 'Events',
+                onTap: () => _navigateToEventsPage(context),
+              ),
+              Divider(height: 1),
+              _buildMenuButton(
+                context,
+                iconData: Icons.collections,
+                label: 'Collections',
+                onTap: () => _navigateToCollectionsPage(context),
+              ),
+              Divider(height: 1),
+              _buildMenuButton(
+                context,
+                iconData: Icons.login,
+                label: 'Login',
+                onTap: () => _navigateToLoginPage(context),
+              ),
+            ],
+          )
+
+              : const CircularProgressIndicator(color: Colors.orange);
+        },
       ),
     );
   }
