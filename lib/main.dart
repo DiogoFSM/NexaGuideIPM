@@ -319,8 +319,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 */
+
+
                 // NOTE: after deleting database, it will "re-initialize" because we are getting the visible poi list
                 // TODO We need to make sure the database is always initialized when the user opens the app for the first time
+
+                /*
                 Flexible(
                   child: FutureBuilder<String>(
                     future: DatabaseService().fullPath,
@@ -356,7 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                   ),
                 ),
-
+                */
               ],
             )
           ]
