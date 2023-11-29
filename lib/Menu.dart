@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexaguide_ipm/collectionsPage.dart';
+import 'package:nexaguide_ipm/text_styles/TextStyleGillMT.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'database/initialize_poi.dart';
 import 'database/model/event.dart';
 import 'database/nexaguide_db.dart';
@@ -14,7 +16,7 @@ class MenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Menu'),
+        title: Text('Menu', style: GillMT.title(22)),
       ),
       body: FutureBuilder(
         future: database.fetchAllEvents(), // Isto e so para forçar a inicialização da base de dados, precisava de mais tempo para arranjar uma forma melhor
@@ -54,9 +56,33 @@ class MenuScreen extends StatelessWidget {
               _buildMenuButton(
                 context,
                 iconData: Icons.login,
-                label: 'Login',
+                label: 'Login/Logout',
                 onTap: () => _navigateToLoginPage(context),
               ),
+              /*
+              FutureBuilder<SharedPreferences>(
+                future: SharedPreferences.getInstance(),
+                builder: (context, snapshot) {
+                  SharedPreferences? prefs = snapshot.data;
+                  String? username = prefs?.getString('username');
+
+                  return username != null ?
+                    _buildMenuButton(
+                      context,
+                      iconData: Icons.logout,
+                      label: 'Logout',
+                      onTap: () => _navigateToLoginPage(context),
+                    )
+                  : _buildMenuButton(
+                      context,
+                      iconData: Icons.login,
+                      label: 'Login',
+                      onTap: () => _navigateToLoginPage(context),
+                    );
+                }
+              )
+               */
+
             ],
           )
 
@@ -79,7 +105,7 @@ class MenuScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Icon(iconData, size: 80), // Icon for the button
-              Text(label), // Text label for the button
+              Text(label, style: GillMT.normal(20)), // Text label for the button
             ],
           ),
         ),

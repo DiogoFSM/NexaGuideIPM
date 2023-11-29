@@ -33,7 +33,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   List<POI> locations = [];
   Map<String, dynamic> filters = {
     'minPrice': 0,
-    'maxPrice': 200,
+    'maxPrice': 100,
     'minRating': 0,
     'maxRating': 5,
     'distance': 0.0,

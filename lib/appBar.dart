@@ -192,7 +192,7 @@ class _NexaGuideAppBarState extends State<NexaGuideAppBar> {
               print("IconButton pressed");
               widget.onMenuButtonPressed();
             },
-            icon: Icon(Icons.account_circle),
+            icon: Icon(Icons.menu_rounded),
             iconSize: 28,
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nexaguide_ipm/text_styles/TextStyleGillMT.dart';
 import 'database/model/event.dart';
 import 'database/nexaguide_db.dart';
 import 'collectionsPage.dart';
@@ -177,7 +178,7 @@ class _EventsPageState extends State<eventsPage> {
               ),
 
               IconButton(
-                icon: Icon(Icons.account_circle),
+                icon: Icon(Icons.menu_rounded),
                 iconSize: 28,
                 onPressed: () {
                   // Handle profile action
@@ -284,12 +285,12 @@ class _EventsPageState extends State<eventsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Price range: \$${tempMinPrice} - \$${tempMaxPrice}'),
+                    Text('Price range: ${tempMinPrice} - ${tempMaxPrice} €'),
                     RangeSlider(
                       values: RangeValues(tempMinPrice.toDouble(), tempMaxPrice.toDouble()),
                       min: 0,
                       max: 200,
-                      divisions: 40,
+                      //divisions: 40,
                       onChanged: (RangeValues values) {
                         setState(() {
                           tempMinPrice = values.start.round();
@@ -310,7 +311,7 @@ class _EventsPageState extends State<eventsPage> {
                         });
                       },
                     ),
-                    Text('Distance: ${tempSelectedDistance.toStringAsFixed(1)} km'),
+                    Text('Maximum Distance: ${tempSelectedDistance.toStringAsFixed(1)} km'),
                     Slider(
                       value: tempSelectedDistance,
                       onChanged: (newValue) {
@@ -350,12 +351,21 @@ class _EventsPageState extends State<eventsPage> {
                 ),
               ),
             actions: <Widget>[
+              /*
                 TextButton(
                   child: Text('Close'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                 ),
+               */
+
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Apply', style: GillMT.normal(18)),
+              ),
               ],
             );
           },

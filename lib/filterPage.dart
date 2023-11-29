@@ -15,7 +15,7 @@ class FilterPage extends StatefulWidget {
 class _FilterPageState extends State<FilterPage> {
   //int selectedPrice = 0;
   int selectedMinPrice = 0;
-  int selectedMaxPrice = 200;
+  int selectedMaxPrice = 100;
   //int selectedStars = 0;
   int selectedStarsMin = 0;
   int selectedStarsMax = 5;
@@ -35,7 +35,7 @@ class _FilterPageState extends State<FilterPage> {
 
   void _initFilters() {
     selectedMinPrice = widget.initFilters['minPrice'] ?? 0;
-    selectedMaxPrice = widget.initFilters['maxPrice'] ?? 200;
+    selectedMaxPrice = widget.initFilters['maxPrice'] ?? 100;
     selectedStarsMin = widget.initFilters['minRating'] ?? 0;
     selectedStarsMax = widget.initFilters['maxRating'] ?? 5;
     selectedDistance = widget.initFilters['distance'] ?? 0.0;
@@ -70,8 +70,8 @@ class _FilterPageState extends State<FilterPage> {
                         });
                       },
                       min: 0.0,
-                      max: 200.0,
-                      divisions: 40,
+                      max: 100.0,
+                      //divisions: 40,
                     ),
                     SizedBox(height: 20),
 
@@ -108,7 +108,7 @@ class _FilterPageState extends State<FilterPage> {
                     SizedBox(height: 20),
                      */
 
-                    Text('Distance: ${selectedDistance.toStringAsFixed(2)} km', style: GillMT.normal(18)),
+                    Text('Maximum Distance: ${selectedDistance.toStringAsFixed(2)} km', style: GillMT.normal(18)),
                     Slider(
                       value: selectedDistance,
                       onChanged: (newValue) {

@@ -9,6 +9,8 @@ import 'package:nexaguide_ipm/database/initialize_poi.dart';
 import 'package:nexaguide_ipm/login.dart';
 import 'package:nexaguide_ipm/map/map.dart';
 import 'package:nexaguide_ipm/search/searchResultsPage.dart';
+import 'package:nexaguide_ipm/text_styles/TextStyleGillMT.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'Menu.dart';
@@ -84,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Map<String, dynamic> filters = {
     'minPrice': 0,
-    'maxPrice': 200,
+    'maxPrice': 100,
     'minRating': 0,
     'maxRating': 5,
     'distance': 0.0,
@@ -379,6 +381,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Add your menu items here
         child: ListView(
           children: <Widget>[
+            /*
             ListTile(
               leading: Icon(Icons.menu),
               title: Text('Menu'),
@@ -387,9 +390,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Handle Map navigation
               },
             ),
+             */
             ListTile(
-              leading: Icon(Icons.mic),
-              title: Text('Events'),
+              leading: Icon(Icons.event),
+              title: Text('Events', style: GillMT.normal(18)),
               onTap: () {
                 _navigateToEventsPage();
                 // Handle Map navigation
@@ -397,20 +401,37 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ListTile(
               leading: Icon(Icons.collections),
-              title: Text('Collections'),
+              title: Text('Collections', style: GillMT.normal(18)),
               onTap: () {
                 _navigateToCollectionsPage();
                 // Handle Map navigation
               },
             ),
-            ListTile(
-              leading: Icon(Icons.verified_user),
-              title: Text('Login'),
-              onTap: () {
-                _navigateToLoginPage();
-                // Handle Map navigation
-              },
-            ),
+            FutureBuilder<SharedPreferences>(
+              future: SharedPreferences.getInstance(),
+              builder: (context, snapshot) {
+                SharedPreferences? prefs = snapshot.data;
+                String? username = prefs?.getString('username');
+
+                return username != null ?
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text('Logout', style: GillMT.normal(18)),
+                    onTap: () {
+                      _navigateToLoginPage();
+                      // Handle Map navigation
+                    },
+                  )
+                : ListTile(
+                  leading: Icon(Icons.login),
+                  title: Text('Login', style: GillMT.normal(18)),
+                  onTap: () {
+                    _navigateToLoginPage();
+                    // Handle Map navigation
+                  },
+                );
+              }
+            )
             // ... other ListTile items ...
           ],
         ),
