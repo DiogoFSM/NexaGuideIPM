@@ -39,7 +39,7 @@ class InitializePOIandEvents {
     );
 
     database.createPOIWithTagsAndImages(
-        name: "Pasteis de Belém",
+        name: "Pastéis de Belém",
         lat: 38.69750378716137,
         lng: -9.20322526655013,
         address: "Rua de Belém 84 92, 1300-085 Lisboa",
@@ -88,22 +88,10 @@ class InitializePOIandEvents {
         lat: 38.697422,
         lng: -9.231721,
         price: -1,
-        description: "",
+        description: "O Passeio Marítimo de Algés é palco de festivais que reúnem dezenas de milhares de pessoas. É uma das zonas mais desimpedidas de Lisboa para praticar desporto, principalmente correr e andar de bicicleta ou skate sem quaisquer problemas. Com o rio como vizinho, esta zona oferece uma vista única sobre o estuário e a cidade, bem como alguns edifícios marcantes, como a torre de controlo do Porto de Lisboa.",
         tags:["Outdoors"],
         cityID: 295
     );
-
-    /*
-    database.createPOIWithTags(
-        name: "Herdade da Casa Branca",
-        lat: 38.697422,
-        lng: -9.231721,
-        price: -1,
-        description: "",
-        tags:["Outdoors"],
-        cityID: 295
-    );
-     */
 
   }
 
@@ -119,7 +107,47 @@ class InitializePOIandEvents {
         startTime: "20:00h",
         endTime: "04:00h",
         price: 16,
-        tags: ["Festival"]
+        description: "A Semana do Caloiro está de volta à FCT NOVA, com um cartaz que conta com diversos artistas de renome nacional. Nesta 14ª edição do evento de receção e boas-vindas aos novos estudantes desta instituição, a ambição cresce mais que sempre, impulsionando cada vez mais o espírito jovem de Almada e de toda a Área Metropolitana de Lisboa. Ao som das nossas Tunas Académicas, de pimba, pop e hip hop, vem viver o espírito académico partilhado pelos estudantes FCTenses em quatro dias inesquecíveis.",
+        tags: ["Music"]
+    );
+
+    database.createEventWithTags(
+        name: "Ou o desenho contínuo",
+        poiID: 4,
+        dateStart: 1698454800000,
+        dateEnd: 1711321200000,
+        location: "Lisbon",
+        startTime: "10:00h",
+        endTime: "19:00h",
+        price: 10,
+        description: "O Museu de Arte Contemporânea/CCB assinala o depósito da Coleção Teixeira de Freitas com a apresentação da exposição Ou o desenho contínuo, uma seleção de desenho contemporâneo que inclui obras de mais de 50 artistas. Inspirada no título de um livro de Herberto Helder (Ou o Poema Contínuo, de 2001), esta exposição pressupõe um entendimento do desenho como um processo contínuo da prática artística.",
+        tags: ["Art"]
+    );
+
+    database.createEventWithTags(
+        name: "Festa do Jazz",
+        poiID: 4,
+        dateStart: 1701392400000,
+        dateEnd: 1701644400000,
+        location: "Lisbon",
+        startTime: "16:30h",
+        endTime: "22:30h",
+        price: 15,
+        description: "A Festa do Jazz é o maior festival português de jazz, que se realiza há 20 anos sem interrupções, reunindo diferentes públicos, críticos, promotores, músicos profissionais e estudantes de jazz de todo o país.",
+        tags: ["Music"]
+    );
+
+    database.createEventWithTags(
+        name: "Concerto de Ano Novo",
+        poiID: 4,
+        dateStart: 1704070800000,
+        dateEnd: 1704150000000,
+        location: "Lisbon",
+        startTime: "11:00h",
+        endTime: "17:00h",
+        price: 28,
+        description: "A leveza frutada das valsas. O bruto e o seco das marchas. A segunda fermentação das polcas. Música fina, é tudo o que se espera do tradicional Concerto de Ano Novo da Metropolitana no CCB. É ocasião para desejar saúde, felicidade, prosperidade, paz… projetar novos filmes e novos guiões sobre os quais teremos sempre uma palavra a dizer. É tempo de escolher a banda sonora ideal para todas as situações. É o brinde perfeito!",
+        tags: ["Music"]
     );
 
     database.createEventWithTags(
@@ -131,9 +159,10 @@ class InitializePOIandEvents {
         startTime: "20:00h",
         endTime: "04:00h",
         price: 79,
-        description: " O NOS Alive regressa ao Passeio Marítimo de Algés, nos dias 11, 12 e 13 de julho, no ano em que celebra a sua 16ª edição.",
-        tags: ["Festival"]
+        description: "O NOS Alive regressa ao Passeio Marítimo de Algés, nos dias 11, 12 e 13 de julho, no ano em que celebra a sua 16ª edição.",
+        tags: ["Music", "Most Popular"]
     );
+
   }
 
 }
