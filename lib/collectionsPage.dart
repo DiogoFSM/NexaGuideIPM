@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexaguide_ipm/database/nexaguide_db.dart';
 import 'package:nexaguide_ipm/database/model/collection.dart';
+import 'package:nexaguide_ipm/text_styles/TextStyleGillMT.dart';
 import 'CollectionDetailPage.dart';
 
 class CollectionsPage extends StatefulWidget {
@@ -35,20 +36,20 @@ class _CollectionsPageState extends State<CollectionsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Create a new collection'),
+          title: Text('Create a new collection', style: GillMT.title(20)),
           content: TextField(
             controller: _textFieldController,
             decoration: InputDecoration(hintText: "Name"),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel', style: GillMT.normal(18)),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             TextButton(
-              child: Text('Create'),
+              child: Text('Create', style: GillMT.normal(18)),
               onPressed: () async {
                 int collectionId = await NexaGuideDB().createCollection(_textFieldController.text, [], [], DateTime.now().millisecondsSinceEpoch);
                 _loadCollections(); // Refresh the list of collections
@@ -70,16 +71,16 @@ class _CollectionsPageState extends State<CollectionsPage> {
     bool confirm = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Delete Collection"),
-        content: Text("Are you sure you want to delete this collection?"),
+        title: Text("Delete Collection", style: GillMT.title(20)),
+        content: Text("Are you sure you want to delete this collection?", style: GillMT.normal(18)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text("Cancel"),
+            child: Text("Cancel", style: GillMT.normal(18)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text("Delete"),
+            child: Text("Delete", style: GillMT.normal(18)),
           ),
         ],
       ),
@@ -96,11 +97,11 @@ class _CollectionsPageState extends State<CollectionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Collections'),
+        title: Text('Collections', style: GillMT.title(22)),
       ),
       body: collections.isEmpty
           ? Center(
-        child: Text('You have not saved any places yet.'),
+        child: Text('You have not saved any places yet.', style: GillMT.lighter(18)),
       )
           : ListView.builder(
         itemCount: collections.length,
@@ -109,12 +110,12 @@ class _CollectionsPageState extends State<CollectionsPage> {
           return Card(
             margin: EdgeInsets.all(8.0),
             child: ListTile(
-              title: Text(collection.name),
+              title: Text(collection.name, style: GillMT.normal(18)),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Locations: ${collection.poiIds.length}'),
-                  Text('Events: ${collection.eventIds.length}'),
+                  Text('Locations: ${collection.poiIds.length}', style: GillMT.lighter(16)),
+                  Text('Events: ${collection.eventIds.length}', style: GillMT.lighter(16)),
                 ],
               ),
               onTap: () {

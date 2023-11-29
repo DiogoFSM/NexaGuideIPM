@@ -6,6 +6,7 @@ import 'package:nexaguide_ipm/database/model/poi.dart';
 import 'package:nexaguide_ipm/CollectionItemDetailPage.dart';
 import 'package:nexaguide_ipm/eventsPage.dart';
 import 'package:nexaguide_ipm/location/locationSinglePage.dart';
+import 'package:nexaguide_ipm/text_styles/TextStyleGillMT.dart';
 
 
 class CollectionDetailPage extends StatefulWidget {
@@ -52,11 +53,14 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
-              return ListView(
-                children: snapshot.data!.map((event) => EventCard(event: event, collection: widget.collection, onItemRemoved: refreshCollection)).toList(),
-              );
+                if (snapshot.data!.isEmpty) {
+                  return Center(child: Text('No events saved', style: GillMT.lighter(18)));
+                }
+                return ListView(
+                  children: snapshot.data!.map((event) => EventCard(event: event, collection: widget.collection, onItemRemoved: refreshCollection)).toList(),
+                );
             } else {
-              return Text('No events found');
+              return Text('No events found', style: GillMT.lighter(18));
             }
           },
         );
@@ -69,11 +73,14 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
-              return ListView(
-                children: snapshot.data!.map((poi) => POICard(poi: poi, collection: widget.collection, onItemRemoved: refreshCollection,)).toList(),
-              );
+                if (snapshot.data!.isEmpty) {
+                  return Center(child: Text('No locations saved', style: GillMT.lighter(18)));
+                }
+                return ListView(
+                  children: snapshot.data!.map((poi) => POICard(poi: poi, collection: widget.collection, onItemRemoved: refreshCollection,)).toList(),
+                );
             } else {
-              return Text('No locations found');
+              return Text('No locations found', style: GillMT.lighter(18));
             }
           },
         );
@@ -86,7 +93,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.collection.name),
+        title: Text(widget.collection.name, style: GillMT.title(22)),
       ),
       body: _buildBody(),
         bottomNavigationBar: BottomNavigationBar(
@@ -131,17 +138,17 @@ class EventCard extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to remove this event from the collection?'),
+          title: Text('Confirm Deletion', style: GillMT.title(20)),
+          content: Text('Are you sure you want to remove this event from the collection?', style: GillMT.normal(18)),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel', style: GillMT.normal(18)),
               onPressed: () {
                 Navigator.of(context).pop(false); // User cancels the operation
               },
             ),
             TextButton(
-              child: Text('Delete'),
+              child: Text('Delete', style: GillMT.normal(18)),
               onPressed: () {
                 Navigator.of(context).pop(true); // User confirms the deletion
               },
@@ -161,9 +168,9 @@ class EventCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.all(8.0),
       child: ListTile(
-        leading: Icon(Icons.event),
-        title: Text(event.name),
-        subtitle: Text(event.description ?? ''),
+        leading: Icon(Icons.event, size: 36),
+        title: Text(event.name, style: GillMT.title(18)),
+        subtitle: Text(event.description ?? '', style: GillMT.normal(16), maxLines: 4, overflow: TextOverflow.ellipsis,),
         onTap: () {
           // Navigate to eventsPage and pass the event ID to show its details
           Navigator.push(
@@ -210,17 +217,17 @@ class POICard extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to remove this location from the collection?'),
+          title: Text('Confirm Deletion', style: GillMT.title(20)),
+          content: Text('Are you sure you want to remove this location from the collection?', style: GillMT.normal(18)),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel', style: GillMT.normal(18)),
               onPressed: () {
                 Navigator.of(context).pop(false); // User cancels the operation
               },
             ),
             TextButton(
-              child: Text('Delete'),
+              child: Text('Delete', style: GillMT.normal(18)),
               onPressed: () {
                 Navigator.of(context).pop(true); // User confirms the deletion
               },
@@ -240,9 +247,9 @@ class POICard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.all(8.0),
       child: ListTile(
-        leading: Icon(Icons.pin_drop),
-        title: Text(poi.name),
-        subtitle: Text(poi.cityName ?? ''),
+        leading: Icon(Icons.pin_drop, size: 36),
+        title: Text(poi.name, style: GillMT.title(18)),
+        subtitle: Text(poi.cityName ?? '', style: GillMT.normal(16)),
         onTap: () {
             Navigator.push(
             context,

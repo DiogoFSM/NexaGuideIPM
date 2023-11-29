@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexaguide_ipm/text_styles/TextStyleGillMT.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('LOGIN'),
+        title: Text('Login', style: GillMT.title(22)),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -43,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: <Widget>[
         TextField(
           controller: _emailController,
-          decoration: InputDecoration(labelText: 'EMAIL'),
+          decoration: InputDecoration(labelText: 'USERNAME'),
           keyboardType: TextInputType.emailAddress,
         ),
         SizedBox(height: 16.0),
@@ -54,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         SizedBox(height: 24.0),
         ElevatedButton(
-          child: Text('LOGIN'),
+          child: Text('Login', style: GillMT.normal(18)),
           onPressed: _login,
         ),
       ],
@@ -66,10 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Text('Logged in as: $_loggedInUser'),
+        Text('Logged in as: $_loggedInUser', style: GillMT.normal(18)),
         SizedBox(height: 24.0),
         ElevatedButton(
-          child: Text('LOGOUT'),
+          child: Text('Logout', style: GillMT.normal(18)),
           onPressed: _logout,
         ),
       ],
